@@ -3,14 +3,16 @@ package com.lion.BMWtour.service;
 import com.lion.BMWtour.entitiy.User;
 import com.lion.BMWtour.repository.UserRepository;
 import java.util.List;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public User findByUid(String user_id) {
