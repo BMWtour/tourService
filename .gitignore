@@ -1,0 +1,10 @@
+# 빌드 및 의존성 폴더
+.gradle/
+build/
+
+# IDE 설정 파일
+.idea/
+
+# macOS 시스템 파일
+.DS_Store
+
