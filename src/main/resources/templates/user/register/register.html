@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="/src/main/resources/templates/fragments/navbarStyle.css"
+    />
+    <title>회원가입페이지</title>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-title">회원가입</div>
+    </nav>
+    <div class="container" id="container">
+      <h2>회원가입</h2>
+      <div class="form-container">
+        <form action="/user/register" method="post">
+          <input type="text" name="uid" placeholder="uid" /><br /><br />
+          <input
+            type="password"
+            name="pwd"
+            placeholder="패스워드"
+          /><br /><br />
+          <input
+            type="password"
+            name="pwd2"
+            placeholder="패스워드 확인"
+          /><br /><br />
+          <label>당신이 알고싶은 여행정보를 선택해주세요:</label><br />
+          <input
+            type="checkbox"
+            id="관광지"
+            name="category"
+            value="관광지"
+            onclick="limitSelection(this)"
+          />
+          <!--  추후에 value 변경할것! -->
+          <label for="관광지">관광지</label><br />
+          <input
+            type="checkbox"
+            id="음식점"
+            name="category"
+            value="음식점"
+            onclick="limitSelection(this)"
+          />
+          <label for="음식점">음식점</label><br />
+          <input
+            type="checkbox"
+            id="쇼핑"
+            name="category"
+            value="쇼핑"
+            onclick="limitSelection(this)"
+          />
+          <label for="쇼핑">쇼핑</label><br />
+          <input
+            type="checkbox"
+            id="축제공연행사"
+            name="category"
+            value="축제공연행사"
+            onclick="limitSelection(this)"
+          />
+          <label for="축제공연행사">축제공연행사</label><br />
+          <input
+            type="checkbox"
+            id="문화시설"
+            name="category"
+            value="문화시설"
+            onclick="limitSelection(this)"
+          />
+          <label for="문화시설">문화시설</label><br />
+          <input
+            type="checkbox"
+            id="레포츠"
+            name="category"
+            value="레포츠"
+            onclick="limitSelection(this)"
+          />
+          <label for="레포츠">레포츠</label><br />
+          <div class="button-container">
+            <button class="ghost" id="signUp">가입하기</button>
+          </div>
+        </form>
+
+        <script>
+          function limitSelection(checkbox) {
+            const maxSelection = 3; // 최대 선택 가능 개수
+            const selectedCheckboxes = document.querySelectorAll(
+              'input[name="category"]:checked'
+            );
+
+            if (selectedCheckboxes.length > maxSelection) {
+              alert(`You can only select up to ${maxSelection} options.`);
+              checkbox.checked = false; // 선택 취소
+            }
+          }
+        </script>
+      </div>
+    </div>
+  </body>
+</html>
