@@ -54,7 +54,7 @@ public class TourInfoServiceImpl {
                             .build();
 
 
-                    TourInfo saved = tourInfoRepository.save(tourInfo);
+                    tourInfoRepository.save(tourInfo);
 
 
 
