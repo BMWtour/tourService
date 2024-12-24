@@ -1,11 +1,11 @@
 package com.lion.BMWtour.controller;
 
-import com.lion.BMWtour.service.TourInfoService;
 import com.lion.BMWtour.service.TourInfoServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 @Controller
@@ -16,7 +16,15 @@ public class TourInfoController {
 
     @GetMapping("/TourInfoInsert")
     public String CulturalPlaceInsert() {
-        // tourInfoService.csvFileToElasticSearch();
+        tourInfoService.tourInfoInsert();
         return "fragments/test";
     }
+
+    @GetMapping("/search/{q}")
+    public String search(@PathVariable String q, Model model) {
+        System.out.println(q);
+        model.addAttribute("test",q);
+        return "fragments/test";
+    }
+
 }

@@ -9,6 +9,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -23,67 +24,45 @@ public class TourInfoServiceImpl {
 
     public void tourInfoInsert() {
         try {
-            Resource resource = resourceLoader.getResource("classpath:/static/data/TourInfoData.csv");
+            Resource resource = resourceLoader.getResource("classpath:/static/data/문화관광데이터.csv");
             try (Reader reader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8);
                  CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
+
+
                 int count = 0;
                 for (CSVRecord record : csvParser.getRecords()) {
                     // 열 데이터 추출
-                    String sdNm = record.get("SD_NM"); // 시도명
-                    String sggNm = record.get("SGG_NM"); // 시군구명
-                    String emdNm = record.get("EMD_NM"); // 읍면동명
-                    String tourNm = record.get("TOUR_NM"); // 지역문화관광지명
-                    String addr = record.get("ADDR"); // 주소
-                    String tourLa = record.get("TOUR_LA"); // 관광지 위도
-                    String tourLo = record.get("TOUR_LO"); // 관광지 경도
-                    String tourCrLm = record.get("TOUR_CL_NM"); // 관광지 분류명
-                    String tourStryNm = record.get("TOUR_STRY_NM"); // 관광지 이야기명
-                    String tourStrySmr = record.get("TOUR_STRY_SMR"); // 관광지 이야기 요약 내용
-                    String tourStryUrl = record.get("TOUR_STRY_URL"); // 관광지 이야기 URL
-                    String coreKwrd = record.get("CORE_KWRD"); // 핵심 키워드 내용
-                    String pbtrnspClNm = record.get("PBTRNSP_CL_NM"); // 대중교통 분류명
-                    String pbtrnspFcltyNm = record.get("PBTRNSP_FCLTY_NM"); // 대중교통 시설명
-                    String bstpNoNm = record.get("BSTP_NO_NM"); // 정류장 번호명
-                    String entrcNm = record.get("ENTRC_NM"); // 출입구명
-                    String pbtrnspAddr = record.get("PBTRNSP_ADDR"); // 대중교통 시설 주소
-                    String pbtrnspLa = record.get("PBTRNSP_LA"); // 시설 위도
-                    String pbtrnspLo = record.get("PBTRNSP_LO"); // 시설 경도
-                    Double dstncValue = Double.parseDouble(record.get("DSTNC_VALUE")); // 거리값
-                    String openDay = record.get("OPEN_DAY"); // 개방일자
+                    String name = record.get("\uFEFF명칭");
+                    String address = record.get("주소");
+                    float latitude = Float.parseFloat(record.get("위도"));
+                    float longitude = Float.parseFloat(record.get("경도"));
+                    String summary = record.get("개요");
+                    String openTime = record.get("이용시간");
+                    String detailInfo = record.get("상세정보");
+                    String category = record.get("카테고리");
 
 
                     TourInfo tourInfo = TourInfo.builder()
-                            .sdNm(sdNm)
-                            .sggNm(sggNm)
-                            .emdNm(emdNm)
-                            .tourNm(tourNm)
-                            .addr(addr)
-                            .tourLa(tourLa)
-                            .tourLo(tourLo)
-                            .tourCrLm(tourCrLm)
-                            .tourStryNm(tourStryNm)
-                            .tourStrySmr(tourStrySmr)
-                            .tourStryUrl(tourStryUrl)
-                            .coreKwrd(coreKwrd)
-                            .pbtrnspClNm(pbtrnspClNm)
-                            .pbtrnspFcltyNm(pbtrnspFcltyNm)
-                            .bstpNoNm(bstpNoNm)
-                            .entrcNm(entrcNm)
-                            .pbtrnspAddr(pbtrnspAddr)
-                            .pbtrnspLa(pbtrnspLa)
-                            .pbtrnspLo(pbtrnspLo)
-                            .dstncValue(dstncValue)
-                            .openDay(openDay)
+                            .name(name)                      // name (명칭)
+                            .address(address)                   // address (주소)
+                            .latitude(latitude) // latitude (위도)
+                            .longitude(longitude) // longitude (경도)
+                            .summary(summary)                   // summary (개요)
+                            .openTime(openTime)              // openTime (이용시간)
+                            .detailInfo(detailInfo)            // detailInfo (상세정보)
+                            .category(category)              // category (카테고리)
                             .build();
 
 
                     tourInfoRepository.save(tourInfo);
 
 
-                    // if (count++ == 1000) {
-                    // System.out.println("count = " + count);
-                    // break;
-                    // }
+
+
+                    if (count++ == 1000) {
+                        System.out.println("count = " + count);
+                        break;
+                    }
                 }
                 System.out.println("삽입 완료");
             }
