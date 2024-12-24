@@ -22,6 +22,8 @@ public class TourInfoController {
     //naver map api client id
     @Value("${naver.map.client-id}")
     String mapClientId;
+    @Value("${naver.map.secret-key}")
+    String mapSecretKey;
     @Value("${odsay.map.secret-key}")
     String odsaySecretKey;
 
