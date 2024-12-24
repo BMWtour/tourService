@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestClient;
 import org.yaml.snakeyaml.util.UriEncoder;
 
+import java.net.URLEncoder;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -48,17 +50,12 @@ public class TourInfoController {
     @GetMapping("/tour/findMapTest")
     @ResponseBody
     public ResponseEntity<String> findMapTest(){
-
+        odsaySecretKey = URLEncoder.encode(odsaySecretKey);
         RestClient restClient = RestClient.builder()
                 .baseUrl("https://api.odsay.com/v1/api")
                 .build();
-
-        /*
-        *
-        * https://api.odsay.com/v1/api/searchPubTransPathT
-        * ?lang=0&SX=126.9931257&SY=37.5680965&EX=126.8294568287&EY=37.3682496114&OPT=0&SearchType=0
-        * &apiKey=QF9aYGND2yFk+ITjGtpm0A
-        * */
+//https://api.odsay.com/v1/api/searchPubTransPathT?SX=126.972317&SY=37.556103&EX=129.334068&EY=35.822547&apiKey=LGGyP%2BCBYgb9Zt%2BplYLTNRBIUJoGdoJmpwJgdsIs%2Fu4
+        //https://api.odsay.com/v1/api/searchPubTransPathT?lang=0&SX=129.338408&SY=35.842406&EX=126.972295&EY=37.556086&OPT=0&SearchType=0
         ResponseEntity<String> response = restClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/searchPubTransPathT")
                         .queryParam("lang", 0)
@@ -68,7 +65,7 @@ public class TourInfoController {
                         .queryParam("EY", 37.3682496114)
                         .queryParam("OPT", 0)
                         .queryParam("SearchType", 0)
-                        .queryParam("apiKey",  "QF9aYGND2yFk%2BITjGtpm0A")
+                        .queryParam("apiKey",  odsaySecretKey)
                         .build())
                 .retrieve()
                 .toEntity(String.class);

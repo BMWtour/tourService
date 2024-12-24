@@ -19,7 +19,7 @@ public class SecurityConfig {
                         .requestMatchers("/book/list", "/book/detail/**", "/bookEs/list", "/bookEs/detail/**","/bookEs/listOld",
                                 "/misc/**", "/webSocket", "/echo", "/personal", "/restaurant/list", "/restaurant/detail/**",
                                 "/mall/list", "/mall/detail/**", "/user/register", "/h2-console", "/demo/**",
-                                "/img/**", "/js/**", "/css/**", "/error/**","/api/gcs/upload"
+                                "/img/**", "/js/**", "/css/**", "/error/**","/api/gcs/upload", "/tour/**"
                         ).permitAll()
                         .requestMatchers(
                                 //"/book/insert", "/book/yes24",

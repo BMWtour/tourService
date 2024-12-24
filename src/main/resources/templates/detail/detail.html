@@ -68,16 +68,21 @@
             margin: auto;
             width: 80%;
         }
-        .directions, .overview {
+        .directions {
+            display: flex;
+            justify-content: space-evenly;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .overview {
             margin-top: 20px;
             text-align: center;
         }
         .directions h3, .overview h3 {
             margin-bottom: 10px;
         }
-        .directions > p{
-            height: 500px;
-        }
+
         .tourName {
             text-align: center;
         }
@@ -87,6 +92,30 @@
             flex-basis: 45%;
             flex-grow: 0;
             flex-shrink: 0;
+            text-align: center;
+        }
+        .navigationMap {
+            width: 40vw;
+            height: 55vh;
+            background-color: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            color: #888;
+            flex-grow: 0;
+            flex-shrink: 0;
+            flex-basis: 50%;
+        }
+        .naviInfo {
+            display: flex;
+            flex-direction: column;
+            flex-basis: 45%;
+            flex-grow: 0;
+            flex-shrink: 0;
+            text-align: center;
+        }
+        .directionsName{
             text-align: center;
         }
     </style>
@@ -104,8 +133,7 @@
         <div class="info">
             <div class="photo">
                 <!--네이버 지도로 관광지 위치 표시-->
-                <div id="map" style="width: 100%;height:100%;"></div>
-
+                <div id="tourMap" style="width: 100%;height:100%;"></div>
             </div>
             <div class="infos">
                 <div class="item">
@@ -126,16 +154,22 @@
             <h3>개요</h3>
             <p>경기도 시흥의 지역 특산물 중의 하나가 바로 ‘연’이다. 연은 수련과에 속하는 다년생 수생식물로 뿌리채소로는 드물게 다량의 비타민과 무기질을 함유하고 있어 최근 건강식 식품원료로 각광받고 있으나 그 효능에 비해 다양한 조리방법이 개발되어 있지 않아 흔히 연하면 연근 반찬 이외엔 생각나는 것이 없는데, 산현동 연 요리 전문점 장금이를 찾으면 그렇지 않음을 직접 확인할 수 있다. 흔치 않은 색다른 한정식을 원한다면 한 번쯤은 꼭 한 번 들러 연밥 정식과 연잎수육을 맛봐야 할 곳이다.</p>
         </div>
-        <div class="directions">
+        <div class="directionsName">
             <h3>길찾기</h3>
-            <p>지하철 또는 버스 정보로 길찾기 안내.<br>추후 이 자리에 길찾기 api가 들어옴.</p>
+        </div>
+        <div class="directions">
+            <div class="navigationMap">
+                <div id="naviMap" style="width: 100%;height:100%;"></div>
+            </div>
+            <div id="naviInfo">여기에 길찾기 정보가 나타납니다.</div>
         </div>
     </div>
 </div>
 </body>
 <script th:inline="javascript">
 
-    var map = new naver.maps.Map('map', {
+    //관광지 위치
+    var tourMap = new naver.maps.Map('tourMap', {
         center: new naver.maps.LatLng(37.3682496114, 126.8294568287),
         zoom: 18,
         maxZoom: 20,
@@ -145,110 +179,113 @@
 
     var marker = new naver.maps.Marker({
         position: new naver.maps.LatLng(37.3682496114, 126.8294568287),
-        map: map
+        map: tourMap
     });
-    //
-    // const odsayKey = [[${odsaySecretKey}]];
-    //
-    // var mapOptions = {
-    //     center: new naver.maps.LatLng(37.3595704, 127.105399),
-    //     zoom: 10
-    // };
-    //
-    // var map = new naver.maps.Map('map', mapOptions);
-    //
-    // var sx = 126.93737555322481;
-    // var sy = 37.55525165729346;
-    // var ex = 126.88265238619182;
-    // var ey = 37.481440035175375;
-    //
-    // function searchPubTransPathAJAX() {
-    //     var xhr = new XMLHttpRequest();
-    //     //ODsay apiKey 입력
-    //     var url = encodeURIComponent("https://api.odsay.com/v1/api/searchPubTransPathT?SX="+sx+"&SY="+sy+"&EX="+ex+"&EY="+ey+"&apiKey="+odsayKey);
-    //     xhr.open("GET", url, true);
-    //     xhr.send();
-    //     xhr.onreadystatechange = function() {
-    //         if (xhr.readyState == 4 && xhr.status == 200) {
-    //             console.log( JSON.parse(xhr.responseText)); // <- xhr.responseText 로 결과를 가져올 수 있음
-    //             //노선그래픽 데이터 호출
-    //             callMapObjApiAJAX((JSON.parse(xhr.responseText))["result"]["path"][0].info.mapObj);
-    //         }
-    //     }
-    // }
-    //
-    // //길찾기 API 호출
-    // searchPubTransPathAJAX();
-    //
-    // function callMapObjApiAJAX(mabObj){
-    //     var xhr = new XMLHttpRequest();
-    //     //ODsay apiKey 입력
-    //
-    //     var url = encodeURIComponent("https://api.odsay.com/v1/api/loadLane?mapObject=0:0@"+mabObj+"&apiKey="+odsayKey);
-    //     xhr.open("GET", url, true);
-    //     xhr.send();
-    //     xhr.onreadystatechange = function() {
-    //         if (xhr.readyState == 4 && xhr.status == 200) {
-    //             var resultJsonData = JSON.parse(xhr.responseText);
-    //             drawNaverMarker(sx,sy);					// 출발지 마커 표시
-    //             drawNaverMarker(ex,ey);					// 도착지 마커 표시
-    //             drawNaverPolyLine(resultJsonData);		// 노선그래픽데이터 지도위 표시
-    //             // boundary 데이터가 있을경우, 해당 boundary로 지도이동
-    //             if(resultJsonData.result.boundary){
-    //                 var boundary = new naver.maps.LatLngBounds(
-    //                     new naver.maps.LatLng(resultJsonData.result.boundary.top, resultJsonData.result.boundary.left),
-    //                     new naver.maps.LatLng(resultJsonData.result.boundary.bottom, resultJsonData.result.boundary.right)
-    //                 );
-    //                 map.panToBounds(boundary);
-    //             }
-    //         }
-    //     }
-    // }
-    //
-    // // 지도위 마커 표시해주는 함수
-    // function drawNaverMarker(x,y){
-    //     var marker = new naver.maps.Marker({
-    //         position: new naver.maps.LatLng(y, x),
-    //         map: map
-    //     });
-    // }
-    //
-    // // 노선그래픽 데이터를 이용하여 지도위 폴리라인 그려주는 함수
-    // function drawNaverPolyLine(data){
-    //     var lineArray;
-    //
-    //     for(var i = 0 ; i < data.result.lane.length; i++){
-    //         for(var j=0 ; j <data.result.lane[i].section.length; j++){
-    //             lineArray = null;
-    //             lineArray = new Array();
-    //             for(var k=0 ; k < data.result.lane[i].section[j].graphPos.length; k++){
-    //                 lineArray.push(new naver.maps.LatLng(data.result.lane[i].section[j].graphPos[k].y, data.result.lane[i].section[j].graphPos[k].x));
-    //             }
-    //
-    //             //지하철결과의 경우 노선에 따른 라인색상 지정하는 부분 (1,2호선의 경우만 예로 들음)
-    //             if(data.result.lane[i].type == 1){
-    //                 var polyline = new naver.maps.Polyline({
-    //                     map: map,
-    //                     path: lineArray,
-    //                     strokeWeight: 3,
-    //                     strokeColor: '#003499'
-    //                 });
-    //             }else if(data.result.lane[i].type == 2){
-    //                 var polyline = new naver.maps.Polyline({
-    //                     map: map,
-    //                     path: lineArray,
-    //                     strokeWeight: 3,
-    //                     strokeColor: '#37b42d'
-    //                 });
-    //             }else{
-    //                 var polyline = new naver.maps.Polyline({
-    //                     map: map,
-    //                     path: lineArray,
-    //                     strokeWeight: 3
-    //                 });
-    //             }
-    //         }
-    //     }
-    // }
+
+    //길찾기
+    const odsayKey = [[${odsaySecretKey}]];
+
+    var mapOptions = {
+        //center: new naver.maps.LatLng(37.3595704, 127.105399),
+        zoom: 10
+    };
+
+    var naviMap = new naver.maps.Map('naviMap', mapOptions);
+    //37.556154, 126.972242
+    //37.457394, 126.893603
+    var sx = 126.972242;
+    var sy = 37.556154;
+    var ex = 126.893603;
+    var ey = 37.457394;
+
+    function searchPubTransPathAJAX() {
+        var xhr = new XMLHttpRequest();
+        //ODsay apiKey 입력
+        //lang=0&SX=129.338408&SY=35.842406&EX=126.972295&EY=37.556086&OPT=0&SearchType=0
+        var url = "https://api.odsay.com/v1/api/searchPubTransPathT?lang=0&SX="+sx+"&SY="+sy+"&EX="+ex+"&EY="+ey+"&OPT=0&SearchType=0&apiKey="+encodeURIComponent(odsayKey);
+        xhr.open("GET", url, true);
+        xhr.send();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                console.log( JSON.parse(xhr.responseText)); // <- xhr.responseText 로 결과를 가져올 수 있음
+                //노선그래픽 데이터 호출
+                callMapObjApiAJAX((JSON.parse(xhr.responseText))["result"]["path"][0].info.mapObj);
+            }
+        }
+    }
+
+    //길찾기 API 호출
+    searchPubTransPathAJAX();
+
+    function callMapObjApiAJAX(mabObj){
+        var xhr = new XMLHttpRequest();
+        //ODsay apiKey 입력
+
+        var url = "https://api.odsay.com/v1/api/loadLane?mapObject=0:0@"+mabObj+"&apiKey="+encodeURIComponent(odsayKey);
+        xhr.open("GET", url, true);
+        xhr.send();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var resultJsonData = JSON.parse(xhr.responseText);
+                drawNaverMarker(sx,sy);					// 출발지 마커 표시
+                drawNaverMarker(ex,ey);					// 도착지 마커 표시
+                drawNaverPolyLine(resultJsonData);		// 노선그래픽데이터 지도위 표시
+                // boundary 데이터가 있을경우, 해당 boundary로 지도이동
+                if(resultJsonData.result.boundary){
+                    var boundary = new naver.maps.LatLngBounds(
+                        new naver.maps.LatLng(resultJsonData.result.boundary.top, resultJsonData.result.boundary.left),
+                        new naver.maps.LatLng(resultJsonData.result.boundary.bottom, resultJsonData.result.boundary.right)
+                    );
+                    naviMap.panToBounds(boundary);
+                }
+            }
+        }
+    }
+
+    // 지도위 마커 표시해주는 함수
+    function drawNaverMarker(x,y){
+        var marker = new naver.maps.Marker({
+            position: new naver.maps.LatLng(y, x),
+            map: naviMap
+        });
+    }
+
+    // 노선그래픽 데이터를 이용하여 지도위 폴리라인 그려주는 함수
+    function drawNaverPolyLine(data){
+        var lineArray;
+
+        for(var i = 0 ; i < data.result.lane.length; i++){
+            for(var j=0 ; j <data.result.lane[i].section.length; j++){
+                lineArray = null;
+                lineArray = new Array();
+                for(var k=0 ; k < data.result.lane[i].section[j].graphPos.length; k++){
+                    lineArray.push(new naver.maps.LatLng(data.result.lane[i].section[j].graphPos[k].y, data.result.lane[i].section[j].graphPos[k].x));
+                }
+
+                //지하철결과의 경우 노선에 따른 라인색상 지정하는 부분 (1,2호선의 경우만 예로 들음)
+                if(data.result.lane[i].type == 1){
+                    var polyline = new naver.maps.Polyline({
+                        map: naviMap,
+                        path: lineArray,
+                        strokeWeight: 3,
+                        strokeColor: '#003499'
+                    });
+                }else if(data.result.lane[i].type == 2){
+                    var polyline = new naver.maps.Polyline({
+                        map: naviMap,
+                        path: lineArray,
+                        strokeWeight: 3,
+                        strokeColor: '#37b42d'
+                    });
+                }else{
+                    var polyline = new naver.maps.Polyline({
+                        map: naviMap,
+                        path: lineArray,
+                        strokeWeight: 3
+                    });
+                }
+            }
+        }
+    }
 </script>
 </html>
