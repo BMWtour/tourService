@@ -6,7 +6,7 @@ body {
 .header {
     position: relative;
     height: 300px;
-    background: url('/img/main_background.jpg') no-repeat center center/cover;
+    background: url('/img/default/main_background.jpg') no-repeat center center/cover;
 }
 
 .search-container {
