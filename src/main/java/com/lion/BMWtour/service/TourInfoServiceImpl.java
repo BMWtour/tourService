@@ -1,5 +1,6 @@
 package com.lion.BMWtour.service;
 
+import com.lion.BMWtour.dto.PointDto;
 import com.lion.BMWtour.entitiy.TourInfo;
 import com.lion.BMWtour.repository.TourInfoRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -164,7 +166,7 @@ public class TourInfoServiceImpl {
                     TourInfo tourInfo = TourInfo.builder()
                             .title(title)                      // name (명칭)
                             .address(address)                   // address (주소)
-                            .point(new GeoPoint(latitude, longitude))
+                            .point((List<Double>) new PointDto((double) latitude, (double) longitude))
                             .summary(summary)                   // summary (개요)
                             .openTime(openTime)              // openTime (이용시간)
                             .detailInfo(detailInfo)            // detailInfo (상세정보)
