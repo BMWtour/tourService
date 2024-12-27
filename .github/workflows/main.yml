@@ -15,6 +15,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17'
+          distribution: 'adopt'
 
       # Secrets를 사용해 파일 생성
       - name: Create required files from secrets
