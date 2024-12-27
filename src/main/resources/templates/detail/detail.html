@@ -279,28 +279,30 @@
         })
     }
 
-    //사용자가 입력한 주소에서 관광지까지의 길찾기
-    function findRoute(){
-
+    //사용자가 입력한 주소 -> 관광지까지의 길찾기
+    async function findRoute() {
         let address = document.getElementById("adressInput").value;
-        //사용자가 입력한 주소를 좌표로 변경
-        findXY(address);
-        //
+
+        // 사용자가 입력한 주소를 좌표로 변경
+        await findXY(address);
+
+        // 좌표 변경 후 startXY 배열의 값을 사용
         const startLatitude = startXY[0];
         const startLongitude = startXY[1];
-        //두 좌표 사이 루트 가져오기
+
+        // 두 좌표 사이 루트 가져오기
         fetch('/navigate/points', {
             method: 'post',
             headers: {
                 'content-type': 'application/json'
             },
             body: JSON.stringify({
-                //길찾기 시작좌표
+                // 길찾기 시작좌표
                 start: {
                     lat: startLatitude,
                     lng: startLongitude
                 },
-                //길찾기 도착좌표(관광지)
+                // 길찾기 도착좌표(관광지)
                 goal: {
                     lat: tourAttrLatitude,
                     lng: tourAttrLongitude
@@ -310,10 +312,36 @@
             console.log(response)
             if (response.ok) {
                 console.log("가져오기 완료");
-                drawRoute((await response.json()).path)
+                drawRoute((await response.json()).path);
             }
-        })
+        });
     }
+
+    //주소 -> 좌표
+    function findXY(address) {
+        console.log('Sending request with address:', address);
+
+        return fetch('/navigate/getPoints', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ address: address })
+        }).then(response => {
+            if (response.ok) {
+                return response.json().then(body => {
+                    console.log('Response:', body);
+                    startXY[0] = body.lat;
+                    startXY[1] = body.lng;
+                });
+            } else {
+                console.error('Error:', response.status, response.statusText);
+            }
+        }).catch(error => {
+            console.error('Fetch error:', error);
+        });
+    }
+
 
     //좌표의 주소 얻어내기
     function findAddress(lat, lng){
@@ -334,31 +362,6 @@
                 })
         })
 
-    }
-
-    //주소의 좌표 얻어내기
-    function findXY(address) {
-        console.log('Sending request with address:', address);
-
-        fetch('/navigate/getPoints', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ address: address })
-        }).then(response => {
-            if (response.ok) {
-                response.json().then(body => {
-                    console.log('Response:', body);
-                    startXY.push(body.lat);
-                    startXY.push(body.lng);
-                });
-            } else {
-                console.error('Error:', response.status, response.statusText);
-            }
-        }).catch(error => {
-            console.error('Fetch error:', error);
-        });
     }
 
 
