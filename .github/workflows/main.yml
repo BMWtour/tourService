@@ -7,10 +7,27 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    
-      - name: 저장소 Checkout
+
+      - name: Check out code
         uses: actions/checkout@v3
-        
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+
+      # Secrets를 사용해 파일 생성
+      - name: Create required files from secrets
+        env:
+          APPLICATION_PROPERTIES: ${{ secrets.APPLICATION_PROPERTIES }}
+          JSON_CONFIG: ${{ secrets.JSON_CONFIG }}
+        run: |
+          mkdir -p src/main/resources
+          echo "$APPLICATION_PROPERTIES" > src/main/resources/application.properties
+          echo "$JSON_CONFIG" > src/main/resources/tribal-environs-445107-e9-1f83e9cefbee.json
+
+      - name: Build and test
+    
       - name: 스프링부트 애플리케이션 install # (0)
         run: ./gradlew clean
 
