@@ -19,4 +19,21 @@ public class TourInfoController {
         // tourInfoService.csvFileToElasticSearch();
         return "fragments/test";
     }
+
+    /**상세페이지 테스트를 위한 컨트롤러*/
+    @GetMapping("/tour/detail")
+    public String detail(
+            Model model
+    ){
+        model.addAttribute("mapClientId", mapClientId);
+        return "detail/detail";
+    }
+
+    @GetMapping("/search/{q}")
+    public String search(@PathVariable String q, Model model) {
+        System.out.println(q);
+        model.addAttribute("test",q);
+        return "main/search";
+    }
+
 }
