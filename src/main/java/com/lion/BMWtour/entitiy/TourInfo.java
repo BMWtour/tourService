@@ -6,9 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.*;
+import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 
 
 @Document(indexName = "tourinfos")
@@ -16,13 +15,15 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Setting(settingPath = "elasticsearch/tourinfos-setting.json")
+@Mapping(mappingPath = "elasticsearch/tourinfos-mapping.json")
 public class TourInfo {
     @Id
     private String id;
-    private String name;
+    private String title;
+    @Field(type = FieldType.Text)
     private String address;
-    private float latitude;
-    private float longitude;
+    private GeoPoint point;
     @Field(type = FieldType.Text)
     private String summary;
     private String openTime;
@@ -30,6 +31,7 @@ public class TourInfo {
     private String detailInfo;
     private String category;
 }
+
 
 
 
