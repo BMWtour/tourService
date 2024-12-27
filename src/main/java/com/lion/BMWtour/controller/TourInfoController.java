@@ -1,16 +1,23 @@
 package com.lion.BMWtour.controller;
 
-import com.lion.BMWtour.service.TourInfoService;
 import com.lion.BMWtour.service.TourInfoServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 @Controller
 @RequiredArgsConstructor
 public class TourInfoController {
+
+    //naver map api client id
+    @Value("${ncp.api.client-id}")
+    String mapClientId;
+    @Value("${ncp.api.client-secret}")
+    String mapSecretKey;
 
     private final TourInfoServiceImpl tourInfoService;
 
