@@ -189,8 +189,7 @@
 
     //맵 디폴트 위치. 추후 DB에서 관광지 좌표 가져오기
     let position = new naver.maps.LatLng(37.3682496114, 126.8294568287)
-    //마커들
-    let markers = [];
+
     //루트
     let polyline = null;
 
@@ -203,22 +202,28 @@
         zoomControl: true,
     };
 
-    //관광지 위치 맵(페이지 상단)
+    //-----------관광지 위치 맵(페이지 상단)-----------
+    //관광지 위치 맵
     var tourMap = new naver.maps.Map('tourMap', mapOptions);
-    //마커
+    //관광지 위치 마커
     var marker = new naver.maps.Marker({
         position: new naver.maps.LatLng(37.3682496114, 126.8294568287),
         map: tourMap
     });
 
-    //길찾기 맵(페이지 하단)
+    //--------길찾기 맵(페이지 하단)-----------
+    //길찾기 맵
     let naviMap = new naver.maps.Map('naviMap', mapOptions);
 
-    //마커
+    //사용자가 입력한 주소의 위치에 찍는 마커
+    var myLocationMarker = null;
+
+    //길찾기 맵 관광지 위치 마커
     var tourAttrMarker = new naver.maps.Marker({
         position: new naver.maps.LatLng(37.3682496114, 126.8294568287),
         map: naviMap
     });
+
 
     //-------------------------------길찾기-------------------------------------
 
@@ -242,12 +247,6 @@
 
             //1. 좌표를 주소로 변환
             findAddress(myLatitude, myLongitude);
-
-            //사용자 위치에 마커 추가
-            // var myLocationMarker = new naver.maps.Marker({
-            //     position: new naver.maps.LatLng(myLatitude, myLongitude),
-            //     map: naviMap
-            // });
         }
 
     }
@@ -312,6 +311,24 @@
             console.log(response)
             if (response.ok) {
                 console.log("가져오기 완료");
+                //마커 추가
+                //(첫 실행) 마커가 null이라면 마커찍기
+                if (myLocationMarker == null){
+                    //사용자가 입력한 주소 위치에 마커 추가
+                    myLocationMarker = new naver.maps.Marker({
+                        position: new naver.maps.LatLng(startLatitude, startLongitude),
+                        map: naviMap
+                    });
+                } else {
+                    //기존에 사용자가 입력한 마커가 null이 아니라면 (마커가 찍혀있다면) 지우고 새로운 위치에 마커찍기
+                    myLocationMarker.setMap(null);
+                    myLocationMarker = new naver.maps.Marker({
+                        position: new naver.maps.LatLng(startLatitude, startLongitude),
+                        map: naviMap
+                    });
+                }
+
+
                 drawRoute((await response.json()).path);
             }
         });
