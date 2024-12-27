@@ -9,16 +9,12 @@ public interface UserService {
     int WRONG_PASSWORD = 1;
     int USER_NOT_EXIST = 2;
 
-    User findByUid(String user_id);
-
-    List<User> getUsers();
+    User findByUserId(String userId);
+    boolean isUidDuplicate(String userId);
+    boolean isNickNameDuplicate(String userNickName);
 
     void registerUser(User user);
 
-    void updateUser(User user);
-
-    void deleteUser(String user_id);
-
-    int login(String user_id, String user_pw);
+    int login(String userId, String userPw);
 
 }

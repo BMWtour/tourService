@@ -31,7 +31,3 @@ public class TourInfo {
     private String detailInfo;
     private String category;
 }
-
-
-
-

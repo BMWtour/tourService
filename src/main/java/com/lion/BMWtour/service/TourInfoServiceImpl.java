@@ -19,7 +19,6 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -151,14 +150,13 @@ public class TourInfoServiceImpl {
 
     public void tourInfoInsert() {
         try {
-            Resource resource = resourceLoader.getResource("classpath:/static/data/문화관광데이터.csv");
+            Resource resource = resourceLoader.getResource("classpath:/static/data/TourInfoData.csv");
             try (Reader reader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8);
                  CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
-
-
                 int count = 0;
                 for (CSVRecord record : csvParser.getRecords()) {
                     // 열 데이터 추출
+
                     String title = record.get("\uFEFF명칭");
                     String address = record.get("주소");
                     float latitude = Float.parseFloat(record.get("위도"));
@@ -183,12 +181,10 @@ public class TourInfoServiceImpl {
                     tourInfoRepository.save(tourInfo);
 
 
-
-
-                    if (count++ == 1000) {
-                        System.out.println("count = " + count);
-                        break;
-                    }
+                    // if (count++ == 1000) {
+                    // System.out.println("count = " + count);
+                    // break;
+                    // }
                 }
                 System.out.println("삽입 완료");
             }

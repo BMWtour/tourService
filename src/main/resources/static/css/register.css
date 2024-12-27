@@ -24,7 +24,7 @@ h2 {
   overflow: hidden;
   width: 768px;
   max-width: 100%;
-  min-height: 480px;
+  min-height: 800px;
 }
 .form-container {
   position: absolute;
@@ -67,4 +67,25 @@ button:active {
   justify-content: center; /* 수평 중앙 정렬 */
   align-items: center; /* 수직 중앙 정렬 (필요 시) */
   margin-top: 20px; /* 버튼과 위 요소 간의 간격 추가 */
+}
+#duplicateCheckMessage {
+  margin-top: 10px; /* 위쪽 간격 추가 */
+  font-size: 14px; /* 메시지 텍스트 크기 */
+  color: red; /* 기본 색상 */
+  min-height: 20px; /* 최소 높이 설정 */
+  display: block; /* 블록 형태로 강제 표시 */
+}
+#duplicateCheckMessageNickName {
+  margin-top: 10px; /* 위쪽 간격 추가 */
+  font-size: 14px; /* 메시지 텍스트 크기 */
+  color: red; /* 기본 색상 */
+  min-height: 20px; /* 최소 높이 설정 */
+  display: block; /* 블록 형태로 강제 표시 */
+}
+#passwordMatchMessage {
+  margin-top: 10px; /* 위쪽 간격 추가 */
+  font-size: 14px; /* 메시지 텍스트 크기 */
+  color: red; /* 기본 색상 */
+  min-height: 20px; /* 최소 높이 설정 */
+  display: block; /* 블록 형태로 강제 표시 */
 }

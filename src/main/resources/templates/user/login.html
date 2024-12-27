@@ -21,7 +21,7 @@
 
     <div class="container" id="container">
       <div class="form-container sign-in-container">
-        <form action="#">
+        <form action="/user/login" method="post">
           <h1>로그인</h1>
           <span class="me-3">소셜 계정으로 로그인</span>
           <span>
@@ -42,8 +42,8 @@
             /></a>
           </span>
           <span></span>
-          <input type="username" placeholder="Username" />
-          <input type="password" placeholder="Password" />
+          <input type="text" id="uid" name="uid" placeholder="Username" class="form-control"/>
+          <input type="password" id="user_pw" name="user_pw" placeholder="Password" class="form-control" />
           <!-- <a href="#">Forgot your password?</a> -->
           <br />
           <button>로그인</button>
