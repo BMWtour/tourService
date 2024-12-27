@@ -1,5 +1,6 @@
 package com.lion.BMWtour.controller;
 
+import com.lion.BMWtour.entitiy.TourInfo;
 import com.lion.BMWtour.service.TourInfoServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,10 +29,15 @@ public class TourInfoController {
     }
 
     /**상세페이지 테스트를 위한 컨트롤러*/
-    @GetMapping("/tour/detail")
+    @GetMapping("/tour/detail/{tourId}")
     public String detail(
+            @PathVariable String tourId,
             Model model
     ){
+        //사용자 정보 이후 추가 필요
+
+        TourInfo tourInfo = tourInfoService.getTourInfo(tourId);
+        model.addAttribute("tourInfo", tourInfo);
         model.addAttribute("mapClientId", mapClientId);
         return "detail/detail";
     }
