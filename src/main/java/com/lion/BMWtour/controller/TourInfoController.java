@@ -20,9 +20,9 @@ public class TourInfoController {
 
     private final TourInfoServiceImpl tourInfoService;
     //naver map api client id
-    @Value("${naver.map.client-id}")
+    @Value("${ncp.api.client-id}")
     String mapClientId;
-    @Value("${naver.map.secret-key}")
+    @Value("${ncp.api.client-secret}")
     String mapSecretKey;
     @Value("${odsay.map.secret-key}")
     String odsaySecretKey;
@@ -47,31 +47,4 @@ public class TourInfoController {
         return "detail/detail";
     }
 
-    /*odsay api 테스트용 컨트롤러
-    * 추후삭제예정*/
-    @GetMapping("/tour/findMapTest")
-    @ResponseBody
-    public ResponseEntity<String> findMapTest(){
-        odsaySecretKey = URLEncoder.encode(odsaySecretKey);
-        RestClient restClient = RestClient.builder()
-                .baseUrl("https://api.odsay.com/v1/api")
-                .build();
-//https://api.odsay.com/v1/api/searchPubTransPathT?SX=126.972317&SY=37.556103&EX=129.334068&EY=35.822547&apiKey=LGGyP%2BCBYgb9Zt%2BplYLTNRBIUJoGdoJmpwJgdsIs%2Fu4
-        //https://api.odsay.com/v1/api/searchPubTransPathT?lang=0&SX=129.338408&SY=35.842406&EX=126.972295&EY=37.556086&OPT=0&SearchType=0
-        ResponseEntity<String> response = restClient.get()
-                .uri(uriBuilder -> uriBuilder.path("/searchPubTransPathT")
-                        .queryParam("lang", 0)
-                        .queryParam("SX", 126.9931257)
-                        .queryParam("SY", 37.5680965)
-                        .queryParam("EX", 126.8294568287)
-                        .queryParam("EY", 37.3682496114)
-                        .queryParam("OPT", 0)
-                        .queryParam("SearchType", 0)
-                        .queryParam("apiKey",  odsaySecretKey)
-                        .build())
-                .retrieve()
-                .toEntity(String.class);
-       ;
-        return response.getBody() == null ? ResponseEntity.noContent().build() : response;
-    }
 }
