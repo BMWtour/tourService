@@ -24,7 +24,7 @@ public class TourInfoController {
     public String search(@PathVariable String q, Model model) {
         System.out.println(q);
         model.addAttribute("test",q);
-        return "fragments/test";
+        return "main/search";
     }
 
 }

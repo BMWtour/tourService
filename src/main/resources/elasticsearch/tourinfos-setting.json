@@ -1,0 +1,42 @@
+{
+    "number_of_shards": 3,
+    "number_of_replicas": 1,
+    "index.refresh_interval": "-1",
+    "index.max_result_window": 10000,
+    "analysis": {
+      "char_filter": {
+        "custom_text_remover": {
+          "type": "pattern_replace",
+          "pattern": "(\\n|<br>)",  
+          "replacement": ""
+        }
+      },
+      "tokenizer": {
+        "nori_tokenizer": {
+          "type": "nori_tokenizer",
+          "decompound_mode": "mixed"
+        }
+      },
+      "analyzer": {
+        "korean_text_analyzer": {
+          "type": "custom",
+          "tokenizer": "nori_tokenizer",
+          "char_filter": [
+            "html_strip",
+            "custom_text_remover"  
+          ],
+          "filter": [
+            "nori_part_of_speech"
+          ]
+        }
+      },
+      "normalizer": {
+        "custom_normalizer": {
+          "type": "custom",
+          "char_filter": [
+            "custom_text_remover"  
+          ]
+        }
+      }
+    }
+  }
