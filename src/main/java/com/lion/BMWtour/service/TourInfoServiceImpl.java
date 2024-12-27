@@ -198,9 +198,7 @@ public class TourInfoServiceImpl {
     
     //관광지 정보 하나 가져오기
     public TourInfo getTourInfo(String tourId) {
-        Object test1 = tourInfoRepository.findById("PUJDBpQBo6YNDptrFbT_").orElse(null);
-        //PUJDBpQBo6YNDptrFbT_
-        TourInfo tourInfo = tourInfoRepository.findById("PUJDBpQBo6YNDptrFbT_").orElse(null);
+        TourInfo tourInfo = tourInfoRepository.findById(tourId).orElse(null);
         return tourInfo;
     }
 
