@@ -24,8 +24,6 @@ public class TourInfoController {
     String mapClientId;
     @Value("${ncp.api.client-secret}")
     String mapSecretKey;
-    @Value("${odsay.map.secret-key}")
-    String odsaySecretKey;
 
     @GetMapping("/TourInfoInsert")
     public String CulturalPlaceInsert() {
@@ -39,7 +37,6 @@ public class TourInfoController {
             Model model
     ){
         model.addAttribute("mapClientId", mapClientId);
-        model.addAttribute("odsaySecretKey", odsaySecretKey);
         return "detail/detail";
     }
 
