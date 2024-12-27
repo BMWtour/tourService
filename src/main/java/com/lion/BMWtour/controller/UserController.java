@@ -50,26 +50,21 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String registerProc(
-        String uid,
-        String pwd,
-        String pwd2,
-        String userNickName,
-        @RequestParam(value = "category", required = false) String[] category,
-        @RequestParam("file") MultipartFile file
-    ) throws IOException {
-
-        // 해야할일
-        // 가입시 아이디 중복검사 useYn이 yes 일때만
+    @ResponseBody
+    public ResponseEntity<?> registerProc(
+            String uid,
+            String pwd,
+            String pwd2,
+            String user_nickname,
+            @RequestParam(value = "category", required = false) String[] category,
+            @RequestParam("file") MultipartFile file) throws IOException {
 
         if (userService.findByUserId(uid) == null && pwd.equals(pwd2) && pwd.length() >= 4) {
             String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
-            // 추후에 리스트로 받아서 리스트로 저장
             String interest1 = category != null && category.length > 0 ? category[0] : null;
             String interest2 = category != null && category.length > 1 ? category[1] : null;
             String interest3 = category != null && category.length > 2 ? category[2] : null;
 
-            // 파일 업로드 처리
             String userImgUri = null;
             if (!file.isEmpty()) {
                 FileRequest fileRequest = new FileRequest(file);
@@ -80,22 +75,24 @@ public class UserController {
             User user = User.builder()
                     .userId(uid)
                     .userPw(hashedPwd)
-                    .userNickname(userNickName)
+                    .userNickname(user_nickname)
                     .interest1(interest1)
                     .interest2(interest2)
                     .interest3(interest3)
-                    // 이미지 추가 내용 필요
                     .userImgUri(userImgUri)
                     .useYn("yes")
                     .provider("tourApp")
                     .regDate(LocalDate.now())
                     .build();
             userService.registerUser(user);
-            System.out.println(user.getRegDate());
+
+            return ResponseEntity.ok(Collections.singletonMap("success", true));
         }
 
-        return "redirect:/user/login";
+        return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("success", false));
     }
+
 
     @GetMapping("/login")
     public String loginForm() {
@@ -111,8 +108,7 @@ public class UserController {
         session.setAttribute("sessUid", uid);
         session.setAttribute("sessUname", user.getUserNickname());
         String msg = user.getUserNickname() + "님 환영합니다." ;
-        //String url = "/book/list";
-        String url = "http://104.198.205.64:9200/_cat/indices?v";
+        String url = "/tour/main";
         model.addAttribute("msg",msg);
         model.addAttribute("url", url);
 
