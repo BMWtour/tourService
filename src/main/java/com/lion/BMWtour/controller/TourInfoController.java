@@ -1,16 +1,13 @@
 package com.lion.BMWtour.controller;
 
+import com.lion.BMWtour.entitiy.TourInfo;
+import com.lion.BMWtour.entitiy.TourInfoDto;
 import com.lion.BMWtour.service.TourInfoServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.RestClient;
-import org.yaml.snakeyaml.util.UriEncoder;
-import java.net.URLEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -18,24 +15,30 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequiredArgsConstructor
 public class TourInfoController {
 
-    private final TourInfoServiceImpl tourInfoService;
     //naver map api client id
     @Value("${ncp.api.client-id}")
     String mapClientId;
     @Value("${ncp.api.client-secret}")
     String mapSecretKey;
 
+    private final TourInfoServiceImpl tourInfoService;
+
     @GetMapping("/TourInfoInsert")
     public String CulturalPlaceInsert() {
-        tourInfoService.tourInfoInsert();
+        // tourInfoService.csvFileToElasticSearch();
         return "fragments/test";
     }
 
     /**상세페이지 테스트를 위한 컨트롤러*/
-    @GetMapping("/tour/detail")
+    @GetMapping("/tour/detail/{tourId}")
     public String detail(
+            @PathVariable String tourId,
             Model model
     ){
+        //사용자 정보 이후 추가 필요
+
+        TourInfo tourInfo = tourInfoService.getTourInfo(tourId);
+        model.addAttribute("tourInfo", tourInfo);
         model.addAttribute("mapClientId", mapClientId);
         return "detail/detail";
     }
@@ -48,4 +51,3 @@ public class TourInfoController {
     }
 
 }
-
