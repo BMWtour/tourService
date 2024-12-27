@@ -26,7 +26,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/misc/**", "/echo", "/personal",
                                 "/user/**", "/h2-console", "/demo/**",
-                                "/img/**", "/js/**", "/css/**", "/error/**", "/api/gcs/upload"
+                                "/img/**", "/js/**", "/css/**", "/error/**", "/api/gcs/upload",
+                                "/tour/**", "navigate/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
