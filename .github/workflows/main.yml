@@ -40,7 +40,7 @@ jobs:
         run: ./gradlew build
 
       - name: Build Docker image
-        run: docker build -t jinu0125/tourService .
+        run: docker build -t jinu0125/tourservice .
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -49,7 +49,7 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Push Docker image to Docker Hub
-        run: docker push jinu0125/tourService
+        run: docker push jinu0125/tourservice
 
       - name: Deploy to GCP
         uses: appleboy/ssh-action@v0.1.9
@@ -60,7 +60,7 @@ jobs:
           port: ${{ secrets.GCP_SSH_PORT }}
           script: |
             sudo su
-            sudo docker stop $(sudo docker ps -a | grep tourService | awk '{print $1}') || true
-            sudo docker rm $(sudo docker ps -a | grep tourService | awk '{print $1}') || true
-            sudo docker pull jinu0125/tourService
-            sudo docker run -d -p 9000:9000 --name tourService jinu0125/tourService
+            sudo docker stop $(sudo docker ps -a | grep tourservice | awk '{print $1}') || true
+            sudo docker rm $(sudo docker ps -a | grep tourservice | awk '{print $1}') || true
+            sudo docker pull jinu0125/tourservice
+            sudo docker run -d -p 8090:8090 --name tourservice jinu0125/tourservice
