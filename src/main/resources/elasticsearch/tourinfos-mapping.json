@@ -1,0 +1,33 @@
+{
+    "properties": {
+      "id": {
+        "type": "keyword"
+      },
+      "title": {
+        "type": "keyword"
+      },
+      "address": {
+        "type": "text",
+        "analyzer": "korean_text_analyzer"
+      },
+      "point": {
+        "type": "geo_point"
+      },
+      "summary": {
+        "type": "text",
+        "analyzer": "korean_text_analyzer"
+      },
+      "open_time": {
+        "type": "keyword",
+        "normalizer": "custom_normalizer"
+      },
+      "detail_info": {
+        "type": "text",
+        "analyzer": "korean_text_analyzer"
+      },
+      "category": {
+        "type": "keyword",
+        "normalizer": "custom_normalizer"
+      }
+    }
+  }
