@@ -1,5 +1,6 @@
 FROM openjdk:17-oracle
 
-COPY ./build/libs/tourService-0.0.*-SNAPSHOT.jar app.jar
+# 빌드된 JAR 파일 복사
+COPY ./build/libs/BMW-Tour-0.0.1-SNAPSHOT.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
