@@ -22,8 +22,15 @@ configurations {
 repositories {
 	mavenCentral()
 }
+dependencyManagement {
+	imports {
+		mavenBom "com.google.cloud:spring-cloud-gcp-dependencies:4.8.0" // 최신 버전
+	}
+}
 
 dependencies {
+	implementation 'com.google.cloud:spring-cloud-gcp-starter'
+	implementation 'com.google.cloud:spring-cloud-gcp-starter-storage'
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
@@ -36,7 +43,14 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	runtimeOnly 'com.h2database:h2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.apache.commons:commons-csv:1.12.0'
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2' // or jjwt-gson depending on your choice
+	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.10.0'
+
 }
 
 tasks.named('test') {

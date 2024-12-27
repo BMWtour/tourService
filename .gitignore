@@ -1,0 +1,13 @@
+# 빌드 및 의존성 폴더
+.gradle/
+build/
+
+# IDE 설정 파일
+.idea/
+
+# macOS 시스템 파일
+.DS_Store
+
+src/main/resources/application.properties
+src/main/resources/tribal-environs-445107-e9-1f83e9cefbee.json
+
