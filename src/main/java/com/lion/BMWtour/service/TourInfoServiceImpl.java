@@ -1,7 +1,7 @@
 package com.lion.BMWtour.service;
 
 import com.lion.BMWtour.dto.PointDto;
-import com.lion.BMWtour.entitiy.TourInfo;
+import com.lion.BMWtour.entity.TourInfo;
 import com.lion.BMWtour.repository.TourInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.csv.CSVFormat;
@@ -10,16 +10,13 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Service
@@ -29,6 +26,8 @@ public class TourInfoServiceImpl {
     private final TourInfoRepository tourInfoRepository;
     private final ResourceLoader resourceLoader;
     private final ElasticsearchTemplate elasticsearchTemplate;
+
+
 
 //    public Page<TourInfo> getPagedTourInfos(int page, String field, String keyword, String sortField, String sortDirection) {
 //        Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE);

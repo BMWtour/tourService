@@ -1,4 +1,4 @@
-package com.lion.BMWtour.entitiy;
+package com.lion.BMWtour.entity;
 
 import jakarta.persistence.Id;
 import java.time.LocalDate;
