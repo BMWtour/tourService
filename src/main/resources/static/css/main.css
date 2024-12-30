@@ -95,7 +95,6 @@ body {
 }
 
 .category-item img {
-    border-radius: 50%;
     width: 140px;
     height: 140px;
     object-fit: cover;
@@ -114,6 +113,7 @@ body {
     padding: 5px 10px;
     border-radius: 10px;
     z-index: 2;
+    width: 100px;
 }
 
 .nearby-list-item img {
