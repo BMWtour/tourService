@@ -236,7 +236,7 @@
         center: position,
         zoom: 18,
         maxZoom: 20,
-        minZoom: 8,
+        minZoom: 1,
         zoomControl: true,
     };
 
@@ -367,7 +367,7 @@
                 }
 
                 //경로 길이에 따른 지도 줌 변경
-                //naviMap.setOptions("zoom", 10);
+                adjustMapBounds(startLatitude, startLongitude);
 
 
                 drawRoute((await response.json()).path);
@@ -420,6 +420,15 @@
                 })
         })
 
+    }
+
+    // 두 마커 사이의 경계(bound)를 계산하고 줌 레벨과 중심을 조정하는 함수 추가
+    function adjustMapBounds(startLatitude, startLongitude) {
+        let padding = 0.001; // 패딩 값 (경계를 넓히기 위한 값)
+        let bounds = new naver.maps.LatLngBounds(
+            new naver.maps.LatLng(Math.min(startLatitude, tourAttrLatitude) - padding, Math.min(startLongitude, tourAttrLongitude) - padding),
+            new naver.maps.LatLng(Math.max(startLatitude, tourAttrLatitude) + padding, Math.max(startLongitude, tourAttrLongitude) + padding));
+        naviMap.fitBounds(bounds);
     }
 
 
