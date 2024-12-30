@@ -1,6 +1,6 @@
 package com.lion.BMWtour.repository;
 
-import com.lion.BMWtour.entitiy.User;
+import com.lion.BMWtour.entity.User;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import java.util.Optional;

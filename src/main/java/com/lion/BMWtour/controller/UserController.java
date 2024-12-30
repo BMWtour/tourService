@@ -2,7 +2,7 @@ package com.lion.BMWtour.controller;
 
 //import lombok.RequiredArgsConstructor;
 
-import com.lion.BMWtour.entitiy.User;
+import com.lion.BMWtour.entity.User;
 import com.lion.BMWtour.request.FileRequest;
 import com.lion.BMWtour.service.FileUploadService;
 import com.lion.BMWtour.service.UserService;
@@ -11,9 +11,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

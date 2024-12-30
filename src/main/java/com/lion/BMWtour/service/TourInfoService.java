@@ -1,10 +1,8 @@
 package com.lion.BMWtour.service;
 
 
-import com.lion.BMWtour.entitiy.TourInfo;
+import com.lion.BMWtour.entity.TourInfo;
 import org.springframework.data.domain.Page;
-
-import java.awt.print.Book;
 
 
 public interface TourInfoService {

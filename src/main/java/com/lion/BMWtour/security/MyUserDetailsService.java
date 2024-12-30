@@ -1,6 +1,6 @@
 package com.lion.BMWtour.security;
 
-import com.lion.BMWtour.entitiy.User;
+import com.lion.BMWtour.entity.User;
 import com.lion.BMWtour.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
