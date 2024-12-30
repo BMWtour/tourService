@@ -131,38 +131,67 @@
     </div>
     <div class="content">
         <div class="tourName">
-            <h3 th:text="${tourInfo.title}">관광지 명칭</h3>
+            <div th:if="${#strings.isEmpty(tourInfo.title)}">
+                <h3>관광지 명칭 정보 없음</h3>
+            </div>
+            <div th:unless="${#strings.isEmpty(tourInfo.title)}">
+                <h3 th:utext="${tourInfo.title}">관광지 명칭</h3>
+            </div>
         </div>
         <div class="info">
             <div class="photo">
                 <!--네이버 지도로 관광지 위치 표시-->
                 <div id="tourMap" style="width: 100%;height:100%;"></div>
-            </div>
+            </div>\
             <div class="infos">
                 <div class="item">
                     <h3>주소</h3>
-                    <p th:text="${tourInfo.address}">서울특별시 종로구 창덕궁</p>
-
+                    <div th:if="${#strings.isEmpty(tourInfo.address)}">
+                        <p>주소 정보 없음</p>
+                    </div>
+                    <div th:unless="${#strings.isEmpty(tourInfo.address)}">
+                        <p th:utext="${tourInfo.address}">서울특별시 종로구 창덕궁</p>
+                    </div>
                     <p id="tourInfoLng" th:text="${tourInfo.point.get(0)}"></p>
                     <p id="tourInfoLat" th:text="${tourInfo.point.get(1)}"></p>
                 </div>
                 <div class="item">
                     <h3>카테고리</h3>
-                    <p th:text="${tourInfo.category}"></p>
+                    <div th:if="${#strings.isEmpty(tourInfo.category)}">
+                        <p>카테고리 정보 없음</p>
+                    </div>
+                    <div th:unless="${#strings.isEmpty(tourInfo.category)}">
+                        <p th:utext="${tourInfo.category}"></p>
+                    </div>
                 </div>
                 <div class="item">
                     <h3>이용시간</h3>
-                    <p th:text="${tourInfo.openTime}">ex ) 오전 9시 - 오후 6시</p>
+                    <div th:if="${#strings.isEmpty(tourInfo.openTime)}">
+                        <p>이용시간 정보 없음</p>
+                    </div>
+                    <div th:unless="${#strings.isEmpty(tourInfo.openTime)}">
+                        <p th:utext="${tourInfo.openTime}">ex ) 오전 9시 - 오후 6시</p>
+                    </div>
                 </div>
                 <div class="item">
                     <h3>상세정보</h3>
-                    <p th:text="${tourInfo.detailInfo}">관광지에 대한 자세한 설명 및 정보.</p>
+                    <div th:if="${#strings.isEmpty(tourInfo.detailInfo)}">
+                        <p>상세정보 없음</p>
+                    </div>
+                    <div th:unless="${#strings.isEmpty(tourInfo.detailInfo)}">
+                        <p th:utext="${tourInfo.detailInfo}">관광지에 대한 자세한 설명 및 정보.</p>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="overview">
             <h3>개요</h3>
-            <p th:text="${tourInfo.summary}">경기도 시흥의 지역 특산물 중의 하나가 바로 ‘연’이다. 연은 수련과에 속하는 다년생 수생식물로 뿌리채소로는 드물게 다량의 비타민과 무기질을 함유하고 있어 최근 건강식 식품원료로 각광받고 있으나 그 효능에 비해 다양한 조리방법이 개발되어 있지 않아 흔히 연하면 연근 반찬 이외엔 생각나는 것이 없는데, 산현동 연 요리 전문점 장금이를 찾으면 그렇지 않음을 직접 확인할 수 있다. 흔치 않은 색다른 한정식을 원한다면 한 번쯤은 꼭 한 번 들러 연밥 정식과 연잎수육을 맛봐야 할 곳이다.</p>
+            <div th:if="${#strings.isEmpty(tourInfo.summary)}">
+                <p>개요 없음</p>
+            </div>
+            <div th:unless="${#strings.isEmpty(tourInfo.summary)}">
+                <p th:utext="${tourInfo.summary}">경기도 시흥의 지역 특산물 중의 하나가 바로 ‘연’이다. 연은 수련과에 속하는 다년생 수생식물로 뿌리채소로는 드물게 다량의 비타민과 무기질을 함유하고 있어 최근 건강식 식품원료로 각광받고 있으나 그 효능에 비해 다양한 조리방법이 개발되어 있지 않아 흔히 연하면 연근 반찬 이외엔 생각나는 것이 없는데, 산현동 연 요리 전문점 장금이를 찾으면 그렇지 않음을 직접 확인할 수 있다. 흔치 않은 색다른 한정식을 원한다면 한 번쯤은 꼭 한 번 들러 연밥 정식과 연잎수육을 맛봐야 할 곳이다.</p>
+            </div>
         </div>
         <div class="directionsName">
             <h3>길찾기</h3>
@@ -195,7 +224,6 @@
     //관광지 좌표
     let tourAttrLatitude = document.getElementById("tourInfoLat").textContent;
     let tourAttrLongitude = document.getElementById("tourInfoLng").textContent;
-
 
     //맵 디폴트 위치. 추후 DB에서 관광지 좌표 가져오기
     let position = new naver.maps.LatLng(tourAttrLatitude, tourAttrLongitude)
