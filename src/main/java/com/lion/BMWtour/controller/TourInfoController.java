@@ -1,7 +1,6 @@
 package com.lion.BMWtour.controller;
 
-import com.lion.BMWtour.entitiy.TourInfo;
-import com.lion.BMWtour.entitiy.TourInfoDto;
+import com.lion.BMWtour.entity.TourInfo;
 import com.lion.BMWtour.service.TourInfoServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

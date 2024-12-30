@@ -1,7 +1,6 @@
 package com.lion.BMWtour.service;
 
-import com.lion.BMWtour.entitiy.User;
-import java.util.List;
+import com.lion.BMWtour.entity.User;
 
 public interface UserService {
 
@@ -16,5 +15,7 @@ public interface UserService {
     void registerUser(User user);
 
     int login(String userId, String userPw);
+
+    void updateUser(User user);
 
 }

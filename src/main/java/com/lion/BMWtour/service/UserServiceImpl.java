@@ -1,11 +1,9 @@
 package com.lion.BMWtour.service;
 
-import com.lion.BMWtour.entitiy.User;
+import com.lion.BMWtour.entity.User;
 import com.lion.BMWtour.repository.UserRepository;
-import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +45,10 @@ public class UserServiceImpl implements UserService {
             return CORRECT_LOGIN;
         }
         return WRONG_PASSWORD;
+    }
+    @Override
+    public void updateUser(User user) {
+        userRepository.save(user);
     }
 
 }

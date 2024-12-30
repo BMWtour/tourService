@@ -1,4 +1,4 @@
-package com.lion.BMWtour.entitiy;
+package com.lion.BMWtour.entity;
 
 
 import lombok.AllArgsConstructor;
