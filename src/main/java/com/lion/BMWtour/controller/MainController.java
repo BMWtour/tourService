@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lion.BMWtour.dto.main.NearbyLocationResponse;
+import com.lion.BMWtour.dto.main.PopularRegionsResponse;
 import com.lion.BMWtour.service.MainService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,10 @@ public class MainController {
 	private final MainService mainService;
 
 	@GetMapping("/tour/main")
-	public String mainPage() {
+	public String mainPage(Model model) {
+		List<PopularRegionsResponse> popularRegionsList = mainService.getPopularRegionsList();
+
+		model.addAttribute("popularRegions", popularRegionsList);
 		return "/main/main";
 	}
 
