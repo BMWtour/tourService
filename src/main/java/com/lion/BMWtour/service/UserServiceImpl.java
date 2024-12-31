@@ -46,5 +46,9 @@ public class UserServiceImpl implements UserService {
         }
         return WRONG_PASSWORD;
     }
+    @Override
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
 
 }
