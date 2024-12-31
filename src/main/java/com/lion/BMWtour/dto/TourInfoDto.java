@@ -1,6 +1,7 @@
-package com.lion.BMWtour.entitiy;
+package com.lion.BMWtour.dto;
 
 
+import com.lion.BMWtour.entity.TourInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TourInfoDto {
     private TourInfo tourInfo;
-    private int infoCount;
     private float matchScore;
 }
