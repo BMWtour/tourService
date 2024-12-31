@@ -231,12 +231,16 @@
     //루트
     let polyline = null;
 
+    //지도의 길찾기 루트에 가이드 좌표들을 나타내기 위한 마커 배열
+    let guideMarkers = [];
+    let guideInfo = [];
+
     //맵 옵션
     let mapOptions = {
-        center: position,
-        zoom: 18,
-        maxZoom: 20,
-        minZoom: 8,
+        center     : position,
+        zoom       : 18,
+        maxZoom    : 20,
+        minZoom    : 1,
         zoomControl: true,
     };
 
@@ -246,7 +250,7 @@
     //관광지 위치 마커
     var marker = new naver.maps.Marker({
         position: new naver.maps.LatLng(tourAttrLatitude, tourAttrLongitude),
-        map: tourMap
+        map     : tourMap,
     });
 
     //--------길찾기 맵(페이지 하단)-----------
@@ -259,7 +263,19 @@
     //길찾기 맵 관광지 위치 마커
     var tourAttrMarker = new naver.maps.Marker({
         position: new naver.maps.LatLng(tourAttrLatitude, tourAttrLongitude),
-        map: naviMap
+        map     : naviMap,
+        icon    : {
+            content:
+                `<svg xmlns="http://www.w3.org/2000/svg"
+                    width="24" height="24" viewBox="0 0 24 24" fill="red" stroke="black"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="feather feather-map-pin">
+                     <path d="M21 10c0 5.25-9 13-9 13S3 15.25 3 10a9 9 0 1 1 18 0z"></path>
+                     <circle cx="12" cy="10" r="3"></circle>
+                 </svg>`,
+            size   : new naver.maps.Size(24, 24), anchor: new naver.maps.Point(12, 24)
+        }
+
     });
 
 
@@ -270,7 +286,7 @@
     //------------사용자 위치 확인------------
 
     //내 위치 확인
-    function getMyLocation(){
+    function getMyLocation() {
         window.navigator.geolocation.getCurrentPosition(success, error, options);
     }
 
@@ -280,7 +296,7 @@
         myLongitude = position.coords.longitude;
 
         //좌표를 올바르게 받아왔을 때 다음함수 실행
-        if (myLatitude !== "" && myLongitude !== ""){
+        if (myLatitude !== "" && myLongitude !== "") {
             myLocationStatus.textContent = "위치가져오기 성공";
 
             //1. 좌표를 주소로 변환
@@ -295,8 +311,8 @@
 
     const options = {
         enableHighAccuracy: true, //상세위치받이오기 true / false.
-        timeout: 5000, // 5 seconds //위치받아오기 기다리는 시간
-        maximumAge: 600000, // 1 minute //10분 생존
+        timeout           : 5000, // 5 seconds //위치받아오기 기다리는 시간
+        maximumAge        : 600000, // 1 minute //10분 생존
     };
 
     //-------------루트 나타내기-----------
@@ -311,7 +327,7 @@
         })
 
         polyline = new naver.maps.Polyline({
-            map: naviMap,
+            map : naviMap,
             path: path
         })
     }
@@ -328,12 +344,12 @@
         const startLongitude = startXY[1];
 
         // 두 좌표 사이 루트 가져오기
-        fetch('/navigate/points', {
-            method: 'post',
+        fetch('/navigate/getGuideAndRouteInfo', {
+            method : 'post',
             headers: {
                 'content-type': 'application/json'
             },
-            body: JSON.stringify({
+            body   : JSON.stringify({
                 // 길찾기 시작좌표
                 start: {
                     lat: startLatitude,
@@ -351,28 +367,90 @@
                 console.log("가져오기 완료");
                 //마커 추가
                 //(첫 실행) 마커가 null이라면 마커찍기
-                if (myLocationMarker == null){
+                if (myLocationMarker == null) {
                     //사용자가 입력한 주소 위치에 마커 추가
                     myLocationMarker = new naver.maps.Marker({
                         position: new naver.maps.LatLng(startLatitude, startLongitude),
-                        map: naviMap
+                        map     : naviMap,
+                        icon    : {
+                            content:
+                                `<svg xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" viewBox="0 0 24 24" fill="green" stroke="black"
+                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                     class="feather feather-map-pin">
+                                     <path d="M21 10c0 5.25-9 13-9 13S3 15.25 3 10a9 9 0 1 1 18 0z"></path>
+                                     <circle cx="12" cy="10" r="3"></circle>
+                                 </svg>`,
+                            size   : new naver.maps.Size(24, 24), anchor: new naver.maps.Point(12, 24)
+                        }
                     });
                 } else {
                     //기존에 사용자가 입력한 마커가 null이 아니라면 (마커가 찍혀있다면) 지우고 새로운 위치에 마커찍기
                     myLocationMarker.setMap(null);
                     myLocationMarker = new naver.maps.Marker({
                         position: new naver.maps.LatLng(startLatitude, startLongitude),
-                        map: naviMap
+                        map     : naviMap,
+                        icon    : {
+                            content:
+                                `<svg xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" viewBox="0 0 24 24" fill="green" stroke="black"
+                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                     class="feather feather-map-pin">
+                                     <path d="M21 10c0 5.25-9 13-9 13S3 15.25 3 10a9 9 0 1 1 18 0z"></path>
+                                     <circle cx="12" cy="10" r="3"></circle>
+                                 </svg>`,
+                            size   : new naver.maps.Size(24, 24), anchor: new naver.maps.Point(12, 24)
+                        }
                     });
                 }
 
                 //경로 길이에 따른 지도 줌 변경
-                //naviMap.setOptions("zoom", 10);
+                adjustMapBounds(startLatitude, startLongitude);
 
-
-                drawRoute((await response.json()).path);
+                //받아온 데이터
+                const data = await response.json();
+                //길찾기 경로 그려주기
+                drawRoute(data.naviRouteDto.path);
+                //지도의 가이드 정보
+                //지도에 가이드 좌표 마커로 띄우기
+                initGuideMarkers(data.guideAndPointDto.pointDtoList, data.guideAndPointDto.guideDtoList);
             }
         });
+    }
+
+    //지도에 가이드 좌표들 마커로 띄우기
+    function initGuideMarkers(pointDtoList, guideDtoList) {
+        guideMarkers = pointDtoList;
+        guideInfo = guideDtoList;
+
+        //가이드정보 클릭시 정보를 띄우는 자그마한 창 배열
+        const infoWindows = [];
+        for (let i = 0; i < guideMarkers.length; i++) {
+            //가이드마커
+            let guideMarker = new naver.maps.Marker({
+                position: new naver.maps.LatLng(guideMarkers[i].lat, guideMarkers[i].lng),
+                map     : naviMap
+            });
+            // 클릭했을 때 정보 띄우기
+            let guideMarkerClickInfo = new naver.maps.InfoWindow({
+                content: '<div style="width: 200px; text-align: center; padding: 10px;"><b>' + guideInfo[i].instructions + '</b></div>'
+            });
+            //정보창 배열에 저장
+            infoWindows.push(guideMarkerClickInfo);
+
+            // 마커에 클릭 이벤트 추가
+            naver.maps.Event.addListener(guideMarker, 'click', function (e) {
+                if (guideMarkerClickInfo.getMap()) {
+                    guideMarkerClickInfo.close();
+                } else {
+                    // 다른 모든 정보창을 닫기
+                    infoWindows.forEach(function (infoWindow) {
+                        infoWindow.close();
+                    });
+                    guideMarkerClickInfo.open(naviMap, guideMarker);
+                }
+            });
+        }
     }
 
     //주소 -> 좌표
@@ -380,11 +458,11 @@
         console.log('Sending request with address:', address);
 
         return fetch('/navigate/getPoints', {
-            method: 'POST',
+            method : 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ address: address })
+            body   : JSON.stringify({address: address})
         }).then(response => {
             if (response.ok) {
                 return response.json().then(body => {
@@ -402,14 +480,14 @@
 
 
     //좌표의 주소 얻어내기
-    function findAddress(lat, lng){
+    function findAddress(lat, lng) {
 
         fetch('/navigate/get-address', {
-            method: 'post',
+            method : 'post',
             headers: {
                 'content-type': 'application/json'
             },
-            body: JSON.stringify({
+            body   : JSON.stringify({
                 lat, lng
             })
         }).then(response => {
@@ -420,6 +498,15 @@
                 })
         })
 
+    }
+
+    // 두 마커 사이의 경계(bound)를 계산하고 줌 레벨과 중심을 조정하는 함수 추가
+    function adjustMapBounds(startLatitude, startLongitude) {
+        let padding = 0.001; // 패딩 값 (경계를 넓히기 위한 값)
+        let bounds = new naver.maps.LatLngBounds(
+            new naver.maps.LatLng(Math.min(startLatitude, tourAttrLatitude) - padding, Math.min(startLongitude, tourAttrLongitude) - padding),
+            new naver.maps.LatLng(Math.max(startLatitude, tourAttrLatitude) + padding, Math.max(startLongitude, tourAttrLongitude) + padding));
+        naviMap.fitBounds(bounds);
     }
 
 
