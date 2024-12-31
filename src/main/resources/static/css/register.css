@@ -30,6 +30,7 @@ h2 {
   z-index: 1; /* z-index를 낮게 설정 */
   padding: 20px; /* 여백 추가 */
   box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 계산 */
+  flex: 1; /* 나머지 공간 차지 */
 }
 
 form {
@@ -110,4 +111,25 @@ details[open] {
 
 details input[type="checkbox"] {
   margin-right: 5px;
+}
+
+.image-container {
+  display: flex;
+  justify-content: flex-end; /* 왼쪽 정렬 */
+  align-items: center;
+  margin: 20px 0;
+  flex: 0 0 auto; /* 고정된 크기 */
+}
+
+.image-container img {
+  width: 150px; /* 원하는 너비 */
+  height: 150px; /* 원하는 높이 */
+  border-radius: 0; /* 원형에서 네모로 변경 */
+  border: 2px solid #ddd; /* 테두리 */
+  object-fit: cover; /* 이미지 크기 조정 */
+}
+.content-container {
+  display: flex; /* 가로로 배치 */
+  align-items: flex-start; /* 위쪽 정렬 */
+  gap: 20px; /* 이미지와 폼 간격 */
 }

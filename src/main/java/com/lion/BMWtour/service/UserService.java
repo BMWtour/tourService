@@ -1,6 +1,10 @@
 package com.lion.BMWtour.service;
 
+import com.lion.BMWtour.dto.request.RegisterUserRequest;
+import com.lion.BMWtour.dto.request.UpdateUserRequest;
 import com.lion.BMWtour.entity.User;
+
+import java.io.IOException;
 
 public interface UserService {
 
@@ -12,10 +16,12 @@ public interface UserService {
     boolean isUidDuplicate(String userId);
     boolean isNickNameDuplicate(String userNickName);
 
+    void registerUser(RegisterUserRequest request)throws IOException;
     void registerUser(User user);
 
     int login(String userId, String userPw);
 
     void updateUser(User user);
+
 
 }
