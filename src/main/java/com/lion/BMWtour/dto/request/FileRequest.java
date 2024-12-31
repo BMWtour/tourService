@@ -1,4 +1,4 @@
-package com.lion.BMWtour.request;
+package com.lion.BMWtour.dto.request;
 
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;

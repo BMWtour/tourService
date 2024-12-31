@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/register.css" />
+    <link rel="stylesheet" href="/css/navbarStyle.css" />
+    <title>회원정보</title>
+</head>
+<body>
+<nav class="navbar">
+    <div class="navbar-title">정보수정</div>
+</nav>
+
+<div class="container" id="container">
+    <h2>정보수정</h2>
+    <div class="content-container">
+    <div class="form-container">
+        <div class="image-container">
+            <img id="user-profile-image" th:src="${user.userImgUri != null ? user.userImgUri : '/img/default-user-img.webp'}" alt="사용자 이미지" />
+        </div>
+        <form id="updateForm" action="/user/update/info" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="user_id" th:value="${user.userId}"><br><br>
+            <input type="text" th:value="${user.userId}" disabled><br><br>
+            <input type="text" id="user_nickname" name="user_nickname" th:value="${user.userNickname}" ><br><br>
+            <div id="duplicateCheckMessageNickName"></div>
+            <input
+                    type="file"
+                    name="file"
+            />
+            <br /> <br />
+            <!-- 카테고리 체크박스 -->
+            <label>당신이 알고싶은 여행정보를 선택해주세요:</label>
+            <div id="categories-container"></div>
+            <p id="warning" style="color: red; display: none;">최대 5개, 최소 3개만 선택할 수 있습니다.</p>
+            <div class="button-container">
+                <button class="ghost" id="update">회원정보 수정</button>
+            </div>
+        </form>
+    </div>
+    </div>
+</div>
+
+
+    <div id="successModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
+        <p id="successMessage"></p>
+    </div>
+    <script src="/js/nicknameCheck.js"></script>
+    <script src="/js/getCategory.js"></script>
+    <script src="/js/formSuccess.js"></script>
+    <script>
+        let isNicknameValid = false;
+        let isCategoryValid = false;
+
+        function updateButtonState() {
+            // 테스트 목적 이엿음
+            console.log("Validation States - ", {
+              isNicknameValid,
+              isCategoryValid,
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+
+
+            initializeNicknameCheck("user_nickname", "duplicateCheckMessageNickName", "/user/duplicate_nickname", (valid) => {
+                isNicknameValid = valid;
+                updateButtonState();
+            });
+
+            initializeCategories("categories-container", "warning", 5, 3, (valid) => {
+                isCategoryValid = valid;
+                updateButtonState();
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // formSuccess.js에서 정의된 handleFormSubmit 함수 호출
+            handleFormSubmit(
+                "#updateForm", // 폼 선택자
+                "/tour/main", // 성공 시 리다이렉션 URL
+                "회원정보 수정" // 메시지의 기본 이름
+            );
+        });
+    </script>
+
+</body>
+</html>
