@@ -5,11 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
-/**분기점 안내 정보 DTO*/
+/**분기점 안내 정보.
+ * 가이드 DTO*/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class GuideDto {
     int pointIndex; // 경로를 구성하는 좌표의 인덱스
     int type; // 분기점 안내 타입

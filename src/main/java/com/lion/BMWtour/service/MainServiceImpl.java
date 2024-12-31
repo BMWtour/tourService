@@ -12,7 +12,7 @@ import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.lion.BMWtour.dto.main.NearbyLocationResponse;
-import com.lion.BMWtour.entitiy.TourInfo;
+import com.lion.BMWtour.entity.TourInfo;
 
 import lombok.RequiredArgsConstructor;
 

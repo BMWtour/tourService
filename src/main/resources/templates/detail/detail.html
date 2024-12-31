@@ -328,7 +328,7 @@
         const startLongitude = startXY[1];
 
         // 두 좌표 사이 루트 가져오기
-        fetch('/navigate/points', {
+        fetch('/navigate/getGuideAndRouteInfo', {
             method: 'post',
             headers: {
                 'content-type': 'application/json'
@@ -369,8 +369,12 @@
                 //경로 길이에 따른 지도 줌 변경
                 adjustMapBounds(startLatitude, startLongitude);
 
-
-                drawRoute((await response.json()).path);
+                //받아온 데이터
+                const data = await response.json();
+                //길찾기 경로 그려주기
+                drawRoute(data.naviRouteDto.path);
+                //지도의 가이드 정보
+                //지도에 가이드 좌표 마커로 띄우기
             }
         });
     }
