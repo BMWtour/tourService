@@ -12,12 +12,10 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.data.elasticsearch.core.query.GeoDistanceOrder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Service;
-
 import com.lion.BMWtour.dto.main.NearbyLocationResponse;
 import com.lion.BMWtour.dto.main.PopularRegionsResponse;
 import com.lion.BMWtour.entity.TourInfo;
 import com.lion.BMWtour.entity.TourLog;
-
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
