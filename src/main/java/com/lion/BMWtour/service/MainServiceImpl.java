@@ -3,6 +3,8 @@ package com.lion.BMWtour.service;
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregation;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregations;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -10,9 +12,9 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.data.elasticsearch.core.query.GeoDistanceOrder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Service;
-
 import com.lion.BMWtour.dto.main.NearbyLocationResponse;
 import com.lion.BMWtour.entity.TourInfo;
+
 
 import lombok.RequiredArgsConstructor;
 
