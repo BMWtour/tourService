@@ -231,6 +231,10 @@
     //루트
     let polyline = null;
 
+    //지도의 길찾기 루트에 가이드 좌표들을 나타내기 위한 마커 배열
+    let guideMarkers = [];
+    let guideInfo = [];
+
     //맵 옵션
     let mapOptions = {
         center: position,
@@ -246,7 +250,7 @@
     //관광지 위치 마커
     var marker = new naver.maps.Marker({
         position: new naver.maps.LatLng(tourAttrLatitude, tourAttrLongitude),
-        map: tourMap
+        map: tourMap,
     });
 
     //--------길찾기 맵(페이지 하단)-----------
@@ -259,7 +263,19 @@
     //길찾기 맵 관광지 위치 마커
     var tourAttrMarker = new naver.maps.Marker({
         position: new naver.maps.LatLng(tourAttrLatitude, tourAttrLongitude),
-        map: naviMap
+        map: naviMap,
+        icon: {
+            content:
+                `<svg xmlns="http://www.w3.org/2000/svg"
+                    width="24" height="24" viewBox="0 0 24 24" fill="red" stroke="black"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="feather feather-map-pin">
+                     <path d="M21 10c0 5.25-9 13-9 13S3 15.25 3 10a9 9 0 1 1 18 0z"></path>
+                     <circle cx="12" cy="10" r="3"></circle>
+                 </svg>`,
+                size: new naver.maps.Size(24, 24), anchor: new naver.maps.Point(12, 24)
+        }
+
     });
 
 
@@ -355,14 +371,36 @@
                     //사용자가 입력한 주소 위치에 마커 추가
                     myLocationMarker = new naver.maps.Marker({
                         position: new naver.maps.LatLng(startLatitude, startLongitude),
-                        map: naviMap
+                        map: naviMap,
+                        icon: {
+                            content:
+                                `<svg xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" viewBox="0 0 24 24" fill="green" stroke="black"
+                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                     class="feather feather-map-pin">
+                                     <path d="M21 10c0 5.25-9 13-9 13S3 15.25 3 10a9 9 0 1 1 18 0z"></path>
+                                     <circle cx="12" cy="10" r="3"></circle>
+                                 </svg>`,
+                            size: new naver.maps.Size(24, 24), anchor: new naver.maps.Point(12, 24)
+                        }
                     });
                 } else {
                     //기존에 사용자가 입력한 마커가 null이 아니라면 (마커가 찍혀있다면) 지우고 새로운 위치에 마커찍기
                     myLocationMarker.setMap(null);
                     myLocationMarker = new naver.maps.Marker({
                         position: new naver.maps.LatLng(startLatitude, startLongitude),
-                        map: naviMap
+                        map: naviMap,
+                        icon: {
+                            content:
+                                `<svg xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" viewBox="0 0 24 24" fill="green" stroke="black"
+                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                     class="feather feather-map-pin">
+                                     <path d="M21 10c0 5.25-9 13-9 13S3 15.25 3 10a9 9 0 1 1 18 0z"></path>
+                                     <circle cx="12" cy="10" r="3"></circle>
+                                 </svg>`,
+                            size: new naver.maps.Size(24, 24), anchor: new naver.maps.Point(12, 24)
+                        }
                     });
                 }
 
@@ -375,8 +413,42 @@
                 drawRoute(data.naviRouteDto.path);
                 //지도의 가이드 정보
                 //지도에 가이드 좌표 마커로 띄우기
+                initGuideMarkers(data.guideAndPointDto.pointDtoList, data.guideAndPointDto.guideDtoList);
             }
         });
+    }
+
+    //지도에 가이드 좌표들 마커로 띄우기
+    function initGuideMarkers(pointDtoList, guideDtoList){
+        guideMarkers = pointDtoList;
+        guideInfo = guideDtoList;
+
+        //가이드정보 클릭시 정보를 띄우는 자그마한 창 배열
+        const infoWindows = [];
+        for (let i = 0; i < guideMarkers.length; i++) {
+            //가이드마커
+            let guideMarker = new naver.maps.Marker({
+                position: new naver.maps.LatLng(guideMarkers[i].lat, guideMarkers[i].lng),
+                map: naviMap
+            });
+            // 클릭했을 때 정보 띄우기
+            let guideMarkerClickInfo = new naver.maps.InfoWindow({
+                content : '<div style="width: 200px; text-align: center; padding: 10px;"><b>' + guideInfo[i].instructions + '</b></div>'
+            });
+            //정보창 배열에 저장
+            infoWindows.push(guideMarkerClickInfo);
+
+            // 마커에 클릭 이벤트 추가
+            naver.maps.Event.addListener(guideMarker, 'click', function(e) {
+                if (guideMarkerClickInfo.getMap()) {
+                    guideMarkerClickInfo.close();
+                } else {
+                    // 다른 모든 정보창을 닫기
+                    infoWindows.forEach(function(infoWindow) {
+                        infoWindow.close();
+                    }); guideMarkerClickInfo.open(naviMap, guideMarker);
+                } });
+        }
     }
 
     //주소 -> 좌표
