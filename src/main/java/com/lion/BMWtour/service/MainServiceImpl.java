@@ -2,6 +2,7 @@ package com.lion.BMWtour.service;
 
 import java.util.List;
 
+import com.lion.BMWtour.entity.TourInfo;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -12,8 +13,6 @@ import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.lion.BMWtour.dto.main.NearbyLocationResponse;
-import com.lion.BMWtour.entitiy.TourInfo;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
