@@ -38,12 +38,11 @@
                     const nearbyList = document.querySelector("#nearbyList");
                     nearbyList.innerHTML = ""; // 기존 내용을 초기화
                     data.forEach((tour) => {
-                        console.log(tour)
                         const listItem = document.createElement("div");
                         listItem.className = "list-item nearby-list-item";
 
                         listItem.innerHTML = `
-                            <img onClick="window.location.href='/tour/detail/${tour.id}'" src="${tour.image || '/img/default/default_image.jpg'}" alt="${tour.title}">
+                            <img onClick="window.location.href='/tour/detail/${tour.id}'" src="${tour.image}" alt="${tour.title}">
                             <p onClick="window.location.href='/tour/detail/${tour.id}'">${tour.title}</p>
                             <p style="font-size: small;">${tour.address}</p>
                         `;
@@ -84,19 +83,15 @@
     <div class="section">
         <h2>인기 관광 지역</h2>
         <div class="list">
-            <div class="list-item popular-item">
-                <img src="/img/default/default_image.jpg" alt="부산">
-                <p>부산</p>
-            </div>
             <div class="list-item popular-item" th:each="region : ${popularRegions}">
-                <img th:src="${region.image || '/img/default/default_image.jpg'}" alt="${region.name}">
-                <p th:text="${region.name}"></p>
+                <img th:src="${region.image}" alt="${region.region}">
+                <p th:text="${region.region}"></p>
             </div>
         </div>
     </div>
 
     <div class="section">
-        <h2>카테고리별 관광 여행지</h2>
+        <h2>카테고리별 인기 관광지</h2>
         <div class="list">
             <div class="list-item category-item">
                 <p class="category-name">관광지</p>
