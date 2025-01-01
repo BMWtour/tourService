@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +112,10 @@ public class UserController {
         if (user == null) {
             throw new IllegalArgumentException("User not found for ID: " + user_id);
         }
+        System.out.println(Arrays.toString(user.getInterestList()));
+        System.out.println(user.getUserNickname());
         model.addAttribute("user", user);
+        model.addAttribute("userCategories", Arrays.toString(user.getInterestList()));
         return "user/updateInfo";
     }
     @PostMapping("/update/info")
