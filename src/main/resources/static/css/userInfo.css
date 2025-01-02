@@ -1,15 +1,10 @@
-* {
-    box-sizing: border-box;
-}
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
 
-body {
-    background: #f6f5f7;
+.center-container {
     display: flex;
     align-items: center;
     flex-direction: column;
-    font-family: "Montserrat", sans-serif;
-    height: 100vh;
-    margin: 0 0 50px;
+    margin: 5vh 0 0;
 }
 
 h2 {
@@ -33,11 +28,6 @@ h2 {
     flex: 1; /* 나머지 공간 차지 */
 }
 
-input {
-    background-color: #eee;
-    border: none;
-    padding: 12px 15px;
-}
 
 button {
     border-radius: 20px;
@@ -123,7 +113,7 @@ button:disabled {
 }
 
 .info-box input {
-    width: 100%;
+    width: 169px;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ddd;

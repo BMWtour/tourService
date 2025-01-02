@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>회원정보 페이지</title>
+  <link href="/css/body.css" rel="stylesheet">
+  <link th:href="@{/css/header.css}" rel="stylesheet">
   <link rel="stylesheet" href="/css/userInfo.css" />
-  <link rel="stylesheet" href="/css/navbarStyle.css" />
-  <title>회원정보</title>
+  <link th:href="@{/css/footer.css}" rel="stylesheet">
 </head>
 <body>
-<nav class="navbar">
-  <div class="navbar-title">회원정보</div>
-</nav>
-
+  <div th:insert="~{fragments/header :: header}"></div>
+  <div class="center-container">
 <div class="container" id="container">
   <h2>회원정보</h2>
   <div class="form-container">
@@ -84,5 +84,7 @@
     </script>
   </div>
 </div>
+  </div>
+<div th:insert="~{fragments/footer :: footer}"></div>
 </body>
 </html>

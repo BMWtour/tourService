@@ -5,7 +5,6 @@
     <link href="/css/body.css" rel="stylesheet">
     <link th:href="@{/css/header.css}" rel="stylesheet">
     <link rel="stylesheet" href="/css/register.css" />
-<!--    <link rel="stylesheet" href="/css/navbarStyle.css" />-->
     <link th:href="@{/css/footer.css}" rel="stylesheet">
 
 
@@ -14,10 +13,6 @@
 <body>
 
 <div th:insert="~{fragments/notloginheader :: header}"></div>
-
-<!--<nav class="navbar">-->
-<!--    <div class="navbar-title">정보수정</div>-->
-<!--</nav>-->
 
 <div class="center-container" >
 <div class="container" id="container">
@@ -29,15 +24,17 @@
                     <img id="user-profile-image" th:src="${user.userImgUri != null ? user.userImgUri : '/img/default-user-img.webp'}" alt="사용자 이미지" />
                 </div>
                 <div class = "id-nickname-file-container" >
-                    <input type="hidden" name="user_id" th:value="${user.userId}"><br><br>
-                    <input type="text" th:value="${user.userId}" disabled><br><br>
-                    <input type="text" id="user_nickname" name="user_nickname" th:value="${user.userNickname}"><br><br>
+                    <div class ="info-box" >
+                    <input type="hidden" name="user_id" th:value="${user.userId}"><br><br><br>
+                    <input type="text" th:value="${user.userId}" disabled><br>
+                    <input type="text" id="user_nickname" name="user_nickname" th:value="${user.userNickname}">
                     <div id="duplicateCheckMessageNickName"></div>
                     <input
                             type="file"
                             name="file"
                     />
                     <br /> <br />
+                    </div>
                 </div>
             </div>
             <!-- 카테고리 체크박스 -->

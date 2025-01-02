@@ -13,39 +13,49 @@
   <title>회원가입페이지</title>
 </head>
 <body>
-<nav class="navbar">
-  <div class="navbar-title">회원가입</div>
-</nav>
+
+<div th:insert="~{fragments/notloginheader :: header}"></div>
+
+<div class="center-container">
 <div class="container" id="container">
   <h2>회원가입</h2>
   <div class="form-container">
+
     <form id="registrationForm" action="/user/register" method="post" enctype="multipart/form-data">
-      <input type="text" id="user_id" name="user_id" placeholder="아이디를 입력하세요" />
-      <div id="duplicateCheckMessage"></div>
-      <input type="password" id="pwd" name="pwd" placeholder="패스워드" />
-      <input type="password" id="pwd2" name="pwd2" placeholder="패스워드 확인" />
-      <div id="passwordMatchMessage"></div>
 
-      <input type="text" id="user_nickname" name="user_nickname" placeholder="사용하실 닉네임을 입력하세요" />
-      <div id="duplicateCheckMessageNickName"></div>
+        <div class = "info-box" >
+          <input type="text" id="user_id" name="user_id" placeholder="아이디를 입력하세요" />
+          <div id="duplicateCheckMessage"></div>
+          <input type="password" id="pwd" name="pwd" placeholder="패스워드" />
+          <input type="password" id="pwd2" name="pwd2" placeholder="패스워드 확인" />
+          <div id="passwordMatchMessage"></div>
 
-      <input type="file" name="file" id="file" /><br /><br />
+          <input type="text" id="user_nickname" name="user_nickname" placeholder="사용하실 닉네임을 입력하세요" />
+          <div id="duplicateCheckMessageNickName"></div>
+
+          <input type="file" name="file" id="file" /><br /><br />
+        </div>
 
       <!-- 카테고리 체크박스 -->
-      <label>당신이 알고싶은 여행정보를 선택해주세요:</label>
-      <div id="categories-container" th:value="${userCategories ?: '[]'}" ></div>
+
+      <div id="categories-container" th:value="${userCategories ?: '[]'}" >
+        <label>당신이 알고싶은 여행정보를 선택해주세요:</label> <br/>
+      </div>
+
       <p id="warning" style="color: red; display: none;">최대 5개, 최소 3개만 선택할 수 있습니다.</p>
+
 
       <div class="button-container">
         <button class="ghost" id="signUp" disabled>가입하기</button>
       </div>
     </form>
+
   </div>
 </div>
 <div id="successModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
   <p id="successMessage"></p>
 </div>
-
+</div>
 <script src="/js/userIdCheck.js"></script>
 <script src="/js/passwordCheck.js"></script>
 <script src="/js/nicknameCheck.js"></script>
@@ -62,13 +72,7 @@
     const allValid = isUserIdValid && isPasswordValid && isNicknameValid && isCategoryValid;
 
     signUpButton.disabled = !allValid;
-    // 테스트 목적 이엿음
-    // console.log("Validation States - ", {
-    //   isUserIdValid,
-    //   isPasswordValid,
-    //   isNicknameValid,
-    //   isCategoryValid,
-    // });
+
   }
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -104,6 +108,6 @@
   });
 </script>
 
-
+<div th:insert="~{fragments/footer :: footer}"></div>
 </body>
 </html>
