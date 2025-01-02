@@ -1,5 +1,7 @@
 function initializeCategories(containerId, warningId, maxSelection, minSelection, callback) {
     const container = document.getElementById(containerId);
+    const rawCategories = container.getAttribute("value"); // "[자연관광지, 역사관광지, 체험관광지]"
+    const userCategories = rawCategories
     const warning = document.getElementById(warningId);
 
     const updateCategoryStatus = () => {
@@ -21,6 +23,12 @@ function initializeCategories(containerId, warningId, maxSelection, minSelection
                 const summary = document.createElement("summary");
                 summary.textContent = category.name;
                 details.appendChild(summary);
+
+                document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+                    if (userCategories.includes(checkbox.value)) {
+                        checkbox.checked = true; // 해당 체크박스를 체크 상태로 설정
+                    }
+                });
 
                 category.subcategories.forEach((subcategory) => {
                     const checkbox = document.createElement("input");

@@ -28,7 +28,7 @@
 
       <!-- 카테고리 체크박스 -->
       <label>당신이 알고싶은 여행정보를 선택해주세요:</label>
-      <div id="categories-container"></div>
+      <div id="categories-container" th:value="${userCategories ?: '[]'}" ></div>
       <p id="warning" style="color: red; display: none;">최대 5개, 최소 3개만 선택할 수 있습니다.</p>
 
       <div class="button-container">
