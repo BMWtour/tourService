@@ -2,14 +2,11 @@ package com.lion.BMWtour.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lion.BMWtour.dto.PointDto;
 import com.lion.BMWtour.dto.PointNameDto;
 import com.lion.BMWtour.dto.TourInfoDto;
 import com.lion.BMWtour.entity.TourInfo;
 import com.lion.BMWtour.service.TourInfoService;
 import jakarta.servlet.http.HttpSession;
-import com.lion.BMWtour.entity.TourInfo;
-import com.lion.BMWtour.service.TourInfoServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -26,7 +23,7 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping("/tourinfo")
+@RequestMapping("/tour")
 @RequiredArgsConstructor
 public class TourInfoController {
 
@@ -58,7 +55,6 @@ public class TourInfoController {
         List<PointNameDto> pointDtoList = new ArrayList<>();
 
 
-
         for (int i = startPage; i <= endPage; i++)
             pageList.add(i);
         for (TourInfoDto a : pagedResult.getContent()) { // pagedResult.getContent()를 반복
@@ -86,15 +82,16 @@ public class TourInfoController {
         model.addAttribute("pageList", pageList);
 
         return "main/search";
+    }
 
     /**상세페이지 컨트롤러*/
-    @GetMapping("/tour/detail/{tourId}")
+    @GetMapping("/detail/{tourId}")
     public String detail(
             @PathVariable String tourId,
             Model model
     ){
         //사용자 정보 이후 추가 필요
-
+        System.out.println("tourId: " + tourId);
         TourInfo tourInfo = tourInfoService.getTourInfo(tourId);
         model.addAttribute("tourInfo", tourInfo);
         model.addAttribute("mapClientId", mapClientId);

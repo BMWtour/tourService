@@ -2,6 +2,7 @@ package com.lion.BMWtour.service;
 
 import java.util.List;
 
+import com.lion.BMWtour.dto.main.PopularRegionsResponse;
 import com.lion.BMWtour.entity.TourInfo;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregation;
