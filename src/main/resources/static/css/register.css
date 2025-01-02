@@ -37,10 +37,18 @@ form {
 }
 
 
-input {
-  background-color: #eee;
-  border: none;
-  padding: 12px 15px;
+.info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.info-box input {
+  width: 278px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
 }
 
 button {
