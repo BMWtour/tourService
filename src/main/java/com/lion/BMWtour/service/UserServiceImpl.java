@@ -1,5 +1,7 @@
 package com.lion.BMWtour.service;
 
+import com.lion.BMWtour.entity.User;
+import com.lion.BMWtour.repository.UserRepository;
 import com.lion.BMWtour.dto.request.FileRequest;
 import com.lion.BMWtour.dto.request.RegisterUserRequest;
 import com.lion.BMWtour.entity.User;

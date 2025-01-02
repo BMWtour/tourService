@@ -1,11 +1,17 @@
 package com.lion.BMWtour.service;
 
 
+import com.lion.BMWtour.dto.TourInfoDto;
 import com.lion.BMWtour.entity.TourInfo;
 import org.springframework.data.domain.Page;
 
 
 public interface TourInfoService {
-    void tourInfoInsert(TourInfo tourInfo);
-    Page<TourInfo> getTourInfos(int page, String field, String query);
+
+    public static final int PAGE_SIZE = 5;
+
+    // void tourInfoInsert(TourInfo tourInfo);
+
+    Page<TourInfoDto> getPagedTourInfos(int page, String category, String address, String keyword, String sortField, String sortDirection);
+
 }

@@ -1,9 +1,9 @@
 package com.lion.BMWtour.service;
 
+import com.lion.BMWtour.entity.User;
 import com.lion.BMWtour.dto.request.RegisterUserRequest;
 import com.lion.BMWtour.dto.request.UpdateUserRequest;
 import com.lion.BMWtour.entity.User;
-
 import java.io.IOException;
 
 public interface UserService {
