@@ -93,43 +93,104 @@ button:disabled {
   min-height: 20px; /* 최소 높이 설정 */
   display: block; /* 블록 형태로 강제 표시 */
 }
+/* details 스타일: 내부 콘텐츠에 여백 추가 */
 details {
   margin-bottom: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  padding: 10px;
+  width: 300px;
+  overflow: hidden;
+  background-color: #fff;
+  box-sizing: border-box;
+  padding: 10px; /* 내부 여백 추가 */
 }
 
-summary {
+/* summary 스타일: 접히고 펼칠 때 동일한 여백 유지 */
+details > summary {
   font-weight: bold;
   cursor: pointer;
+  font-size: 14px;
+  padding: 5px 10px; /* 여백 추가 */
+  box-sizing: border-box;
 }
 
-details[open] {
-  background-color: #f9f9f9;
-}
-
-details input[type="checkbox"] {
-  margin-right: 5px;
-}
-
-.image-container {
+/* 부모 컨테이너의 기본 설정 */
+.side-by-side-container {
   display: flex;
-  justify-content: flex-end; /* 왼쪽 정렬 */
-  align-items: center;
-  margin: 20px 0;
-  flex: 0 0 auto; /* 고정된 크기 */
+  align-items: center; /* 세로 가운데 정렬 */
+  justify-content: space-between; /* 좌우로 배치 */
+  flex-wrap: wrap; /* 창 크기가 줄어들면 줄바꿈 */
+  gap: 20px; /* 컨테이너 간 간격 */
+}
+
+/* 입력 필드 컨테이너 스타일 */
+.id-nickname-file-container {
+  flex: 2; /* 크기를 더 크게 조정 */
+  display: flex;
+  flex-direction: column; /* 세로 배치 */
+  align-items: flex-start; /* 왼쪽 정렬 */
+}
+
+/* 이미지 컨테이너 스타일 */
+.image-container {
+  flex: 1; /* 크기를 자동 조정 */
+  display: flex;
+  justify-content: center; /* 이미지 가로 가운데 정렬 */
+  align-items: center; /* 이미지 세로 가운데 정렬 */
+  order: 2; /* 순서를 뒤로 변경 (오른쪽으로 이동) */
 }
 
 .image-container img {
-  width: 150px; /* 원하는 너비 */
-  height: 150px; /* 원하는 높이 */
-  border-radius: 0; /* 원형에서 네모로 변경 */
-  border: 2px solid #ddd; /* 테두리 */
-  object-fit: cover; /* 이미지 크기 조정 */
+  max-width: 100%; /* 이미지 크기 조정 */
+  height: auto; /* 종횡비 유지 */
+  max-height: 200px; /* 최대 높이 설정 */
+  border-radius:  10px; /* 원형 이미지 */
 }
-.content-container {
-  display: flex; /* 가로로 배치 */
-  align-items: flex-start; /* 위쪽 정렬 */
-  gap: 20px; /* 이미지와 폼 간격 */
+#categories-container {
+   display: flex;
+   flex-direction: column; /* 세로 정렬 */
+   align-items: flex-start; /* 기본적으로 왼쪽 정렬 */
+   gap: 10px; /* 항목 간 간격 */
+ }
+
+#categories-container label {
+  display: inline-flex; /* 체크박스와 텍스트를 한 줄에 배치 */
+  align-items: center; /* 수직 가운데 정렬 */
+  font-size: 14px; /* 텍스트 크기 */
+  margin: 5px 0; /* 체크박스 간 간격 */
+  padding: 0; /* 내부 여백 제거 */
+  border: none; /* 테두리 제거 */
+  background: none; /* 배경 제거 */
+  width: auto; /* 너비 자동 조정 */
+  height: auto; /* 높이 자동 조정 */
+  box-sizing: border-box; /* 패딩 포함 크기 계산 */
+}
+
+/* 체크박스 자체 스타일 */
+#categories-container input[type="checkbox"] {
+  margin-right: 8px; /* 체크박스와 텍스트 간 간격 */
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  #categories-container {
+    align-items: center; /* 중앙 정렬 */
+  }
+
+  #categories-container label {
+    width: 90%; /* 화면 크기에 맞게 너비 조정 */
+    max-width: 300px; /* 최대 너비 제한 */
+  }
+  .side-by-side-container {
+    flex-direction: column; /* 세로 배치 */
+    align-items: center; /* 가운데 정렬 */
+  }
+
+  .image-container {
+    order: -1; /* 이미지 순서를 가장 위로 */
+  }
+
+  .image-container img {
+    max-height: 150px; /* 작은 화면에서 이미지 크기 조정 */
+  }
 }
