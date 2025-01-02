@@ -2,8 +2,12 @@ package com.lion.BMWtour.controller;
 
 //import lombok.RequiredArgsConstructor;
 
+
 import com.lion.BMWtour.entity.User;
 import com.lion.BMWtour.request.FileRequest;
+import com.lion.BMWtour.dto.request.RegisterUserRequest;
+import com.lion.BMWtour.entity.User;
+import com.lion.BMWtour.dto.request.FileRequest;
 import com.lion.BMWtour.service.FileUploadService;
 import com.lion.BMWtour.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -49,52 +53,28 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String registerProc(
-        String uid,
-        String pwd,
-        String pwd2,
-        String userNickName,
-        @RequestParam(value = "category", required = false) String[] category,
-        @RequestParam("file") MultipartFile file
-    ) throws IOException {
+    @ResponseBody
+    public ResponseEntity<?> registerProc( @RequestParam("user_id") String userId,
+                                           @RequestParam("user_nickname") String userNickname,
+                                           @RequestParam("pwd") String password,
+                                           @RequestParam("pwd2") String confirmPassword,
+                                           @RequestParam(value = "category", required = false) String[] category,
+                                           @RequestParam(value = "file", required = false) MultipartFile file ){
+        RegisterUserRequest request = new RegisterUserRequest(userId, userNickname, password, confirmPassword, category, file);
+        // 파일 디버깅
 
-        // 해야할일
-        // 가입시 아이디 중복검사 useYn이 yes 일때만
-
-        if (userService.findByUserId(uid) == null && pwd.equals(pwd2) && pwd.length() >= 4) {
-            String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
-            // 추후에 리스트로 받아서 리스트로 저장
-            String interest1 = category != null && category.length > 0 ? category[0] : null;
-            String interest2 = category != null && category.length > 1 ? category[1] : null;
-            String interest3 = category != null && category.length > 2 ? category[2] : null;
-
-            // 파일 업로드 처리
-            String userImgUri = null;
-            if (!file.isEmpty()) {
-                FileRequest fileRequest = new FileRequest(file);
-                String uuid = fileUploadService.uploadFile(fileRequest);
-                userImgUri = "https://storage.cloud.google.com/gcs_img_tour_service/" + uuid;
-            }
-
-            User user = User.builder()
-                    .userId(uid)
-                    .userPw(hashedPwd)
-                    .userNickname(userNickName)
-                    .interest1(interest1)
-                    .interest2(interest2)
-                    .interest3(interest3)
-                    // 이미지 추가 내용 필요
-                    .userImgUri(userImgUri)
-                    .useYn("yes")
-                    .provider("tourApp")
-                    .regDate(LocalDate.now())
-                    .build();
-            userService.registerUser(user);
-            System.out.println(user.getRegDate());
+        try {
+            userService.registerUser(request);
+            return ResponseEntity.ok(Collections.singletonMap("success", true));
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("success", false));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("success", false));
         }
 
-        return "redirect:/user/login";
     }
+
 
     @GetMapping("/login")
     public String loginForm() {
@@ -110,8 +90,7 @@ public class UserController {
         session.setAttribute("sessUid", uid);
         session.setAttribute("sessUname", user.getUserNickname());
         String msg = user.getUserNickname() + "님 환영합니다." ;
-        //String url = "/book/list";
-        String url = "http://104.198.205.64:9200/_cat/indices?v";
+        String url = "/tour/main";
         model.addAttribute("msg",msg);
         model.addAttribute("url", url);
 
@@ -120,5 +99,76 @@ public class UserController {
     @GetMapping
     public String logout() {
         return "redirect:/user/login";
+    }
+
+    @GetMapping("/update/password/{user_id}")
+    public String updatePasswordForm(@PathVariable String user_id, Model model) {
+        User user = userService.findByUserId(user_id);
+        model.addAttribute("user", user);
+        return "user/updatePw";
+    }
+    @GetMapping("/update/info/{user_id}")
+    public String updateUserInfoForm(@PathVariable String user_id, Model model) {
+        User user = userService.findByUserId(user_id);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found for ID: " + user_id);
+        }
+        model.addAttribute("user", user);
+        return "user/updateInfo";
+    }
+    @PostMapping("/update/info")
+    @ResponseBody
+    public ResponseEntity<?> updateUserProc(
+            String user_id,
+            String user_nickname,
+            @RequestParam(value = "category", required = false) String[] category,
+            @RequestParam("file") MultipartFile file) throws IOException {
+
+        User user = userService.findByUserId(user_id);
+
+        if (user == null) {
+            return ResponseEntity.badRequest()
+                    .body(Collections.singletonMap("success", false));
+        }
+
+        if (user_nickname != null && !user_nickname.isEmpty()) {
+            user.setUserNickname(user_nickname); // 닉네임 변경
+        }
+
+        if (category != null && category.length >= 3 && category.length <= 5) {
+            user.setInterestList(category); // 관심사 업데이트
+        }
+
+        if (!file.isEmpty()) {
+            FileRequest fileRequest = new FileRequest(file);
+            String uuid = fileUploadService.uploadFile(fileRequest);
+            String userImgUri = "https://storage.cloud.google.com/gcs_img_tour_service/" + uuid;
+            user.setUserImgUri(userImgUri); // 프로필 사진 업데이트
+        }
+
+        userService.updateUser(user); // 변경된 데이터 저장
+        return ResponseEntity.ok(Collections.singletonMap("success", true));
+    }
+    @PostMapping("/update/password")
+    @ResponseBody
+    public ResponseEntity<?> updatePasswordProc(
+            String user_id,
+            String pwd,
+            String pwd2) {
+
+
+        User user = userService.findByUserId(user_id);
+        if (user == null) {
+            return ResponseEntity.badRequest()
+                    .body(Collections.singletonMap("success", false));
+        }
+
+        if (pwd != null && pwd.equals(pwd2) && pwd.length() >= 4) {
+            String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
+            user.setUserPw(hashedPwd); // 비밀번호만 변경
+        }
+
+        userService.updateUser(user); // 변경된 데이터 저장
+        return ResponseEntity.ok(Collections.singletonMap("success", true));
     }
 }

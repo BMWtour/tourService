@@ -1,227 +1,104 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="/css/register.css" />
-    <link
-      rel="stylesheet"
-      href="/css/navbarStyle.css"
-    />
-    <title>회원가입페이지</title>
-  </head>
-  <body>
-    <nav class="navbar">
-      <div class="navbar-title">회원가입</div>
-    </nav>
-    <div class="container" id="container">
-      <h2>회원가입</h2>
-      <div class="form-container">
-        <form action="/user/register" method="post" enctype="multipart/form-data">
-          <input type="text" id="uid" name="uid" placeholder="아이디를 입력하세요" />
-          <div id="duplicateCheckMessage"></div> <!-- 메시지가 표시될 위치 -->
-          <input
-            type="password"
-            id = "pwd"
-            name="pwd"
-            placeholder="패스워드"
-          /><br /><br />
-          <input
-            type="password"
-            id="pwd2"
-            name="pwd2"
-            placeholder="패스워드 확인"
-          />
-          <div id="passwordMatchMessage"></div>
-          <input
-                  type="text"
-                  id="user_nickname"
-                  name="user_nickname"
-                  placeholder="사용하실 닉네임을 입력하세요"
-          />
-          <div id="duplicateCheckMessageNickName"></div> <!-- 메시지가 표시될 위치 -->
-          <input
-                  type="file"
-                  name="file"
-          /><br /><br />
-          <label>당신이 알고싶은 여행정보를 선택해주세요:</label><br />
-          <input
-            type="checkbox"
-            id="관광지"
-            name="category"
-            value="관광지"
-            onclick="limitSelection(this)"
-          />
-          <!--  추후에 value 변경할것! -->
-          <label for="관광지">관광지</label><br />
-          <input
-            type="checkbox"
-            id="음식점"
-            name="category"
-            value="음식점"
-            onclick="limitSelection(this)"
-          />
-          <label for="음식점">음식점</label><br />
-          <input
-            type="checkbox"
-            id="쇼핑"
-            name="category"
-            value="쇼핑"
-            onclick="limitSelection(this)"
-          />
-          <label for="쇼핑">쇼핑</label><br />
-          <input
-            type="checkbox"
-            id="축제공연행사"
-            name="category"
-            value="축제공연행사"
-            onclick="limitSelection(this)"
-          />
-          <label for="축제공연행사">축제공연행사</label><br />
-          <input
-            type="checkbox"
-            id="문화시설"
-            name="category"
-            value="문화시설"
-            onclick="limitSelection(this)"
-          />
-          <label for="문화시설">문화시설</label><br />
-          <input
-            type="checkbox"
-            id="레포츠"
-            name="category"
-            value="레포츠"
-            onclick="limitSelection(this)"
-          />
-          <label for="레포츠">레포츠</label><br />
-          <div class="button-container">
-            <button class="ghost" id="signUp" disabled>가입하기</button>
-          </div>
-        </form>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="/css/register.css" />
+  <link rel="stylesheet" href="/css/navbarStyle.css" />
+  <title>회원가입페이지</title>
+</head>
+<body>
+<nav class="navbar">
+  <div class="navbar-title">회원가입</div>
+</nav>
+<div class="container" id="container">
+  <h2>회원가입</h2>
+  <div class="form-container">
+    <form id="registrationForm" action="/user/register" method="post" enctype="multipart/form-data">
+      <input type="text" id="user_id" name="user_id" placeholder="아이디를 입력하세요" />
+      <div id="duplicateCheckMessage"></div>
 
-        <script>
-          function limitSelection(checkbox) {
-            const maxSelection = 3; // 최대 선택 가능 개수
-            const selectedCheckboxes = document.querySelectorAll(
-              'input[name="category"]:checked'
-            );
+      <input type="password" id="pwd" name="pwd" placeholder="패스워드" />
+      <input type="password" id="pwd2" name="pwd2" placeholder="패스워드 확인" />
+      <div id="passwordMatchMessage"></div>
 
-            if (selectedCheckboxes.length > maxSelection) {
-              alert(`관심사는 최대 ${maxSelection}개 까지만 선택 할 수 있습니다.`);
-              checkbox.checked = false; // 선택 취소
-            }
-          }document.addEventListener("DOMContentLoaded", function () {
-            const uidField = document.getElementById("uid");
-            const uidMessage = document.getElementById("duplicateCheckMessage");
+      <input type="text" id="user_nickname" name="user_nickname" placeholder="사용하실 닉네임을 입력하세요" />
+      <div id="duplicateCheckMessageNickName"></div>
 
-            const nicknameField = document.getElementById("user_nickname");
-            const nicknameMessage = document.getElementById("duplicateCheckMessageNickName");
+      <input type="file" name="file" id="file" /><br /><br />
 
-            const passwordField = document.getElementById("pwd");
-            const confirmPasswordField = document.getElementById("pwd2");
-            const passwordMessage = document.getElementById("passwordMatchMessage");
+      <!-- 카테고리 체크박스 -->
+      <label>당신이 알고싶은 여행정보를 선택해주세요:</label>
+      <div id="categories-container"></div>
+      <p id="warning" style="color: red; display: none;">최대 5개, 최소 3개만 선택할 수 있습니다.</p>
 
-            const signUpButton = document.getElementById("signUp");
-
-            function validateForm() {
-              const isUidValid = uidMessage.style.color === "green";
-              const isNicknameValid = nicknameMessage.style.color === "green";
-              const isPasswordValid = passwordMessage.style.color === "green";
-
-              // 모든 필드가 유효할 때만 버튼 활성화
-              if (isUidValid && isNicknameValid && isPasswordValid) {
-                signUpButton.disabled = false;
-              } else {
-                signUpButton.disabled = true;
-              }
-            }
-
-            // 버튼 클릭 시 alert 처리
-            signUpButton.addEventListener("click", function (event) {
-              if (signUpButton.disabled) {
-                event.preventDefault(); // 폼 전송 방지
-                alert("모든 필드를 올바르게 입력해야 가입할 수 있습니다.");
-              }
-            });
-
-            // 각 필드의 이벤트 리스너에서 validateForm 호출
-            uidField.addEventListener("keyup", validateForm);
-            nicknameField.addEventListener("keyup", validateForm);
-            passwordField.addEventListener("keyup", validateForm);
-            confirmPasswordField.addEventListener("keyup", validateForm);
-
-            // 기존 중복 체크 및 패스워드 확인 로직에도 validateForm 호출 추가
-            function checkPasswordMatch() {
-              const password = passwordField.value.trim();
-              const confirmPassword = confirmPasswordField.value.trim();
-
-              if (!password || !confirmPassword) {
-                passwordMessage.textContent = "";
-                passwordMessage.style.color = "";
-              } else if (password === confirmPassword) {
-                passwordMessage.textContent = "패스워드가 일치합니다.";
-                passwordMessage.style.color = "green";
-              } else {
-                passwordMessage.textContent = "패스워드가 일치하지 않습니다.";
-                passwordMessage.style.color = "red";
-              }
-              validateForm(); // 버튼 상태 업데이트
-            }
-
-            passwordField.addEventListener("keyup", checkPasswordMatch);
-            confirmPasswordField.addEventListener("keyup", checkPasswordMatch);
-
-            // 아이디 및 닉네임 중복 체크 로직에 validateForm 호출 추가
-            uidField.addEventListener("keyup", function () {
-              const uid = uidField.value.trim();
-
-              if (!uid) {
-                uidMessage.textContent = "";
-                uidMessage.style.color = "";
-                validateForm(); // 버튼 상태 업데이트
-                return;
-              }
-
-              fetch(`/user/check-duplicate?uid=${encodeURIComponent(uid)}`)
-                      .then((response) => response.json())
-                      .then((data) => {
-                        if (data.isDuplicate) {
-                          uidMessage.textContent = "이미 사용 중인 아이디입니다.";
-                          uidMessage.style.color = "red";
-                        } else {
-                          uidMessage.textContent = "사용 가능한 아이디입니다.";
-                          uidMessage.style.color = "green";
-                        }
-                        validateForm(); // 버튼 상태 업데이트
-                      });
-            });
-
-            nicknameField.addEventListener("keyup", function () {
-              const userNickname = nicknameField.value.trim();
-
-              if (!userNickname) {
-                nicknameMessage.textContent = "";
-                nicknameMessage.style.color = "";
-                validateForm(); // 버튼 상태 업데이트
-                return;
-              }
-
-              fetch(`/user/duplicate_nickname?user_nickname=${encodeURIComponent(userNickname)}`)
-                      .then((response) => response.json())
-                      .then((data) => {
-                        if (data.isDuplicateNickName) {
-                          nicknameMessage.textContent = "이미 사용 중인 닉네임입니다.";
-                          nicknameMessage.style.color = "red";
-                        } else {
-                          nicknameMessage.textContent = "사용 가능한 닉네임입니다.";
-                          nicknameMessage.style.color = "green";
-                        }
-                        validateForm(); // 버튼 상태 업데이트
-                      });
-            });
-          });
-        </script>
-
+      <div class="button-container">
+        <button class="ghost" id="signUp" disabled>가입하기</button>
       </div>
-    </div>
-  </body>
+    </form>
+  </div>
+</div>
+<div id="successModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
+  <p id="successMessage"></p>
+</div>
+
+<script src="/js/userIdCheck.js"></script>
+<script src="/js/passwordCheck.js"></script>
+<script src="/js/nicknameCheck.js"></script>
+<script src="/js/getCategory.js"></script>
+<script src="/js/formSuccess.js"></script>
+<script>
+  let isUserIdValid = false;
+  let isPasswordValid = false;
+  let isNicknameValid = false;
+  let isCategoryValid = false;
+
+  function updateButtonState() {
+    const signUpButton = document.getElementById("signUp");
+    const allValid = isUserIdValid && isPasswordValid && isNicknameValid && isCategoryValid;
+
+    signUpButton.disabled = !allValid;
+    // 테스트 목적 이엿음
+    // console.log("Validation States - ", {
+    //   isUserIdValid,
+    //   isPasswordValid,
+    //   isNicknameValid,
+    //   isCategoryValid,
+    // });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    initializeUserIdCheck("user_id", "duplicateCheckMessage", "/user/check-duplicate", (valid) => {
+      isUserIdValid = valid;
+      updateButtonState();
+    });
+
+    initializePasswordCheck("pwd", "pwd2", "passwordMatchMessage", (valid) => {
+      isPasswordValid = valid;
+      updateButtonState();
+    });
+
+    initializeNicknameCheck("user_nickname", "duplicateCheckMessageNickName", "/user/duplicate_nickname", (valid) => {
+      isNicknameValid = valid;
+      updateButtonState();
+    });
+
+    initializeCategories("categories-container", "warning", 5, 3, (valid) => {
+      isCategoryValid = valid;
+      updateButtonState();
+    });
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // formSuccess.js에서 정의된 handleFormSubmit 함수 호출
+    handleFormSubmit(
+            "#registrationForm", // 폼 선택자
+            "/user/login", // 성공 시 리다이렉션 URL
+            "회원가입" // 메시지의 기본 이름
+    );
+  });
+</script>
+
+
+</body>
 </html>

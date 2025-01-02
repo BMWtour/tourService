@@ -5,6 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메인 페이지</title>
     <link href="/css/main.css" rel="stylesheet">
+    <script>
+        const DEFAULT_LATITUDE = 37.5684514;
+        const DEFAULT_LONGITUDE = 126.9879963;
+
+        // 페이지 로드 시 위치 정보 요청
+        document.addEventListener("DOMContentLoaded", () => {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    console.log("사용자 위치:", latitude, longitude);
+
+                    getNearbyLocations(latitude, longitude);
+                },
+                (error) => {
+                    // 위치 정보를 허용하지 않은 경우
+                    getNearbyLocations(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+                }
+            );
+        });
+
+        function getNearbyLocations(latitude, longitude) {
+            fetch(`/tour/nearby?latitude=${latitude}&longitude=${longitude}`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("API 요청 실패");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    // 데이터를 동적으로 페이지에 추가
+                    const nearbyList = document.querySelector("#nearbyList");
+                    nearbyList.innerHTML = ""; // 기존 내용을 초기화
+                    data.forEach((tour) => {
+                        const listItem = document.createElement("div");
+                        listItem.className = "list-item nearby-list-item";
+
+                        listItem.innerHTML = `
+                            <img onClick="window.location.href='/tour/detail/${tour.id}'" src="${tour.image}" alt="${tour.title}">
+                            <p onClick="window.location.href='/tour/detail/${tour.id}'">${tour.title}</p>
+                            <p style="font-size: small;">${tour.address}</p>
+                        `;
+
+                        nearbyList.appendChild(listItem);
+                    });
+                })
+                .catch((error) => {
+                    console.error("가까운 관광지 정보를 가져오는 데 실패했습니다:", error);
+                });
+        }
+    </script>
 </head>
 <body>
 <header class="header">
@@ -31,21 +81,17 @@
 
 <main class="content">
     <div class="section">
-        <h2>인기 여행 지역</h2>
+        <h2>인기 관광 지역</h2>
         <div class="list">
-            <div class="list-item popular-item">
-                <img src="/img/default/default_image.jpg" alt="부산">
-                <p>부산</p>
-            </div>
-            <div class="list-item popular-item" th:each="location : ${popularRegions}">
-                <img th:src="${location.image}" alt="/img/default/default_image.jpg">
-                <p th:text="${location.name}"></p>
+            <div class="list-item popular-item" th:each="region : ${popularRegions}">
+                <img th:src="${region.image}" alt="${region.region}">
+                <p th:text="${region.region}"></p>
             </div>
         </div>
     </div>
 
     <div class="section">
-        <h2>카테고리별 인기 여행지</h2>
+        <h2>카테고리별 인기 관광지</h2>
         <div class="list">
             <div class="list-item category-item">
                 <p class="category-name">관광지</p>
@@ -53,24 +99,19 @@
                 <p class="location-name">경복궁</p>
             </div>
             <div class="list-item category-item">
-                <div class="list-item category-item" th:each="location : ${popularByCategories}">
-                    <p class="category-name" th:text="${location.category}"></p>
-                    <img th:src="${location.image}" alt="/img/default/default_image.jpg">
-                    <p class="location-name" th:text="${location.name}"></p>
+                <div class="list-item category-item" th:each="tour : ${popularByCategories}">
+                    <p class="category-name" th:text="${tour.category}"></p>
+                    <img th:src="${tour.image}" alt="${tour.name}">
+                    <p class="location-name" th:text="${tour.name}"></p>
                 </div>
             </div>
         </div>
 
         <div class="section">
-            <h2>가까운 여행지</h2>
-            <div class="list">
+            <h2>가까운 관광지</h2>
+            <div class="list" id="nearbyList">
                 <div class="list-item nearby-list-item">
-                    <img src="/img/default/default_image.jpg" alt="올림픽공원">
-                    <p>올림픽공원</p>
-                </div>
-                <div class="list-item nearby-list-item" th:each="location : ${nearbyLocations}">
-                    <img th:src="${location.image}" alt="/img/default/default_image.jpg" />
-                    <p th:text="${location.name}"></p>
+
                 </div>
             </div>
         </div>

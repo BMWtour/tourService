@@ -2,6 +2,7 @@ package com.lion.BMWtour.service;
 
 
 import com.lion.BMWtour.dto.TourInfoDto;
+import com.lion.BMWtour.entity.TourInfo;
 import org.springframework.data.domain.Page;
 
 

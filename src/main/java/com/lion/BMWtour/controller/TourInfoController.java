@@ -8,6 +8,8 @@ import com.lion.BMWtour.dto.TourInfoDto;
 import com.lion.BMWtour.entity.TourInfo;
 import com.lion.BMWtour.service.TourInfoService;
 import jakarta.servlet.http.HttpSession;
+import com.lion.BMWtour.entity.TourInfo;
+import com.lion.BMWtour.service.TourInfoServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -84,6 +86,20 @@ public class TourInfoController {
         model.addAttribute("pageList", pageList);
 
         return "main/search";
+
+    /**상세페이지 컨트롤러*/
+    @GetMapping("/tour/detail/{tourId}")
+    public String detail(
+            @PathVariable String tourId,
+            Model model
+    ){
+        //사용자 정보 이후 추가 필요
+
+        TourInfo tourInfo = tourInfoService.getTourInfo(tourId);
+        model.addAttribute("tourInfo", tourInfo);
+        model.addAttribute("mapClientId", mapClientId);
+        return "detail/detail";
+
     }
 
 
@@ -115,5 +131,7 @@ public class TourInfoController {
         model.addAttribute("test",q);
         return "main/search";
     }
+
+
 
 }

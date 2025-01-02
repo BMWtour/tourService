@@ -6,4 +6,5 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 public interface TourInfoRepository extends ElasticsearchRepository<TourInfo, String> {
 
+
 }

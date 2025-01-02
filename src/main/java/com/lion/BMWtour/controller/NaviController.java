@@ -1,11 +1,19 @@
 package com.lion.BMWtour.controller;
 
 import com.lion.BMWtour.dto.*;
+import com.lion.BMWtour.dto.direction.DirectionNcpResponse;
+import com.lion.BMWtour.dto.direction.GuideAndPointDto;
+import com.lion.BMWtour.dto.direction.GuideAndRouteDto;
+import com.lion.BMWtour.dto.direction.GuideDto;
 import com.lion.BMWtour.dto.rgeocoding.RGeoResponseDto;
 import com.lion.BMWtour.service.NaviService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**naver map 관련 api 호출 컨트롤러*/
 @Slf4j
@@ -15,6 +23,27 @@ import org.springframework.web.bind.annotation.*;
 public class NaviController {
 
     private final NaviService service;
+
+    /**두 좌표정보를 받아 가이드정보(좌표포함)와 이동경로 좌표들을 return*/
+    @PostMapping("/getGuideAndRouteInfo")
+    public GuideAndRouteDto getPointsAndGuideInfo(
+            @RequestBody
+            NaviWithPointsDto dto
+    ) {
+        DirectionNcpResponse response = service.getDirectionNcpResponse(dto);
+        //이동경로
+        NaviRouteDto naviRouteDto = service.twoPointRoute2(response.getRoute());
+        //이동 가이드 정보
+        List<LinkedHashMap<String, Object>> guideList = response.getRoute().get("traoptimal").get(0).getGuide();
+        List<GuideDto> guideDtoList = service.getGuideDtoList(guideList);
+        //이동 경로 중 가이드 정보의 인덱스와 일치하는 좌표 정보
+        List<PointDto> guidePointDtoList = service.getGuidePointList(naviRouteDto.getPath(), guideDtoList);
+        //이동 가이드 정보 + 가이드 좌표들 정보
+        GuideAndPointDto guideAndPointDto = service.getGuideInfo(guideDtoList, guidePointDtoList);
+        //최종반환 DTO
+        GuideAndRouteDto guideAndRouteDto = new GuideAndRouteDto(guideAndPointDto, naviRouteDto);
+        return guideAndRouteDto;
+    }
 
     // 두 좌표를 받아 이동경로를 반환하는 메서드
     // 두 점 경로 구하기
