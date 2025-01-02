@@ -25,10 +25,17 @@ public class User {
     private String userId;
     private String userPw;
     private String userNickname;
+    private String interest1;
+    private String interest2;
+    private String interest3;
+    //private String interestList;
     private String[] interestList;
     private String provider;
     private String useYn;
     private String userImgUri;
     @Field(type = FieldType.Date, format = DateFormat.date)
     private LocalDate regDate;
+
+//    @Field(type = FieldType.Text)
+//    private String USER_IMGURI;
 }

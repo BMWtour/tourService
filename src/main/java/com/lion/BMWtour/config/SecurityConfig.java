@@ -26,7 +26,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/misc/**", "/echo", "/personal",
                                 "/user/**", "/h2-console", "/demo/**",
-                                "/img/**", "/js/**", "/css/**", "/error/**", "/api/gcs/upload",
+                                "/img/**", "/js/**", "/css/**", "/error/**", "/api/gcs/upload", "/**",
                                 "/tour/**", "navigate/**"
                         ).permitAll()
                         .anyRequest().authenticated()
@@ -65,7 +65,7 @@ public class SecurityConfig {
         return new JwtRequestFilter();
     }
 
-//     Authentication Manager 빈 등록
+    //     Authentication Manager 빈 등록
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
