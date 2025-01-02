@@ -7,18 +7,16 @@
     <link rel="stylesheet" href="/css/login.css" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      href="/css/header.css"
     />
-    <link
-      rel="stylesheet"
-      href="/css/navbarStyle.css"
-    />
+
   </head>
   <body>
-    <nav class="navbar">
-      <div class="navbar-title">로그인</div>
-    </nav>
+<!--    <nav class="navbar">-->
+<!--      <div class="navbar-title">로그인</div>-->
+<!--    </nav>-->
 
+    <div th:insert = "~{fragments/header :: header }" ></div>
     <div class="container" id="container">
       <div class="form-container sign-in-container">
         <form action="/user/login" method="post">
