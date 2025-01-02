@@ -13,5 +13,5 @@ public interface TourInfoService {
     // void tourInfoInsert(TourInfo tourInfo);
 
     Page<TourInfoDto> getPagedTourInfos(int page, String category, String address, String keyword, String sortField, String sortDirection);
-
+    TourInfo getTourInfo(String tourId);
 }
