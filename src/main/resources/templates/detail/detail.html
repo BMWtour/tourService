@@ -115,6 +115,33 @@
             flex-shrink: 0;
             text-align: center;
         }
+        .suggestion {
+            padding: 20px;
+        }
+        .suggestionItems {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .suggestionItems div {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 1px
+            solid #000;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 200px; /* 고정 높이 */
+            background-color: #3c97bf;
+        }
+        .suggestionItems p {
+            margin: 5px 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
         .directionsName{
             text-align: center;
         }
@@ -208,6 +235,36 @@
         <div class="directions">
             <div class="navigationMap">
                 <div id="naviMap" style="width: 100%;height:100%;"></div>
+            </div>
+        </div>
+        <div class="suggestion">
+            <p>이런 곳은 어떠세요?</p>
+            <div class="suggestionItems">
+                <div>
+                    <p>명칭 : 주금산</p>
+                    <p>카테고리 : 관광지</p>
+                    <p>키워드 : #등산 #스키장 #철쭉</p>
+                </div>
+                <div>
+                    <p>명칭 : 주금산</p>
+                    <p>카테고리 : 관광지</p>
+                    <p>키워드 : #등산 #스키장 #철쭉</p>
+                </div>
+                <div>
+                    <p>명칭 : 주금산</p>
+                    <p>카테고리 : 관광지</p>
+                    <p>키워드 : #등산 #스키장 #철쭉</p>
+                </div>
+                <div>
+                    <p>명칭 : 주금산</p>
+                    <p>카테고리 : 관광지</p>
+                    <p>키워드 : #등산 #스키장 #철쭉</p>
+                </div>
+                <div>
+                    <p>명칭 : 주금산</p>
+                    <p>카테고리 : 관광지</p>
+                    <p>키워드 : #등산 #스키장 #철쭉</p>
+                </div>
             </div>
         </div>
     </div>
