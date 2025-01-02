@@ -1,16 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link href="/css/body.css" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
     <link rel="stylesheet" href="/css/register.css" />
-    <link rel="stylesheet" href="/css/navbarStyle.css" />
+<!--    <link rel="stylesheet" href="/css/navbarStyle.css" />-->
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+
+
     <title>회원정보</title>
 </head>
 <body>
-<nav class="navbar">
-    <div class="navbar-title">정보수정</div>
-</nav>
 
+<div th:insert="~{fragments/notloginheader :: header}"></div>
+
+<!--<nav class="navbar">-->
+<!--    <div class="navbar-title">정보수정</div>-->
+<!--</nav>-->
+
+<div class="center-container" >
 <div class="container" id="container">
     <h2>정보수정</h2>
     <div class="form-container">
@@ -42,9 +51,13 @@
         </form>
     </div>
 </div>
+</div>
 <div id="successModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
     <p id="successMessage"></p>
 </div>
+
+
+<div th:insert="~{fragments/footer :: footer}"></div>
     <script src="/js/nicknameCheck.js"></script>
     <script src="/js/getCategory.js"></script>
     <script src="/js/formSuccess.js"></script>

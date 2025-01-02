@@ -96,7 +96,6 @@ public class TourInfoController {
         model.addAttribute("tourInfo", tourInfo);
         model.addAttribute("mapClientId", mapClientId);
         return "detail/detail";
-
     }
 
 
