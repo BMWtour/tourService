@@ -12,7 +12,6 @@ function initializeCategories(containerId, warningId, maxSelection, minSelection
         warning.textContent = isValid ? "" : `최대 ${maxSelection}개, 최소 ${minSelection}개만 선택할 수 있습니다.`;
         callback(isValid);
     };
-
     fetch("http://104.198.205.64:9200/categories/_search?pretty")
         .then((response) => response.json())
         .then((data) => {
@@ -24,11 +23,8 @@ function initializeCategories(containerId, warningId, maxSelection, minSelection
                 summary.textContent = category.name;
                 details.appendChild(summary);
 
-                document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
-                    if (userCategories.includes(checkbox.value)) {
-                        checkbox.checked = true; // 해당 체크박스를 체크 상태로 설정
-                    }
-                });
+                // 카테고리를 열어둘지 결정하는 플래그
+                let hasCheckedSubcategory = false;
 
                 category.subcategories.forEach((subcategory) => {
                     const checkbox = document.createElement("input");
@@ -39,12 +35,23 @@ function initializeCategories(containerId, warningId, maxSelection, minSelection
                     const label = document.createElement("label");
                     label.textContent = subcategory;
 
+                    // 체크박스 생성 후 userCategories와 비교
+                    if (userCategories.includes(subcategory)) {
+                        checkbox.checked = true; // 해당 체크박스를 체크 상태로 설정
+                        hasCheckedSubcategory = true; // 체크된 항목이 있으면 플래그를 true로 설정
+                    }
+
                     details.appendChild(checkbox);
                     details.appendChild(label);
                     details.appendChild(document.createElement("br"));
 
                     checkbox.addEventListener("change", updateCategoryStatus);
                 });
+
+                // 체크된 항목이 있으면 해당 카테고리를 펼침
+                if (hasCheckedSubcategory) {
+                    details.setAttribute("open", "true");
+                }
 
                 container.appendChild(details);
             });
