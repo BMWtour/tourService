@@ -83,3 +83,7 @@ body {
 p.tour-title {
     height: 15px;
 }
+
+p.tour-address {
+    font-size: small;
+}
