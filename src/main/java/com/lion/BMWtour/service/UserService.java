@@ -4,7 +4,10 @@ import com.lion.BMWtour.entity.User;
 import com.lion.BMWtour.dto.request.RegisterUserRequest;
 import com.lion.BMWtour.dto.request.UpdateUserRequest;
 import com.lion.BMWtour.entity.User;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 
 public interface UserService {
 
@@ -22,6 +25,5 @@ public interface UserService {
     int login(String userId, String userPw);
 
     void updateUser(User user);
-
-
+    void validateUserAccess(String userId, HttpSession session) throws AccessDeniedException;
 }
