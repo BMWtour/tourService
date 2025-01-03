@@ -189,10 +189,6 @@
 <div th:insert="~{fragments/header :: header}"></div>
 
 <div class="container">
-    <div class="header">
-        <div class="logo">로고</div>
-        <div class="user-name">홍길동</div>
-    </div>
     <div class="content">
         <div class="tourName">
             <div th:if="${#strings.isEmpty(tourInfo.title)}">
@@ -278,12 +274,12 @@
             <p>이런 곳은 어떠세요?</p>
             <div class="suggestionItems">
                 <div class="suggestionItem" th:each="recommendation : ${recommendations}">
-                    <a th:href="@{|/tour/list?p=1&c=${recommendation.category}&a=${recommendation.address}&k=${recommendation.title}&sf=title&sd=asc|}" th:text="${recommendation.title}"></a>
+                    <a th:href="@{/tour/detail/{tourId}(tourId=${recommendation.id})}" th:text="${recommendation.title}"></a>
                     <img th:src="@{'/img/default/category/' + ${recommendation.category} + '.jpg'}" alt="카테고리 이미지">
                     <!-- 키워드를 a 태그로 반복하여 표시 -->
                     <div class="keywords">
                     <span th:each="keyword : ${#strings.arraySplit(recommendation.keywords, ',')}">
-                        <a th:href="@{|/tour/list?p=1&c=${recommendation.category}&a=${recommendation.address}&k=${keyword}&sf=category&sd=asc|}" th:text="'#' + ${keyword}"></a>
+                        <a th:href="@{|/tour/list?p=1&c=${recommendation.category}&k=${keyword}&sf=category&sd=asc|}" th:text="'#' + ${keyword}"></a>
                     </span>
                     </div>
                 </div>
