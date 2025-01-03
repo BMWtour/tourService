@@ -6,11 +6,13 @@ import com.lion.BMWtour.dto.request.FileRequest;
 import com.lion.BMWtour.dto.request.RegisterUserRequest;
 import com.lion.BMWtour.entity.User;
 import com.lion.BMWtour.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 
 @Service
@@ -121,6 +123,21 @@ public class UserServiceImpl implements UserService {
     }
     public void updateUser(User user) {
         userRepository.save(user);
+    }
+
+    public String getLoggedInUserId(HttpSession session) throws AccessDeniedException {
+        String loggedInUserId = (String) session.getAttribute("sessUid"); // 세션 키 확인 필요
+        if (loggedInUserId == null) {
+            throw new AccessDeniedException("로그인이 필요합니다.");
+        }
+        return loggedInUserId;
+    }
+    @Override
+    public void validateUserAccess(String userIdFromRequest, HttpSession session) throws AccessDeniedException {
+        String loggedInUserId = getLoggedInUserId(session);
+        if (!loggedInUserId.equals(userIdFromRequest)) {
+            throw new AccessDeniedException("접근 권한이 없습니다.");
+        }
     }
 
 }

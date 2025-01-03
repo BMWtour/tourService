@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/user")
@@ -94,15 +96,12 @@ public class UserController {
 
         return "common/alertMsg";
     }
-    @GetMapping
-    public String logout() {
-        return "redirect:/user/login";
-    }
-
-
 
     @GetMapping("/info/{user_id}")
-    public String updateUserInfo(@PathVariable String user_id, Model model) {
+    public String updateUserInfo(@PathVariable String user_id, HttpSession session, Model model) throws AccessDeniedException {
+        userService.validateUserAccess(user_id, session);
+//        Stirng test = session.getAttribute(user_id);
+//        System.out.println();
         User user = userService.findByUserId(user_id);
         if (user == null) {
             throw new IllegalArgumentException("User not found for ID: " + user_id);
@@ -112,7 +111,8 @@ public class UserController {
         return "user/info";
     }
     @GetMapping("/update/info/{user_id}")
-    public String updateUserInfoForm(@PathVariable String user_id, Model model) {
+    public String updateUserInfoForm(@PathVariable String user_id, Model model, HttpSession session) throws AccessDeniedException {
+        userService.validateUserAccess(user_id, session);
         User user = userService.findByUserId(user_id);
         if (user == null) {
             throw new IllegalArgumentException("User not found for ID: " + user_id);
@@ -158,7 +158,8 @@ public class UserController {
     }
 
     @GetMapping("/update/password/{user_id}")
-    public String updatePasswordForm(@PathVariable String user_id, Model model) {
+    public String updatePasswordForm(@PathVariable String user_id, Model model,HttpSession session) throws AccessDeniedException {
+        userService.validateUserAccess(user_id, session);
         User user = userService.findByUserId(user_id);
         model.addAttribute("user", user);
         return "user/updatePassword";
