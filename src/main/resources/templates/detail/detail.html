@@ -122,30 +122,60 @@
         .suggestion {
             padding: 20px;
         }
+
         .suggestionItems {
             display: flex;
+            justify-content: space-between;
             flex-wrap: wrap;
             gap: 10px;
         }
-        .suggestionItems div {
+
+        .suggestionItem {
             flex: 1;
             min-width: 200px;
+            max-width: 250px;
             padding: 10px;
-            border: 1px
-            solid #000;
+            border: 1px solid #000;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 200px; /* 고정 높이 */
-            background-color: #3c97bf;
+            height: 250px; /* 고정 높이 */
+            align-items: center;
+            background-color: #f9f9f9;
         }
-        .suggestionItems p {
+
+        .suggestionItem p {
             margin: 5px 0;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            text-align: center; /* 가운데 정렬 */
         }
+
+        .suggestionItem img {
+            width: 100%;
+            height: auto;
+            max-height: 120px;
+            margin-bottom: 10px;
+            object-fit: cover; /* 이미지를 정렬 */
+        }
+
+        .suggestionItem .keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .suggestionItem .keywords a {
+            text-decoration: none;
+            color: #007BFF;
+            font-size: 12px;
+        }
+
+
+
         .directionsName{
             text-align: center;
         }
@@ -247,33 +277,19 @@
         <div class="suggestion">
             <p>이런 곳은 어떠세요?</p>
             <div class="suggestionItems">
-                <div>
-                    <p>명칭 : 주금산</p>
-                    <p>카테고리 : 관광지</p>
-                    <p>키워드 : #등산 #스키장 #철쭉</p>
-                </div>
-                <div>
-                    <p>명칭 : 주금산</p>
-                    <p>카테고리 : 관광지</p>
-                    <p>키워드 : #등산 #스키장 #철쭉</p>
-                </div>
-                <div>
-                    <p>명칭 : 주금산</p>
-                    <p>카테고리 : 관광지</p>
-                    <p>키워드 : #등산 #스키장 #철쭉</p>
-                </div>
-                <div>
-                    <p>명칭 : 주금산</p>
-                    <p>카테고리 : 관광지</p>
-                    <p>키워드 : #등산 #스키장 #철쭉</p>
-                </div>
-                <div>
-                    <p>명칭 : 주금산</p>
-                    <p>카테고리 : 관광지</p>
-                    <p>키워드 : #등산 #스키장 #철쭉</p>
+                <div class="suggestionItem" th:each="recommendation : ${recommendations}">
+                    <a th:href="@{|/tour/list?p=1&c=${recommendation.category}&a=${recommendation.address}&k=${recommendation.title}&sf=title&sd=asc|}" th:text="${recommendation.title}"></a>
+                    <img th:src="@{'/img/default/category/' + ${recommendation.category} + '.jpg'}" alt="카테고리 이미지">
+                    <!-- 키워드를 a 태그로 반복하여 표시 -->
+                    <div class="keywords">
+                    <span th:each="keyword : ${#strings.arraySplit(recommendation.keywords, ',')}">
+                        <a th:href="@{|/tour/list?p=1&c=${recommendation.category}&a=${recommendation.address}&k=${keyword}&sf=category&sd=asc|}" th:text="'#' + ${keyword}"></a>
+                    </span>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 

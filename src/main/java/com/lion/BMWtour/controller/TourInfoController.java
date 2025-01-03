@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -84,7 +85,7 @@ public class TourInfoController {
         return "main/search";
     }
 
-    /**상세페이지 컨트롤러*/
+    /**상세페이지 컨트롤러**/
     @GetMapping("/detail/{tourId}")
     public String detail(
             @PathVariable String tourId,
@@ -93,8 +94,21 @@ public class TourInfoController {
         //사용자 정보 이후 추가 필요
         System.out.println("tourId: " + tourId);
         TourInfo tourInfo = tourInfoService.getTourInfo(tourId);
+        //추천 관광지 추가
+        List<TourInfo> recommendations = tourInfoService.getRecommendations(tourId); // 추천 관광지 추가
+        //추천 관광지에서 현재 관광지 정보가 존재한다면 remove
+        if (recommendations.contains(tourInfo)) {
+            recommendations.remove(tourInfo);
+        }
+        //추천관광지들의 키워드 String[]으로 묶기
+//        recommendations.forEach(recommendation -> {
+//            String[] keywordsArray = recommendation.getKeywords().split(", ");
+//            recommendation.setKeywords(Arrays.asList(keywordsArray));
+//        });
+
         model.addAttribute("tourInfo", tourInfo);
         model.addAttribute("mapClientId", mapClientId);
+        model.addAttribute("recommendations", recommendations);
         return "detail/detail";
     }
 
