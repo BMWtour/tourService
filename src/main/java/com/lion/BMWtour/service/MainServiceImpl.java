@@ -3,7 +3,6 @@ package com.lion.BMWtour.service;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 
 import com.lion.BMWtour.dto.main.NearbyLocationResponse;
@@ -18,7 +17,6 @@ import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.search.Hit;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -31,6 +29,20 @@ public class MainServiceImpl implements MainService {
 
 	@Override
 	public List<PopularRegionsResponse> getPopularRegionsList() {
+		//  """
+		// 	{
+		// 	  "size": 0,
+		// 	  "aggs": {
+		// 	    "popularRegions": {
+		// 	      "terms": {
+		// 	        "field": "tourRegion",
+		// 	        "size": 6
+		// 	      }
+		// 	    }
+		// 	  }
+		// 	}
+		// 	"""
+
 		SearchRequest searchRequest = new SearchRequest.Builder()
 			.index("tourlogs")
 			.size(0)
@@ -55,6 +67,27 @@ public class MainServiceImpl implements MainService {
 
 	@Override
 	public List<NearbyLocationResponse> getNearbyLocationList(Double latitude, Double longitude) {
+		//  """
+		// 	{
+		// 	  "size": 6,
+		// 	  "query": {
+		// 	    "match_all": {}
+		// 	  },
+		// 	  "sort": [
+		// 	    {
+		// 	      "_geo_distance": {
+		// 	        "point": {
+		// 	          "lat": 37.7749,
+		// 	          "lon": -122.4194
+		// 	        },
+		// 	        "order": "asc",
+		// 	        "unit": "m"
+		// 	      }
+		// 	    }
+		// 	  ]
+		// 	}
+		// 	"""
+
 		SearchRequest searchRequest = new SearchRequest.Builder()
 			.index("tourinfos")
 			.size(MAIN_PAGE_ITEM_COUNT)
@@ -70,8 +103,13 @@ public class MainServiceImpl implements MainService {
 
 		try {
 			SearchResponse<TourInfo> searchResponse = elasticsearchClient.search(searchRequest, TourInfo.class);
+
 			return searchResponse.hits().hits().stream()
-				.map(Hit::source)
+				.map(hit -> {
+					TourInfo tourInfo = hit.source();
+					tourInfo.setId(hit.id());
+					return tourInfo;
+				})
 				.map(tourInfo -> NearbyLocationResponse.builder()
 					.id(tourInfo.getId())
 					.address(tourInfo.getAddress())
