@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메인 페이지</title>
+    <link th:href="@{/css/header.css}" rel="stylesheet">
     <link href="/css/main.css" rel="stylesheet">
     <link th:href="@{/css/footer.css}" rel="stylesheet">
     <script>
@@ -58,52 +59,32 @@
     </script>
 </head>
 <body>
-<header class="header">
-    <div class="search-container">
-        <select th:name="region" th:id="region">
-            <option value="">지역 선택</option>
-            <option value="서울">서울</option>
-            <option value="부산">부산</option>
-            <option value="제주">제주</option>
-        </select>
+<div th:insert="~{fragments/header :: header}"></div>
 
-        <select th:name="category" th:id="category">
-            <option value="">카테고리 선택</option>
-            <option value="관광지">관광지</option>
-            <option value="음식점">음식점</option>
-            <option value="쇼핑">쇼핑</option>
-        </select>
-
-        <input type="text" th:name="keyword" th:id="keyword" placeholder="검색어를 입력하세요">
-
-        <button type="submit">검색</button>
-    </div>
-</header>
-
-<main class="content">
-    <div class="section">
-        <h2>인기 관광 지역</h2>
-        <div class="list">
-            <div class="list-item popular-item" th:each="region : ${popularRegions}">
-                <img th:src="${region.image}" alt="${region.region}">
-                <p th:text="${region.region}"></p>
+<div class="center-container" >
+    <main class="content">
+        <div class="section">
+            <h2>인기 관광 지역</h2>
+            <div class="list">
+                <div class="list-item popular-item" th:each="region : ${popularRegions}">
+                    <img th:src="${region.image}" alt="${region.region}">
+                    <p th:text="${region.region}"></p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="section">
-        <h2>카테고리별 인기 관광지</h2>
-        <div class="list">
-            <div class="list-item category-item">
-                <p class="category-name">관광지</p>
-                <img src="/img/default/default_image.jpg" alt="경복궁">
-                <p class="location-name">경복궁</p>
-            </div>
-            <div class="list-item category-item">
-                <div class="list-item category-item" th:each="tour : ${popularByCategories}">
+        <div class="section">
+            <h2>카테고리별 인기 관광지</h2>
+            <div class="list">
+                <div class="list-item category-item" th:each="tour : ${popularByCategory}">
                     <p class="category-name" th:text="${tour.category}"></p>
-                    <img th:src="${tour.image}" alt="${tour.name}">
-                    <p class="location-name" th:text="${tour.name}"></p>
+                    <a th:href="@{/tour/detail/{tour}(tour=${tour.id})}">
+                        <img th:src="${tour.image}" alt="${tour.title}">
+                    </a>
+                    <a th:href="@{/tour/detail/{tour}(tour=${tour.id})}">
+                        <p class="tour-title" th:text="${tour.title}"></p>
+                    </a>
+                    <p class="tour-address" th:text="${tour.address}"></p>
                 </div>
             </div>
         </div>
@@ -116,10 +97,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
+</div>
 
-
-</main>
 <div th:insert="~{fragments/footer :: footer}"></div>
 </body>
 </html>
