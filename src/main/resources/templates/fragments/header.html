@@ -54,9 +54,7 @@
 
 
     <div class="navbar-info">
-
-        <a href="/user/info/"><span>
-                    <span>사용자 정보</span></span></a>
+        <a th:href="@{/user/info/{sessUid}(sessUid=${session.sessUid})}">사용자 정보</a>
         <a href="#">
             <div class="secondBox">
                 <span>로그아웃</span>

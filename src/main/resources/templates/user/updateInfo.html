@@ -12,67 +12,9 @@
 </head>
 <body>
 
-<div th:insert="~{fragments/notloginheader :: header}"></div>
+<div th:insert="~{fragments/header :: header}"></div>
 
 <div class="center-container" >
-<div class="container" id="container">
-    <h2>정보수정</h2>
-    <div class="form-container">
-        <form id="updateForm" action="/user/update/info" method="post" enctype="multipart/form-data">
-            <div class="side-by-side-container">
-                <div class="image-container">
-                    <img id="user-profile-image" th:src="${user.userImgUri != null ? user.userImgUri : '/img/default-user-img.webp'}" alt="사용자 이미지" />
-                </div>
-                <div class = "id-nickname-file-container" >
-                    <div class ="info-box" >
-                    <input type="hidden" name="user_id" th:value="${user.userId}"><br><br><br>
-                    <input type="text" th:value="${user.userId}" disabled><br>
-                    <input type="text" id="user_nickname" name="user_nickname" th:value="${user.userNickname}">
-                    <div id="duplicateCheckMessageNickName"></div>
-                    <input
-                            type="file"
-                            name="file"
-                    />
-                    <br /> <br />
-                    </div>
-                </div>
-            </div>
-            <!-- 카테고리 체크박스 -->
-            <div id="categories-container" th:value="${userCategories ?: '[]'}">
-                <label>당신이 알고싶은 여행정보를 선택해주세요:</label>
-            </div>
-            <p id="warning" style="color: red; display: none;">최대 5개, 최소 3개만 선택할 수 있습니다.</p>
-            <div class="button-container">
-                <button class="ghost" id="update" >회원정보 수정</button>
-            </div>
-        </form>
-    </div>
-</div>
-</div>
-<div id="successModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
-    <p id="successMessage"></p>
-</div>
-
-
-<div th:insert="~{fragments/footer :: footer}"></div>
-    <script src="/js/nicknameCheck.js"></script>
-    <script src="/js/getCategory.js"></script>
-    <script src="/js/formSuccess.js"></script>
-    <script>
-        let isNicknameValid = true;
-        let isCategoryValid = false;
-
-        function updateButtonState() {
-            const updateButton = document.getElementById("update");
-            if (updateButton) {
-                // 닉네임과 카테고리 조건을 모두 만족해야 버튼 활성화
-                updateButton.disabled = !(isNicknameValid && isCategoryValid);
-            }
-        }
-        document.addEventListener("DOMContentLoaded", function () {
-
-
-            initializeNicknameCheck("user_nickname", "duplicateCheckMessageNickName", "/user/duplicate_nickname", (valid) => {
                 isNicknameValid = valid;
                 updateButtonState(); // 상태 업데이트
             });
