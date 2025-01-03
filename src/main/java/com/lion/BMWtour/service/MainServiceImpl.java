@@ -1,8 +1,16 @@
 package com.lion.BMWtour.service;
 
-import java.io.IOException;
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregation;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregations;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.geo.GeoPoint;
+import org.springframework.data.elasticsearch.core.query.GeoDistanceOrder;
+import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.lion.BMWtour.dto.main.NearbyLocationResponse;
@@ -11,14 +19,9 @@ import com.lion.BMWtour.dto.main.PopularRegionsResponse;
 import com.lion.BMWtour.entity.TourInfo;
 import com.lion.BMWtour.entity.TourLog;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.GeoDistanceSort;
-import co.elastic.clients.elasticsearch._types.LatLonGeoLocation;
-import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
-import co.elastic.clients.elasticsearch.core.SearchRequest;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
 import co.elastic.clients.json.JsonData;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +32,7 @@ public class MainServiceImpl implements MainService {
 
 	private static final int MAIN_PAGE_ITEM_COUNT = 6;
 
-	private final ElasticsearchClient elasticsearchClient;
+	private final ElasticsearchTemplate elasticsearchTemplate;
 
 	@Override
 	public List<PopularRegionsResponse> getPopularRegionsList() {
@@ -47,56 +50,52 @@ public class MainServiceImpl implements MainService {
 		// 	}
 		// 	"""
 
-		SearchRequest searchRequest = new SearchRequest.Builder()
-			.index("tourlogs")
-			.size(0)
-			.aggregations("popularRegions", Aggregation.of(a ->
-				a.terms(t -> t.field("tourRegion")
-					.size(MAIN_PAGE_ITEM_COUNT))))
+		NativeQuery query = NativeQuery.builder()
+			.withAggregation("popularRegions", Aggregation.of(a -> a.terms(
+				t -> t.field("tourRegion").size(MAIN_PAGE_ITEM_COUNT))
+			))
+			.withMaxResults(0)
 			.build();
 
-		try {
-			SearchResponse<TourLog> searchResponse = elasticsearchClient.search(searchRequest, TourLog.class);
-			return searchResponse.aggregations().get("popularRegions")
-				.sterms().buckets().array().stream()
-				.map(bucket -> PopularRegionsResponse.builder()
-					.region(bucket.key().stringValue())
-					.image("/img/default/region/" + bucket.key().stringValue() + ".jpg")
-					.build())
-				.toList();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		SearchHits<TourLog> searchHits = elasticsearchTemplate.search(query, TourLog.class);
+		ElasticsearchAggregations aggregations = (ElasticsearchAggregations)searchHits.getAggregations();
+		ElasticsearchAggregation popularRegions = aggregations.get("popularRegions");
+		Aggregate aggregate = popularRegions.aggregation().getAggregate();
+
+		List<StringTermsBucket> buckets = aggregate.sterms().buckets().array();
+		return buckets.stream()
+			.map(stringTermsBucket -> PopularRegionsResponse.builder()
+				.region(stringTermsBucket.key().stringValue())
+				.image("/img/default/region/" + stringTermsBucket.key().stringValue() + ".jpg")
+				.build())
+			.toList();
 	}
 
 	@Override
 	public List<PopularByCategoryResponse> getPopularByCategoryList() {
-		SearchRequest searchRequest = createPopularToursByCategorySearchRequest();
+		NativeQuery query = createPopularToursByCategoryQuery();
 
-		try {
-			SearchResponse<TourLog> search = elasticsearchClient.search(searchRequest, TourLog.class);
-
-			List<StringTermsBucket> groupByCategory = search.aggregations().get("groupByCategory").sterms().buckets().array();
-			return groupByCategory.stream()
-				.map(categoryBucket -> {
-					List<StringTermsBucket> groupById = categoryBucket.aggregations().get("groupById").sterms().buckets().array();
-					HitsMetadata<JsonData> topTour = groupById.get(0).aggregations().get("topTour").topHits().hits();
-					return topTour.hits().get(0).source().to(TourLog.class);
-				})
-				.map(tourLog -> PopularByCategoryResponse.builder()
-					.category(tourLog.getCategory())
-					.id(tourLog.getTourId())
-					.title(tourLog.getTourTitle())
-					.address(tourLog.getTourAddress())
-					.image("/img/default/category/" + tourLog.getCategory() + ".jpg")
-					.build())
-				.toList();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		SearchHits<TourLog> searchHits = elasticsearchTemplate.search(query, TourLog.class);
+		ElasticsearchAggregations aggregations = (ElasticsearchAggregations)searchHits.getAggregations();
+		List<StringTermsBucket> groupByCategory = aggregations.get("groupByCategory")
+			.aggregation().getAggregate().sterms().buckets().array();
+		return groupByCategory.stream()
+			.map(stringTermsBucket -> {
+				List<StringTermsBucket> groupById = stringTermsBucket.aggregations().get("groupById").sterms().buckets().array();
+				HitsMetadata<JsonData> topTour = groupById.get(0).aggregations().get("topTour").topHits().hits();
+				return topTour.hits().get(0).source().to(TourLog.class);
+			})
+			.map(tourLog -> PopularByCategoryResponse.builder()
+				.category(tourLog.getCategory())
+				.id(tourLog.getTourId())
+				.title(tourLog.getTourTitle())
+				.address(tourLog.getTourAddress())
+				.image("/img/default/category/" + tourLog.getCategory() + ".jpg")
+				.build())
+			.toList();
 	}
 
-	private static SearchRequest createPopularToursByCategorySearchRequest() {
+	private static NativeQuery createPopularToursByCategoryQuery() {
 		// {
 		// 	"size": 0,
 		// 	"aggs": {
@@ -123,10 +122,8 @@ public class MainServiceImpl implements MainService {
 		// 	 }
 		//  }
 		// }
-		return new SearchRequest.Builder()
-			.index("tourlogs")
-			.size(0)
-			.aggregations("groupByCategory", Aggregation.of(a ->
+		return NativeQuery.builder()
+			.withAggregation("groupByCategory", Aggregation.of(a ->
 				a.terms(
 						t -> t.field("category")
 							.size(MAIN_PAGE_ITEM_COUNT)
@@ -167,37 +164,20 @@ public class MainServiceImpl implements MainService {
 		// 	}
 		// 	"""
 
-		SearchRequest searchRequest = new SearchRequest.Builder()
-			.index("tourinfos")
-			.size(MAIN_PAGE_ITEM_COUNT)
-			.query(q -> q.matchAll(m -> m))
-			.sort(s ->
-				s.geoDistance(GeoDistanceSort.of(g ->
-					g.field("point")
-						.location(l -> l.latlon(LatLonGeoLocation.of(ll -> ll.lat(latitude).lon(longitude))))
-						.order(SortOrder.Asc)
-				))
-			)
+		NativeQuery query = NativeQuery.builder()
+			.withQuery(Query.findAll())
+			.withSort(Sort.by(new GeoDistanceOrder("point", new GeoPoint(latitude, longitude))).ascending())
+			.withMaxResults(MAIN_PAGE_ITEM_COUNT)
 			.build();
 
-		try {
-			SearchResponse<TourInfo> searchResponse = elasticsearchClient.search(searchRequest, TourInfo.class);
-
-			return searchResponse.hits().hits().stream()
-				.map(hit -> {
-					TourInfo tourInfo = hit.source();
-					tourInfo.setId(hit.id());
-					return tourInfo;
-				})
-				.map(tourInfo -> NearbyLocationResponse.builder()
-					.id(tourInfo.getId())
-					.address(tourInfo.getAddress())
-					.title(tourInfo.getTitle())
-					.image("/img/default/category/" + tourInfo.getCategory() + ".jpg")
-					.build())
-				.toList();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		SearchHits<TourInfo> searchHits = elasticsearchTemplate.search(query, TourInfo.class);
+		return searchHits.getSearchHits().stream()
+			.map(searchHit -> NearbyLocationResponse.builder()
+				.id(searchHit.getId())
+				.address(searchHit.getContent().getAddress())
+				.title(searchHit.getContent().getTitle())
+				.image("/img/default/category/" + searchHit.getContent().getCategory() + ".jpg")
+				.build())
+			.toList();
 	}
 }
