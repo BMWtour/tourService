@@ -1,19 +1,16 @@
 /* 네비게이션 바 */
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
-* {
-  box-sizing: border-box;
-}
+
 
 /* 네비게이션 바 */
 
-body {
-  background: #f6f5f7;
+.center-container {
   display: flex;
   align-items: center;
   flex-direction: column;
   font-family: "Montserrat", sans-serif;
-  height: 100vh;
-  margin: 0px 0 50px;
+margin: 5vh 0 0;
+
 }
 
 h1 {
@@ -30,7 +27,7 @@ span {
 }
 
 a {
-  color: #333;
+
   font-size: 14px;
   text-decoration: none;
   margin: 15px 0;
@@ -38,8 +35,8 @@ a {
 
 button {
   border-radius: 20px;
-  border: 1px solid #ff4b2b;
-  background-color: #ff4b2b;
+  border: 1px solid #0d6efd;
+  background-color: #0d6efd;
   color: #ffffff;
   font-size: 12px;
   font-weight: bold;
@@ -149,9 +146,9 @@ input {
 }
 
 .overlay {
-  background: #ff416c;
-  background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);
-  background: linear-gradient(to right, #ff4b2b, #ff416c);
+  background: #0d6efd;
+  background: -webkit-linear-gradient(to right, #9dc2ff, #0d6efd);
+  background: linear-gradient(to right, #9dc2ff, #0d6efd);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 0;
@@ -174,7 +171,6 @@ input {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding: 0 40px;
   text-align: center;
   top: 0;
   height: 100%;
@@ -213,29 +209,4 @@ input {
   margin: 0 5px;
   height: 40px;
   width: 40px;
-}
-
-footer {
-  background-color: #222;
-  color: #fff;
-  font-size: 14px;
-  bottom: 0;
-  position: fixed;
-  left: 0;
-  right: 0;
-  text-align: center;
-  z-index: 999;
-}
-
-footer p {
-  margin: 10px 0;
-}
-
-footer i {
-  color: red;
-}
-
-footer a {
-  color: #3c97bf;
-  text-decoration: none;
 }

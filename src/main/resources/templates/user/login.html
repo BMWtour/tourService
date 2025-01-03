@@ -1,86 +1,86 @@
 <!DOCTYPE html>
-<html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>로그인 페이지</title>
-    <link rel="stylesheet" href="/css/login.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="/css/navbarStyle.css"
-    />
-  </head>
-  <body>
-    <nav class="navbar">
-      <div class="navbar-title">로그인</div>
-    </nav>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로그인 페이지</title>
+  <link href="/css/body.css" rel="stylesheet">
+  <link th:href="@{/css/header.css}" rel="stylesheet">
+  <link rel="stylesheet" href="/css/login.css" />
+  <link th:href="@{/css/footer.css}" rel="stylesheet">
+</head>
+<body>
 
-    <div class="container" id="container">
-      <div class="form-container sign-in-container">
-        <form action="/user/login" method="post">
-          <h1>로그인</h1>
-          <span class="me-3">소셜 계정으로 로그인</span>
-          <span>
+<div th:insert="~{fragments/notloginheader :: header}"></div>
+
+<div class="center-container">
+<div class="container" id="container">
+  <div class="form-container sign-in-container">
+    <form action="/user/login" method="post">
+      <h1>로그인</h1>
+      <span class="me-3">소셜 계정으로 로그인</span>
+      <span>
             <a href="/oauth2/authorization/google"
-              ><img
-                src="/img/google-logo.png"
-                height="32"
+            ><img
+                    src="/img/google-logo.png"
+                    height="32"
             /></a>
             <a href="/oauth2/authorization/naver"
-              ><img
-                src="/img/naver-logo.png"
-                height="32"
+            ><img
+                    src="/img/naver-logo.png"
+                    height="32"
             /></a>
             <a href="/oauth2/authorization/kakao"
-              ><img
-                src="/img/kakao-logo.png"
-                height="32"
+            ><img
+                    src="/img/kakao-logo.png"
+                    height="32"
             /></a>
           </span>
-          <span></span>
-          <input type="text" id="user" name="uid" placeholder="Username" class="form-control"/>
-          <input type="password" id="user_pw" name="user_pw" placeholder="Password" class="form-control" />
-          <!-- <a href="#">Forgot your password?</a> -->
-          <br />
-          <button>로그인</button>
-        </form>
-      </div>
-      <div class="overlay-container">
-        <div class="overlay">
-          <div class="overlay-panel overlay-right">
-            <h1>계정이 없으신가요?</h1>
-            <br />
-            <span class="me-3">소셜 계정으로 가입하기</span>
-            <br />
-            <span>
+      <span></span>
+      <input type="text" id="user" name="uid" placeholder="Username" class="form-control"/>
+      <input type="password" id="user_pw" name="user_pw" placeholder="Password" class="form-control" />
+
+        <!-- <a href="#">Forgot your password?</a> -->
+      <br />
+
+      <button type ="submit">로그인</button>
+    </form>
+  </div>
+  <div class="overlay-container">
+    <div class="overlay">
+      <div class="overlay-panel overlay-right">
+        <h1>계정이 없으신가요?</h1>
+        <br />
+        <span class="me-3">소셜 계정으로 가입하기</span>
+        <br />
+        <span>
               <a href="/oauth2/authorization/google"
-                ><img
-                  src="/img/google-logo.png"
-                  height="32"
+              ><img
+                      src="/img/google-logo.png"
+                      height="32"
               /></a>
               <a href="/oauth2/authorization/naver"
-                ><img
-                  src="/img/naver-logo.png"
-                  height="32"
+              ><img
+                      src="/img/naver-logo.png"
+                      height="32"
               /></a>
               <a href="/oauth2/authorization/kakao"
-                ><img
-                  src="/img/kakao-logo.png"
-                  height="32"
+              ><img
+                      src="/img/kakao-logo.png"
+                      height="32"
               /></a>
             </span>
-            <br />
-            <a href="/user/register"
-            >
-            <button class="ghost" id="signUp">가입하기</button>
-            </a>
-          </div>
-        </div>
+        <br />
+        <a href="/user/register"
+        >
+          <button class="ghost" id="signUp">가입하기</button>
+        </a>
       </div>
     </div>
-  </body>
+  </div>
+</div>
+</div>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
 </html>

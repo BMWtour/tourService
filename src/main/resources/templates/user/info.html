@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>회원정보 페이지</title>
+  <link href="/css/body.css" rel="stylesheet">
+  <link th:href="@{/css/header.css}" rel="stylesheet">
+  <link rel="stylesheet" href="/css/userInfo.css" />
+  <link th:href="@{/css/footer.css}" rel="stylesheet">
+</head>
+<body>
+  <div th:insert="~{fragments/header :: header}"></div>
+  <div class="center-container">
+<div class="container" id="container">
+  <h2>회원정보</h2>
+  <div class="form-container">
+      <div class="side-by-side-container">
+        <div class="image-container">
+          <img id="user-profile-image" th:src="${user.userImgUri != null ? user.userImgUri : '/img/default-user-img.webp'}" alt="사용자 이미지" />
+        </div>
+        <div class = "id-nickname-file-container">
+          <h3>아이디</h3>
+          <div class="info-box">
+          <input type="text" th:value="${user.userId}" disabled><br>
+          </div>
+          <h3>닉네임</h3>
+          <div class="info-box">
+          <input type="text" id="user_nickname" name="user_nickname" th:value="${user.userNickname}" disabled><br><br>
+          </div>
+        </div>
+      </div>
+      <!-- 카테고리 체크박스 -->
+    <div id="info-container" class="three-column-container">
+      <div id="categories-container">
+        <h3>당신의 관심분야</h3>
+        <div class="info-box" id="dynamic-categories">
+          <!-- JavaScript로 동적으로 추가될 영역 -->
+        </div>
+      </div>
+      <div id="provider-container">
+        <h3>가입경로</h3>
+        <div class="info-box">
+          <input type="text" id="user_provider" name="user_provider" th:value="${user.getProvider()}" disabled>
+        </div>
+      </div>
+      <div id="regDate-container">
+        <h3>가입일</h3>
+        <div class="info-box">
+          <input type="text" id="user_regDate" name="user_regDate" th:value="${user.getRegDate()}" disabled>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-container">
+      <div class="side-by-side-container" th:value="${user.userId}">
+        <a th:href="'/user/update/password/' + ${user.userId}">
+          <button id="change-password-button" class="action-button" >비밀번호 수정</button>
+        </a>
+        <a th:href="'/user/update/info/' + ${user.userId}">
+          <button id="update-info-button" class="action-button">정보 수정</button>
+        </a>
+      </div>
+    </div>
+    <script th:inline="javascript">
+      // 서버에서 전달된 userCategories 값을 JavaScript 배열로 전달
+      const rawCategories = /*[[${userCategories}]]*/ '[]';
+
+      const userCategories = rawCategories
+              .replace(/\[|\]/g, '') // 대괄호 제거
+              .split(',') // 쉼표 기준으로 분리
+              .map(item => item.trim()); // 각 항목의 공백 제거
+
+      console.log("Parsed User Categories:", userCategories);
+
+      // HTML 요소에 동적으로 추가
+      const container = document.getElementById("dynamic-categories"); // 동적 카테고리를 추가할 영역
+      userCategories.forEach(category => {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = category; // input box에 값 설정
+        input.disabled = true; // 수정 불가능하도록 설정
+        container.appendChild(input);
+      });
+    </script>
+  </div>
+</div>
+  </div>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

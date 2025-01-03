@@ -1,0 +1,167 @@
+.main-container {
+    display: flex;
+    flex-direction: row;
+    gap: 3vw;
+    position: relative;
+    left: 3vw;
+    top: 5vh;
+}
+
+/* 지도 크기 설정 */
+.map-container {
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+#map {
+    position: relative;
+    left: 5vw;
+    width: 35vw;
+    height: 80vh;
+}
+
+
+
+a {
+color: inherit !important;
+text-decoration: none !important;
+}
+.disabled-link { pointer-events: none; }
+
+.search-row-container {
+    position: absolute;
+    left: 45vw; /* x 좌표 */
+    display: grid;
+    gap: 2vh; /* 항목 간 간격 */
+}
+
+.search-row {
+border-radius: 1vw;
+background-color: #f0f0f0;
+display: grid;
+grid-template-columns: 20% 40% 40%;
+width: 45vw;
+height: 13vh;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+transition-duration: 0.1s;
+transition-timing-function: linear;
+}
+
+/* 클릭된 항목이 살짝 튀어나오게 하기 */
+.search-row.clicked {
+    transform: translateY(-10px); /* 살짝 위로 이동 */
+    box-shadow: 0 12px 18px rgba(0, 0, 0, 0.3); /* 강조 효과 */
+}
+
+/* 클릭된 항목에 호버 효과 추가 */
+.search-row:hover {
+    transform: translateY(-3px); /* 살짝 위로 */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+
+.img-container{
+display: grid;
+align-content: center;
+justify-items: center;
+}
+
+.rightinfo-container, .leftinfo-container{
+display:grid;
+align-content: space-evenly;
+}
+
+.Text{
+font-size: 0.7vw;
+}
+.col{
+font-weight: bold;
+font-size: 0.8vw;
+}
+
+.rightinfo , .leftinfo {
+overflow: hidden; /* 넘치는 텍스트 숨기기 */
+text-overflow: ellipsis; /* 넘칠 때 ... 표시 */
+white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+width: 100%; /* 텍스트가 넘칠 수 있도록 적절한 너비 설정 */
+}
+.searchResultImg {
+    width: 5vw;
+    height: 8vh;
+    border-radius: 1vw; /* border-radious -> border-radius로 수정 */
+}
+
+
+/* Pagination container */
+.pagination {
+    width: 50vw;
+    position: relative;
+    left: -3vw;
+    bottom: 3vh;
+
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3vw;
+  padding: 10px;
+}
+
+/* Page item */
+.page-item {
+  list-style: none;
+}
+
+/* Page links */
+.page-link {
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center;     /* 수직 중앙 정렬 */
+
+  text-decoration: none;
+  color: #007bff;
+  padding: 8px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+/* Active page link */
+.page-item.active .page-link {
+  background-color: #f0f0f0;
+  border-color: #f0f0f0;
+  color: #ffffff;
+
+}
+/* Disabled page link (no interaction) */
+.page-link.disabled {
+  color: #6c757d;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+/* Hover effect */
+.page-link:hover {
+  background-color: #f0f0f0;
+  border-color: #f0f0f0;
+  color: #ffffff;
+}
+
+
+  .image-link {
+
+  }
+
+
+
+/* Icon styling */
+.page-link i {
+  font-size: 16px;
+}
+
+/* Add margin to page item */
+.page-item + .page-item {
+  margin-left: 4px;
+}

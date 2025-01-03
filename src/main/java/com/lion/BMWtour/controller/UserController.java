@@ -99,11 +99,17 @@ public class UserController {
         return "redirect:/user/login";
     }
 
-    @GetMapping("/update/password/{user_id}")
-    public String updatePasswordForm(@PathVariable String user_id, Model model) {
+
+
+    @GetMapping("/info/{user_id}")
+    public String updateUserInfo(@PathVariable String user_id, Model model) {
         User user = userService.findByUserId(user_id);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found for ID: " + user_id);
+        }
         model.addAttribute("user", user);
-        return "user/updatePw";
+        model.addAttribute("userCategories", Arrays.toString(user.getInterestList()));
+        return "user/info";
     }
     @GetMapping("/update/info/{user_id}")
     public String updateUserInfoForm(@PathVariable String user_id, Model model) {
@@ -150,6 +156,14 @@ public class UserController {
         userService.updateUser(user); // 변경된 데이터 저장
         return ResponseEntity.ok(Collections.singletonMap("success", true));
     }
+
+    @GetMapping("/update/password/{user_id}")
+    public String updatePasswordForm(@PathVariable String user_id, Model model) {
+        User user = userService.findByUserId(user_id);
+        model.addAttribute("user", user);
+        return "user/updatePassword";
+    }
+
     @PostMapping("/update/password")
     @ResponseBody
     public ResponseEntity<?> updatePasswordProc(

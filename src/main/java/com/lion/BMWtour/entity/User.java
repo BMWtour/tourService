@@ -25,10 +25,6 @@ public class User {
     private String userId;
     private String userPw;
     private String userNickname;
-    private String interest1;
-    private String interest2;
-    private String interest3;
-    //private String interestList;
     private String[] interestList;
     private String provider;
     private String useYn;
