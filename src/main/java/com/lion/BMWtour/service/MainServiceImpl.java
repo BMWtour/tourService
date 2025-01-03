@@ -1,25 +1,24 @@
 package com.lion.BMWtour.service;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.stereotype.Service;
+
+import com.lion.BMWtour.dto.main.NearbyLocationResponse;
 import com.lion.BMWtour.dto.main.PopularRegionsResponse;
 import com.lion.BMWtour.entity.TourInfo;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregation;
-import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregations;
-import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.client.elc.NativeQuery;
-import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.geo.GeoPoint;
-import org.springframework.data.elasticsearch.core.query.GeoDistanceOrder;
-import org.springframework.data.elasticsearch.core.query.Query;
-import org.springframework.stereotype.Service;
-import com.lion.BMWtour.dto.main.NearbyLocationResponse;
-import com.lion.BMWtour.entity.TourInfo;
 import com.lion.BMWtour.entity.TourLog;
-import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
+
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.GeoDistanceSort;
+import co.elastic.clients.elasticsearch._types.LatLonGeoLocation;
+import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
-import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,47 +26,61 @@ import lombok.RequiredArgsConstructor;
 public class MainServiceImpl implements MainService {
 
 	private static final int MAIN_PAGE_ITEM_COUNT = 6;
-	private final ElasticsearchTemplate elasticsearchTemplate;
+
+	private final ElasticsearchClient elasticsearchClient;
 
 	@Override
 	public List<PopularRegionsResponse> getPopularRegionsList() {
-		NativeQuery query = NativeQuery.builder()
-			.withAggregation("popularRegions", Aggregation.of(a -> a.terms(
-					t -> t.field("tourRegion").size(MAIN_PAGE_ITEM_COUNT))
-			))
-			.withMaxResults(0)
+		SearchRequest searchRequest = new SearchRequest.Builder()
+			.index("tourlogs")
+			.size(0)
+			.aggregations("popularRegions", Aggregation.of(a ->
+				a.terms(t -> t.field("tourRegion")
+					.size(MAIN_PAGE_ITEM_COUNT))))
 			.build();
 
-		SearchHits<TourLog> searchHits = elasticsearchTemplate.search(query, TourLog.class);
-		ElasticsearchAggregations aggregations = (ElasticsearchAggregations)searchHits.getAggregations();
-		ElasticsearchAggregation popularRegions = aggregations.get("popularRegions");
-		Aggregate aggregate = popularRegions.aggregation().getAggregate();
-
-		List<StringTermsBucket> buckets = aggregate.sterms().buckets().array();
-		return buckets.stream()
-			.map(stringTermsBucket -> PopularRegionsResponse.builder()
-				.region(stringTermsBucket.key().stringValue())
-				.image("/img/default/region/" + stringTermsBucket.key().stringValue() + ".jpg")
-				.build())
-			.toList();
+		try {
+			SearchResponse<TourLog> searchResponse = elasticsearchClient.search(searchRequest, TourLog.class);
+			return searchResponse.aggregations().get("popularRegions")
+				.sterms().buckets().array().stream()
+				.map(bucket -> PopularRegionsResponse.builder()
+					.region(bucket.key().stringValue())
+					.image("/img/default/region/" + bucket.key().stringValue() + ".jpg")
+					.build())
+				.toList();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public List<NearbyLocationResponse> getNearbyLocationList(Double latitude, Double longitude) {
-		NativeQuery query = NativeQuery.builder()
-			.withQuery(Query.findAll())
-			.withSort(Sort.by(new GeoDistanceOrder("point", new GeoPoint(latitude, longitude))).ascending())
-			.withMaxResults(MAIN_PAGE_ITEM_COUNT)
+		SearchRequest searchRequest = new SearchRequest.Builder()
+			.index("tourinfos")
+			.size(MAIN_PAGE_ITEM_COUNT)
+			.query(q -> q.matchAll(m -> m))
+			.sort(s ->
+				s.geoDistance(GeoDistanceSort.of(g ->
+					g.field("point")
+						.location(l -> l.latlon(LatLonGeoLocation.of(ll -> ll.lat(latitude).lon(longitude))))
+						.order(SortOrder.Asc)
+				))
+			)
 			.build();
 
-		SearchHits<TourInfo> searchHits = elasticsearchTemplate.search(query, TourInfo.class);
-		return searchHits.getSearchHits().stream()
-			.map(searchHit -> NearbyLocationResponse.builder()
-				.id(searchHit.getId())
-				.address(searchHit.getContent().getAddress())
-				.title(searchHit.getContent().getTitle())
-				.image("/img/default/category/" + searchHit.getContent().getCategory() + ".jpg")
-				.build())
-			.toList();
+		try {
+			SearchResponse<TourInfo> searchResponse = elasticsearchClient.search(searchRequest, TourInfo.class);
+			return searchResponse.hits().hits().stream()
+				.map(Hit::source)
+				.map(tourInfo -> NearbyLocationResponse.builder()
+					.id(tourInfo.getId())
+					.address(tourInfo.getAddress())
+					.title(tourInfo.getTitle())
+					.image("/img/default/category/" + tourInfo.getCategory() + ".jpg")
+					.build())
+				.toList();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
