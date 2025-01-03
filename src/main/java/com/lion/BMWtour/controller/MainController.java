@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lion.BMWtour.dto.main.NearbyLocationResponse;
+import com.lion.BMWtour.dto.main.PopularByCategoryResponse;
 import com.lion.BMWtour.dto.main.PopularRegionsResponse;
 import com.lion.BMWtour.service.MainService;
 
@@ -24,8 +25,10 @@ public class MainController {
 	@GetMapping("/tour/main")
 	public String mainPage(Model model) {
 		List<PopularRegionsResponse> popularRegionsList = mainService.getPopularRegionsList();
+		List<PopularByCategoryResponse> popularByCategoryList = mainService.getPopularByCategoryList();
 
 		model.addAttribute("popularRegions", popularRegionsList);
+		model.addAttribute("popularByCategory", popularByCategoryList);
 		return "/main/main";
 	}
 
