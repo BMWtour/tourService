@@ -54,12 +54,27 @@
 
 
     <div class="navbar-info">
-        <a th:href="@{/user/info/{sessUid}(sessUid=${session.sessUid})}">사용자 정보</a>
-        <a href="/user/logout">
-        <div class="secondBox">
-                <span>로그아웃</span>
+        <!-- 세션 값이 있을 때 -->
+        <div th:if="${session != null && session.sessUid != null}">
+            <div class="first-box">
+                <a th:href="@{/user/info/{sessUid}(sessUid=${session.sessUid})}"
+                   th:text="${session.sessUname} + '님의 정보'"></a>
+            <div class="secondBox">
+                <a href="/user/logout">
+                    <span>로그아웃</span>
+                </a>
             </div>
-        </a>
+        </div>
+
+        <!-- 세션 값이 없을 때 -->
+        <div th:if="${session == null || session.sessUid == null}">
+            <div class="first-box">
+                <a href="/user/login">로그인</a>
+            </div>
+            <div class="secondBox">
+                <a href="/user/register">회원가입</a>
+            </div>
+        </div>
     </div>
 </nav>
 </div>
