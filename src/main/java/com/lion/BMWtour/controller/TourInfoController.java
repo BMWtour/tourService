@@ -24,7 +24,6 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping("/tour")
 @RequiredArgsConstructor
 public class TourInfoController {
 
@@ -37,7 +36,7 @@ public class TourInfoController {
     private final TourInfoService tourInfoService;
 
 
-    @GetMapping("/list")
+    @GetMapping("/tour/list")
     public String list(@RequestParam(name="p", defaultValue = "1") int page,
                        @RequestParam(name="c", defaultValue = "") String category,
                        @RequestParam(name="a", defaultValue = "") String address,
@@ -45,7 +44,7 @@ public class TourInfoController {
                        @RequestParam(name="sf", defaultValue = "") String sortField,
                        @RequestParam(name="sd", defaultValue = "") String sortDirection,
                        HttpSession session, Model model) throws JsonProcessingException {
-        Page<TourInfoDto> pagedResult = tourInfoService.getPagedTourInfos(page, category, address, keyword, sortField, sortDirection);
+        Page<TourInfoDto> pagedResult = tourInfoService.getPagedTourInfos(session,page, category, address, keyword, sortField, sortDirection);
         int totalPages = pagedResult.getTotalPages();
         int startPage = (int) Math.ceil((page - 0.5) / tourInfoService.PAGE_SIZE - 1) * tourInfoService.PAGE_SIZE + 1;
         int endPage = Math.min(startPage + tourInfoService.PAGE_SIZE - 1, totalPages);
@@ -86,7 +85,7 @@ public class TourInfoController {
     }
 
     /**상세페이지 컨트롤러**/
-    @GetMapping("/detail/{tourId}")
+    @GetMapping("/tour/detail/{tourId}")
     public String detail(
             @PathVariable String tourId,
             Model model

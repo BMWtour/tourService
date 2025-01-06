@@ -1,9 +1,14 @@
 package com.lion.BMWtour.service;
 
 import com.lion.BMWtour.dto.TourInfoDto;
+import com.lion.BMWtour.entity.Category;
 import com.lion.BMWtour.entity.TourInfo;
+import com.lion.BMWtour.entity.User;
+import com.lion.BMWtour.repository.CategoryRepository;
 import com.lion.BMWtour.repository.TourInfoRepository;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.PageImpl;
