@@ -1,9 +1,6 @@
 package com.lion.BMWtour.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -19,5 +16,4 @@ public class Category {
     private String id; // 고유 ID
     private String name; // 카테고리 이름
     private List<String> subcategories; // 하위 카테고리 리스트
-
 }
