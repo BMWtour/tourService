@@ -1,5 +1,6 @@
 package com.lion.BMWtour.service;
 
+import com.lion.BMWtour.dto.SearchAutocompleteResponse;
 import com.lion.BMWtour.dto.TourInfoDto;
 import com.lion.BMWtour.entity.Category;
 import com.lion.BMWtour.entity.TourInfo;
@@ -236,6 +237,32 @@ public class TourInfoServiceImpl implements TourInfoService {
     public TourInfo getTourInfo(String tourId) {
         TourInfo tourInfo = tourInfoRepository.findById(tourId).orElse(null);
         return tourInfo;
+    }
+
+    @Override
+    public List<SearchAutocompleteResponse> getSearchAutocompleteList(String word) {
+        StringQuery query = new StringQuery(String.format("""
+            {
+              "multi_match": {
+                "query": "%s",
+                "fields": ["title.ngram", "summary"],
+                "fuzziness": "AUTO"
+              }
+            }
+            """, word));
+
+        NativeQuery nativeQuery = NativeQuery.builder()
+            .withQuery(query)
+            .withSort(Sort.by(Sort.Direction.ASC, "title"))
+            .withMaxResults(10)
+            .build();
+
+        SearchHits<TourInfo> searchHits = elasticsearchTemplate.search(nativeQuery, TourInfo.class);
+        return searchHits.getSearchHits().stream()
+            .map(hit -> SearchAutocompleteResponse.builder()
+                .title(hit.getContent().getTitle())
+                .build())
+            .toList();
     }
 }
 
