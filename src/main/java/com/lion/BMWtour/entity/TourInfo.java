@@ -22,6 +22,7 @@ import java.util.List;
 public class TourInfo {
     @Id
     private String id;
+    @Field(type = FieldType.Text)
     private String title;
     @Field(type = FieldType.Text)
     private String address;
@@ -32,4 +33,6 @@ public class TourInfo {
     @Field(type = FieldType.Text)
     private String detailInfo;
     private String category;
+    @Field(type = FieldType.Text)
+    private String keyword;
 }

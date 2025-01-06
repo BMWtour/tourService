@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
 
+import java.util.List;
+
 
 public interface TourInfoService {
 
@@ -16,4 +18,6 @@ public interface TourInfoService {
 
     Page<TourInfoDto> getPagedTourInfos(HttpSession session, int page, String category, String address, String keyword, String sortField, String sortDirection);
     TourInfo getTourInfo(String tourId);
+    //상세페이지 추천관광지
+    List<TourInfo> getRecommendations(String tourId);
 }
