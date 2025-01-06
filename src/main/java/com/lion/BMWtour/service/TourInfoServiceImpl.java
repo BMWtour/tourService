@@ -239,7 +239,7 @@ public class TourInfoServiceImpl implements TourInfoService {
         // String[]으로 들어간 3개의 키워드를 하나의 쿼리 조건으로 변환
         StringBuilder shouldQueries = new StringBuilder();
         for (String keyword : keywords) {
-            String condition = createMatchConditionOne("keywords", keyword);
+            String condition = createMatchConditionOne("keyword", keyword);
             shouldQueries.append(condition).append(",");
         }
         // 마지막 쉼표 제거
@@ -304,7 +304,7 @@ public class TourInfoServiceImpl implements TourInfoService {
         }
 
         // 키워드를 기반으로 유사한 관광지 검색
-        String[] keywords = tourInfo.getKeywords().split(", ");
+        String[] keywords = tourInfo.getKeyword().split(", ");
 
         // 단일 matchQuery를 사용하여 쿼리 생성
         Query query = NativeQuery.builder()

@@ -29,7 +29,7 @@
       "type": "keyword",
       "normalizer": "custom_normalizer"
     },
-    "keywords": {
+    "keyword": {
       "type": "text",
       "analyzer": "korean_text_analyzer"
     }
