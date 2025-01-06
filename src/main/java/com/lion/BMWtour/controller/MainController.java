@@ -35,7 +35,8 @@ public class MainController {
 
 	@GetMapping("/tour/nearby")
 	@ResponseBody
-	public ResponseEntity<List<NearbyLocationResponse>> getNearbyLocation(@RequestParam(value = "latitude") double latitude,
+	public ResponseEntity<List<NearbyLocationResponse>> getNearbyLocation(
+		@RequestParam(value = "latitude") double latitude,
 		@RequestParam(value = "longitude") double longitude, HttpSession session) {
 		session.setAttribute("latitude", latitude);
 		session.setAttribute("longitude", longitude);
