@@ -7,6 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link href="/css/search.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <script src="/js/tourList.js" defer></script>
     <title>Bootstrap demo</title>
 </head>
 <body>
@@ -23,47 +24,64 @@
 
 
     <div class="search-row-container">
-
-        <div class="search-row" th:each="TourInfoDto: ${TourInfoDtoList}">
-            <div class="img-container">
-                <img class="searchResultImg" src="/img/test.jpg">
+        <div class="sort-container">
+            <div class="sort-options">
+                <label for="sortBy">정렬 :</label>
+                <select id="sortBy" class="sort-select">
+                    <option value="location">위치</option>
+                    <option value="name">이름</option>
+                </select>
             </div>
-
-            <div class="rightinfo-container">
-                <a th:href="@{/tour/detail/{tourId}(tourId=${TourInfoDto.TourInfo.id})}">
-                    <div class="rightinfo">
-                        <span class="col">이름: </span>
-                        <span class="Text" style="color:#0D6EFD" th:text="${TourInfoDto.TourInfo.title}">장금이</span>
-                    </div>
-                </a>
-                <div class="rightinfo">
-                    <span class="col">주소: </span>
-                    <span class="Text" th:if="${#strings.isEmpty(TourInfoDto.tourInfo.address)}">주소 없음</span>
-                    <span class="Text" th:if="${!#strings.isEmpty(TourInfoDto.tourInfo.address)}" th:text="${TourInfoDto.tourInfo.address}"></span>
-                </div>
-                <div class="rightinfo">
-                    <span class="col">카테고리: </span>
-                    <span class="Text" th:text="${TourInfoDto.TourInfo.category}">장금이</span>
-                </div>
+            <div class="sort-buttons">
+                <button id="sortAsc" class="sort-button">내림차순</button>
+                <button id="sortDesc" class="sort-button">오름차순</button>
             </div>
-
-
-            <div class="leftinfo-container">
-                <div class="leftinfo">
-                    <span class="col">이용시간: </span>
-                    <span class="Text" th:text="${TourInfoDto.TourInfo.openTime}">11:00~21:00 (브레이크타임 15:00~17:00 / 라스트오더 19:30)</span>
-                </div>
-                <div class="leftinfo">
-                    <span class="col">상세정보: </span>
-                    <span class="Text" th:if="${#strings.isEmpty(TourInfoDto.tourInfo.detailInfo)}">상세개요 없음</span>
-                    <span class="Text" th:if="${!#strings.isEmpty(TourInfoDto.tourInfo.detailInfo)}" th:text="${TourInfoDto.tourInfo.detailInfo}"></span>
-                </div>
-                <div class="leftinfo">
-                    <span class="col">개요: </span>
-                    <span class="Text" th:text="${TourInfoDto.TourInfo.summary}">...</span>
-                </div>
-            </div>
+            <!-- Reset Button -->
+            <button id="resetButton" class="reset-button">초기화</button>
         </div>
+
+        <div class="scroll-container">
+                <div class="search-item" th:each="TourInfoDto: ${TourInfoDtoList}">
+                    <div class="img-container">
+                        <img class="searchResultImg" src="/img/test.jpg">
+                    </div>
+
+                <div class="rightinfo-container">
+                    <a th:href="@{/tour/detail/{tourId}(tourId=${TourInfoDto.TourInfo.id})}">
+                        <div class="rightinfo">
+                            <span class="col">이름: </span>
+                            <span class="Text" style="color:#0D6EFD" th:text="${TourInfoDto.TourInfo.title}">장금이</span>
+                        </div>
+                    </a>
+                    <div class="rightinfo">
+                        <span class="col">주소: </span>
+                        <span class="Text" th:if="${#strings.isEmpty(TourInfoDto.tourInfo.address)}">주소 없음</span>
+                        <span class="Text" th:if="${!#strings.isEmpty(TourInfoDto.tourInfo.address)}" th:text="${TourInfoDto.tourInfo.address}"></span>
+                    </div>
+                    <div class="rightinfo">
+                        <span class="col">카테고리: </span>
+                        <span class="Text" th:text="${TourInfoDto.TourInfo.category}">장금이</span>
+                    </div>
+                </div>
+
+
+                <div class="leftinfo-container">
+                    <div class="leftinfo">
+                        <span class="col">이용시간: </span>
+                        <span class="Text" th:text="${TourInfoDto.TourInfo.openTime}">11:00~21:00 (브레이크타임 15:00~17:00 / 라스트오더 19:30)</span>
+                    </div>
+                    <div class="leftinfo">
+                        <span class="col">상세정보: </span>
+                        <span class="Text" th:if="${#strings.isEmpty(TourInfoDto.tourInfo.detailInfo)}">상세개요 없음</span>
+                        <span class="Text" th:if="${!#strings.isEmpty(TourInfoDto.tourInfo.detailInfo)}" th:text="${TourInfoDto.tourInfo.detailInfo}"></span>
+                    </div>
+                    <div class="leftinfo">
+                        <span class="col">개요: </span>
+                        <span class="Text" th:text="${TourInfoDto.TourInfo.summary}">...</span>
+                    </div>
+                </div>
+            </div>
+            </div>
 
         <!-- pagination -->
         <ul class="pagination justify-content-center my-4">

@@ -119,6 +119,63 @@
             flex-shrink: 0;
             text-align: center;
         }
+        .suggestion {
+            padding: 20px;
+        }
+
+        .suggestionItems {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .suggestionItem {
+            flex: 1;
+            min-width: 200px;
+            max-width: 250px;
+            padding: 10px;
+            border: 1px solid #000;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 250px; /* 고정 높이 */
+            align-items: center;
+            background-color: #f9f9f9;
+        }
+
+        .suggestionItem p {
+            margin: 5px 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: center; /* 가운데 정렬 */
+        }
+
+        .suggestionItem img {
+            width: 100%;
+            height: auto;
+            max-height: 120px;
+            margin-bottom: 10px;
+            object-fit: cover; /* 이미지를 정렬 */
+        }
+
+        .suggestionItem .keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .suggestionItem .keywords a {
+            text-decoration: none;
+            color: #007BFF;
+            font-size: 12px;
+        }
+
+
+
         .directionsName{
             text-align: center;
         }
@@ -132,10 +189,6 @@
 <div th:insert="~{fragments/header :: header}"></div>
 
 <div class="container">
-    <div class="header">
-        <div class="logo">로고</div>
-        <div class="user-name">홍길동</div>
-    </div>
     <div class="content">
         <div class="tourName">
             <div th:if="${#strings.isEmpty(tourInfo.title)}">
@@ -217,6 +270,22 @@
                 <div id="naviMap" style="width: 100%;height:100%;"></div>
             </div>
         </div>
+        <div class="suggestion">
+            <p>이런 곳은 어떠세요?</p>
+            <div class="suggestionItems">
+                <div class="suggestionItem" th:each="recommendation : ${recommendations}">
+                    <a th:href="@{/tour/detail/{tourId}(tourId=${recommendation.id})}" th:text="${recommendation.title}"></a>
+                    <img th:src="@{'/img/default/category/' + ${recommendation.category} + '.jpg'}" alt="카테고리 이미지">
+                    <!-- 키워드를 a 태그로 반복하여 표시 -->
+                    <div class="keywords">
+                    <span th:each="keyword : ${#strings.arraySplit(recommendation.keyword, ',')}">
+                        <a th:href="@{|/tour/list?p=1&c=${recommendation.category}&k=${keyword}&sf=category&sd=asc|}" th:text="'#' + ${keyword}"></a>
+                    </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
