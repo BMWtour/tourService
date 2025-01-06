@@ -79,6 +79,7 @@ public class MainServiceImpl implements MainService {
 		ElasticsearchAggregations aggregations = (ElasticsearchAggregations)searchHits.getAggregations();
 		List<StringTermsBucket> groupByCategory = aggregations.get("groupByCategory")
 			.aggregation().getAggregate().sterms().buckets().array();
+
 		return groupByCategory.stream()
 			.map(stringTermsBucket -> {
 				List<StringTermsBucket> groupById = stringTermsBucket.aggregations().get("groupById").sterms().buckets().array();
