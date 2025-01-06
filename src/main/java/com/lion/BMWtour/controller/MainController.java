@@ -14,6 +14,7 @@ import com.lion.BMWtour.dto.main.PopularByCategoryResponse;
 import com.lion.BMWtour.dto.main.PopularRegionsResponse;
 import com.lion.BMWtour.service.MainService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -34,8 +35,11 @@ public class MainController {
 
 	@GetMapping("/tour/nearby")
 	@ResponseBody
-	public ResponseEntity<List<NearbyLocationResponse>> getNearbyLocation(@RequestParam(value = "latitude") double latitude,
-		@RequestParam(value = "longitude") double longitude) {
+	public ResponseEntity<List<NearbyLocationResponse>> getNearbyLocation(
+		@RequestParam(value = "latitude") double latitude,
+		@RequestParam(value = "longitude") double longitude, HttpSession session) {
+		session.setAttribute("latitude", latitude);
+		session.setAttribute("longitude", longitude);
 		List<NearbyLocationResponse> nearbyLocationList = mainService.getNearbyLocationList(latitude, longitude);
 		return ResponseEntity.ok(nearbyLocationList);
 	}

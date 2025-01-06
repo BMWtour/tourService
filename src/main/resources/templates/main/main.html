@@ -67,8 +67,12 @@
                 <h2>인기 관광 지역</h2>
                 <div class="list">
                     <div class="list-item popular-item" th:each="region : ${popularRegions}">
-                        <img th:src="${region.image}" alt="${region.region}">
-                        <p th:text="${region.region}"></p>
+                        <a th:href="@{/tour/list?a={region}(region=${region.region})}">
+                            <img th:src="${region.image}" alt="${region.region}">
+                        </a>
+                        <a th:href="@{/tour/list?a={region}(region=${region.region})}">
+                            <p th:text="${region.region}"></p>
+                        </a>
                     </div>
                 </div>
             </div>

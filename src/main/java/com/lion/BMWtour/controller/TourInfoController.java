@@ -6,6 +6,8 @@ import com.lion.BMWtour.dto.PointNameDto;
 import com.lion.BMWtour.dto.TourInfoDto;
 import com.lion.BMWtour.entity.TourInfo;
 import com.lion.BMWtour.service.TourInfoService;
+import com.lion.BMWtour.service.TourLogService;
+
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +36,7 @@ public class TourInfoController {
     String mapSecretKey;
 
     private final TourInfoService tourInfoService;
+    private final TourLogService tourLogService;
 
 
     @GetMapping("/tour/list")
@@ -105,6 +108,7 @@ public class TourInfoController {
 //            recommendation.setKeywords(Arrays.asList(keywordsArray));
 //        });
 
+        tourLogService.saveTourLog(tourInfo);
         model.addAttribute("tourInfo", tourInfo);
         model.addAttribute("mapClientId", mapClientId);
         model.addAttribute("recommendations", recommendations);
