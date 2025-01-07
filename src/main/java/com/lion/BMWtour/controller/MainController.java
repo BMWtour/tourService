@@ -27,6 +27,4 @@ public class MainController {
 		model.addAttribute("popularByCategory", popularByCategoryList);
 		return "main/main";
 	}
-
-
 }
