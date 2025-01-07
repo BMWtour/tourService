@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
         if (file != null && !file.isEmpty()) {
             FileRequest fileRequest = new FileRequest(file);
             String uuid = fileUploadService.uploadFile(fileRequest);
-            return "https://storage.cloud.google.com/gcs_img_tour_service/" + uuid;
+            return "https://storage.googleapis.com/gcs_img_tour_service/" + uuid;
         }
         return null;
     }

@@ -149,7 +149,7 @@ public class UserController {
         if (!file.isEmpty()) {
             FileRequest fileRequest = new FileRequest(file);
             String uuid = fileUploadService.uploadFile(fileRequest);
-            String userImgUri = "https://storage.cloud.google.com/gcs_img_tour_service/" + uuid;
+            String userImgUri = "https://storage.googleapis.com/gcs_img_tour_service/" + uuid;
             user.setUserImgUri(userImgUri); // 프로필 사진 업데이트
         }
 
