@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tourService Footer</title>
+</head>
+
+<body>
+<div th:fragment="header">
+
+    <script src="/js/autocomplete.js" defer></script>
+
+    <nav class="header-navbar">
+        <div class="navbar-logo">
+            <a href="/tour/main"> <!-- 메인 페이지 경로 설정 -->
+                <img src="/img/logo.png" style="width: 10vw; height: 8vh; position: absolute; left: 2vw; top: 1vh;">
+
+            </a>
+        </div>
+
+
+
+        <div class="navbar-info">
+            <!-- 세션 값이 있을 때 -->
+            <div th:if="${session != null && session.sessUid != null}">
+                <div class="first-box">
+                    <a th:href="@{/user/info/{sessUid}(sessUid=${session.sessUid})}"
+                       th:text="${session.sessUname} + '님의 정보'"></a>
+                </div>
+                <div class="secondBox">
+                    <a href="/user/logout">
+                        로그아웃
+                    </a>
+                </div>
+            </div>
+
+            <!-- 세션 값이 없을 때 -->
+            <div th:if="${session == null || session.sessUid == null}">
+                <div class="first-box">
+                    <a href="/user/login">로그인</a>
+                </div>
+                <div class="secondBox">
+                    <a href="/user/register">회원가입</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>
