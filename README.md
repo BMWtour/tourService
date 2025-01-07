@@ -14,6 +14,7 @@
 - 사용자 트래픽 분석 및 집계 쿼리 활용
 - Elasticsearch의 위치 정보 기반 검색 쿼리 활용
 - Naver Maps Open API를 활용한 지도 기능 활용
+- word2Vec 데이터 모델을 활용한 추천 기능 제작
 
 
 ## 기술 스택
