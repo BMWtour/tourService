@@ -11,8 +11,12 @@
 <body>
 <div th:fragment="header">
 <nav class="header-navbar">
-    <img src="\img\logo.png" style="width: 10vw; height: 8vh; position: absolute; left: 2vw; top: 1vh;">
+    <div class="navbar-logo">
+        <a href="/tour/main"> <!-- 메인 페이지 경로 설정 -->
+            <img src="/img/logo.png" style="width: 10vw; height: 8vh; position: absolute; left: 2vw; top: 1vh;">
 
+        </a>
+    </div>
     <div class="search-container">
 
         <select th:name="region" th:id="region" class="region" title="지역을 선택하세요">
@@ -59,6 +63,7 @@
             <div class="first-box">
                 <a th:href="@{/user/info/{sessUid}(sessUid=${session.sessUid})}"
                    th:text="${session.sessUname} + '님의 정보'"></a>
+            </div>
             <div class="secondBox">
                 <a href="/user/logout">
                     <span>로그아웃</span>
