@@ -114,7 +114,7 @@
                     <!-- 키워드를 a 태그로 반복하여 표시 -->
                     <div class="keywords">
                 <span th:each="keyword : ${#strings.arraySplit(recommendation.keyword, ',')}">
-                    <a th:href="@{|/tour/list?p=1&c=${recommendation.category}&k=${keyword}&sf=category&sd=asc|}" th:text="'#' + ${keyword}"></a>
+                    <a th:href="@{|/tour/list?p=1&c=${recommendation.category}&k=${keyword.replaceAll(' ', '')}&sf=category&sd=asc|}" th:text="'#' + ${keyword}"></a>
                 </span>
                     </div>
                 </div>
