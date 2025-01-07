@@ -31,7 +31,7 @@ public class NaviService {
         params.put("goal", dto.getGoal().toQueryValue());
         //direction5 api 요청
         DirectionNcpResponse response = mapApiService.direction5(params);
-        log.info("response: {}", response);
+        //log.info("response: {}", response);
         return response;
     }
     
