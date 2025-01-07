@@ -5,17 +5,31 @@
             padding: 20px 20px;
         }
 
-        .navbar-info {
-            display: flex;
-            flex-direction: row;
-            /* 기본값: 주축을 가로 방향으로 설정 */
-            justify-content: space-between;
-            /* 아이템 간 간격을 균등 분배 */
-            position: absolute;
-            left: 85vw;
-            top:3.5vh;
-            width: 11vw;
-        }
+       .navbar-logo img {
+           transition: transform 0.2s ease;
+       }
+
+       .navbar-logo img:hover {
+           transform: scale(1.05); /* 이미지 확대 효과 */
+       }
+       .navbar-info {
+           display: flex;
+           flex-direction: row; /* 가로 정렬 */
+           align-items: center; /* 세로 중앙 정렬 */
+           justify-content: space-between;
+           gap: 300px; /* 아이템 간 간격 */
+           position: absolute;
+           left: 85vw;
+           top: 3.5vh;
+           width: auto; /* 너비를 내용에 맞게 조정 */
+       }
+
+       .first-box, .secondBox {
+           display: inline-block; /* 한 줄로 표시 */
+       }
+       .first-box {
+           margin-right: 30px;
+       }
 
         .search-container {
             position: absolute;

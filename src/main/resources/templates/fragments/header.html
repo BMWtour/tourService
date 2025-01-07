@@ -4,35 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>tourService Footer</title>
-    <style>
-    </style>
 </head>
 
 <body>
 <div th:fragment="header">
 <nav class="header-navbar">
-    <img src="\img\logo.png" style="width: 10vw; height: 8vh; position: absolute; left: 2vw; top: 1vh;">
+    <div class="navbar-logo">
+        <a href="/tour/main"> <!-- 메인 페이지 경로 설정 -->
+            <img src="/img/logo.png" style="width: 10vw; height: 8vh; position: absolute; left: 2vw; top: 1vh;">
 
+        </a>
+    </div>
     <div class="search-container">
 
         <select th:name="region" th:id="region" class="region" title="지역을 선택하세요">
             <option value="" disabled selected>지역</option>
             <option value="전체">전체</option>
-            <option value="강원">강원</option>
+            <option value="서울">서울</option>
             <option value="경기">경기</option>
+            <option value="강원">강원</option>
             <option value="경상남도">경상남도</option>
             <option value="경상북도">경상북도</option>
             <option value="광주">광주</option>
             <option value="대구">대구</option>
             <option value="대전">대전</option>
             <option value="부산">부산</option>
-            <option value="서울">서울</option>
             <option value="인천">인천</option>
             <option value="전라남도">전라남도</option>
             <option value="전라북도">전라북도</option>
-            <option value="제주">제주</option>
             <option value="충청남도">충청남도</option>
             <option value="충청북도">충청북도</option>
+            <option value="제주">제주</option>
         </select>
 
 
@@ -48,7 +50,7 @@
         </select>
 
         <input type="text" th:name="keyword" th:id="keyword" placeholder="검색어를 입력하세요">
-        <button type="submit">검색</button>
+        <button id="search-Button" type="submit" onclick="tourList();">검색</button>
     </div>
 
 
@@ -59,6 +61,7 @@
             <div class="first-box">
                 <a th:href="@{/user/info/{sessUid}(sessUid=${session.sessUid})}"
                    th:text="${session.sessUname} + '님의 정보'"></a>
+            </div>
             <div class="secondBox">
                 <a href="/user/logout">
                     <span>로그아웃</span>
@@ -75,6 +78,7 @@
                 <a href="/user/register">회원가입</a>
             </div>
         </div>
+    </div>
     </div>
 </nav>
 </div>
