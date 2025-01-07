@@ -1,13 +1,22 @@
 package com.lion.BMWtour.service;
 
 
-import com.lion.BMWtour.entitiy.TourInfo;
+import com.lion.BMWtour.dto.TourInfoDto;
+import com.lion.BMWtour.entity.TourInfo;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 
-import java.awt.print.Book;
+import java.util.List;
 
 
 public interface TourInfoService {
-    void tourInfoInsert(TourInfo tourInfo);
-    Page<TourInfo> getTourInfos(int page, String field, String query);
+
+    public static final int PAGE_SIZE = 10;
+
+    // void tourInfoBulkInsert();
+
+    Page<TourInfoDto> getPagedTourInfos(HttpSession session, int page, String category, String address, String keyword, String sortField, String sortDirection);
+    TourInfo getTourInfo(String tourId);
+    //상세페이지 추천관광지
+    List<TourInfo> getRecommendations(String tourId);
 }

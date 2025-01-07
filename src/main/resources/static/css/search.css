@@ -1,0 +1,286 @@
+a {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+.disabled-link {
+    pointer-events: none;
+}
+
+/* 메인 컨테이너  */
+.main-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1vw;
+    position: relative;
+    left: 3vw;
+    top: 5vh;
+}
+
+/* 지도 크기 설정 */
+#map {
+    position: relative;
+    left: 5vw;
+    width: 30vw;
+    height: 80vh;
+}
+
+/* 검색 결과 및 정렬 상위 컨테이너 */
+.search-row-container {
+    position: relative;
+    width: 50vw;
+    display: flex;
+    gap: 2vh;
+}
+
+/* 정렬 컨테이너 */
+.sort-container {
+    position: relative;
+    width: 25vw;
+    left: 13vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sort-options {
+    display: flex;
+    align-items: center;
+}
+.sort-options label {
+    font-size: 14px;
+    margin-right: 10px;
+    color: #333;
+}
+.sort-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+.sort-select:focus {
+    border-color: #007BFF;
+}
+.sort-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.sort-button {
+    padding: 6px 12px;
+    margin-left: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #007BFF;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.sort-button:hover {
+    background-color: #007BFF;
+    color: white;
+}
+.sort-button:focus {
+    outline: none;
+}
+
+/* Reset button */
+.reset-button {
+    padding: 6px 12px;
+    margin-right: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.reset-button:hover {
+    background-color: #007BFF;
+    color: white;
+}
+
+.reset-button:focus {
+    outline: none;
+}
+
+
+/* 스크롤 컨테이너 */
+.scroll-container {
+    width: 60vw;
+    height: 60vh;
+    overflow-y: auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2vw;
+    padding: 2vw;
+}
+
+/* 스크롤바 디자인 */
+.scroll-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background-color: #333333;
+    border-radius: 10px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+    background-color: #0056b3;
+}
+
+/* 스크롤 컨테이너 내 아이템 */
+.search-item {
+    border-radius: 1vw;
+    background-color: #f0f0f0;
+    display: grid;
+    grid-template-columns: 20% 40% 40%;
+    width: 25vw;
+    height: 12vh;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition-duration: 0.1s;
+    transition-timing-function: linear;
+}
+
+/* 클릭된 항목이 살짝 튀어나오게 하기 */
+.search-item.clicked {
+    transform: translateY(-10px); /* 살짝 위로 이동 */
+    box-shadow: 0 12px 18px rgba(0, 0, 0, 0.3); /* 강조 효과 */
+}
+
+/* 클릭된 항목에 호버 효과 추가 */
+.search-item:hover {
+    transform: translateY(-3px);
+    /* 살짝 위로 */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.img-container {
+    display: grid;
+    align-content: center;
+    justify-items: center;
+}
+
+/* 스크롤 컨테이너 내 아이템 내 왼쪽 & 오른쪽 컨테이너 */
+.rightinfo-container,
+.leftinfo-container {
+    display: grid;
+    align-content: space-evenly;
+}
+.Text {
+    font-size: 0.7vw;
+}
+.col {
+    font-weight: bold;
+    font-size: 0.8vw;
+}
+
+.rightinfo,
+.leftinfo {
+    overflow: hidden;
+    /* 넘치는 텍스트 숨기기 */
+    text-overflow: ellipsis;
+    /* 넘칠 때 ... 표시 */
+    white-space: nowrap;
+    /* 텍스트 줄바꿈 방지 */
+    width: 100%;
+    /* 텍스트가 넘칠 수 있도록 적절한 너비 설정 */
+}
+
+.searchResultImg {
+    width: 5vw;
+    height: 8vh;
+    border-radius: 1vw;
+    /* border-radious -> border-radius로 수정 */
+}
+
+
+/* Pagination container */
+.pagination {
+    width: 50vw;
+    position: relative;
+    left: -3vw;
+    bottom: 3vh;
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3vw;
+    padding: 10px;
+}
+
+/* Page item */
+.page-item {
+    list-style: none;
+}
+
+/* Page links */
+.page-link {
+    display: flex;
+    justify-content: center;
+    /* 수평 중앙 정렬 */
+    align-items: center;
+    /* 수직 중앙 정렬 */
+
+    text-decoration: none;
+    color: #007bff;
+    padding: 8px 14px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+/* Active page link */
+.page-item.active .page-link {
+    background-color: #f0f0f0;
+    border-color: #f0f0f0;
+    color: #ffffff;
+
+}
+
+/* Disabled page link (no interaction) */
+.page-link.disabled {
+    color: #6c757d;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* Hover effect */
+.page-link:hover {
+    background-color: #f0f0f0;
+    border-color: #f0f0f0;
+    color: #ffffff;
+}
+
+
+.image-link {}
+
+
+
+/* Icon styling */
+.page-link i {
+    font-size: 16px;
+}
+
+/* Add margin to page item */
+.page-item+.page-item {
+    margin-left: 4px;
+}

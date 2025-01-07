@@ -2,16 +2,13 @@ package com.lion.BMWtour.controller;
 
 //import lombok.RequiredArgsConstructor;
 
-import com.lion.BMWtour.entitiy.User;
-import com.lion.BMWtour.request.FileRequest;
+
+import com.lion.BMWtour.dto.request.FileRequest;
+import com.lion.BMWtour.dto.request.RegisterUserRequest;
+import com.lion.BMWtour.entity.User;
 import com.lion.BMWtour.service.FileUploadService;
 import com.lion.BMWtour.service.UserService;
 import jakarta.servlet.http.HttpSession;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +19,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.AccessDeniedException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/user")
@@ -51,46 +54,25 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseBody
-    public ResponseEntity<?> registerProc(
-            String uid,
-            String pwd,
-            String pwd2,
-            String user_nickname,
-            @RequestParam(value = "category", required = false) String[] category,
-            @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<?> registerProc( @RequestParam("user_id") String userId,
+                                           @RequestParam("user_nickname") String userNickname,
+                                           @RequestParam("pwd") String password,
+                                           @RequestParam("pwd2") String confirmPassword,
+                                           @RequestParam(value = "category", required = false) String[] category,
+                                           @RequestParam(value = "file", required = false) MultipartFile file ){
+        RegisterUserRequest request = new RegisterUserRequest(userId, userNickname, password, confirmPassword, category, file);
+        // 파일 디버깅
 
-        if (userService.findByUserId(uid) == null && pwd.equals(pwd2) && pwd.length() >= 4) {
-            String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
-            String interest1 = category != null && category.length > 0 ? category[0] : null;
-            String interest2 = category != null && category.length > 1 ? category[1] : null;
-            String interest3 = category != null && category.length > 2 ? category[2] : null;
-
-            String userImgUri = null;
-            if (!file.isEmpty()) {
-                FileRequest fileRequest = new FileRequest(file);
-                String uuid = fileUploadService.uploadFile(fileRequest);
-                userImgUri = "https://storage.cloud.google.com/gcs_img_tour_service/" + uuid;
-            }
-
-            User user = User.builder()
-                    .userId(uid)
-                    .userPw(hashedPwd)
-                    .userNickname(user_nickname)
-                    .interest1(interest1)
-                    .interest2(interest2)
-                    .interest3(interest3)
-                    .userImgUri(userImgUri)
-                    .useYn("yes")
-                    .provider("tourApp")
-                    .regDate(LocalDate.now())
-                    .build();
-            userService.registerUser(user);
-
+        try {
+            userService.registerUser(request);
             return ResponseEntity.ok(Collections.singletonMap("success", true));
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("success", false));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("success", false));
         }
 
-        return ResponseEntity.badRequest()
-                .body(Collections.singletonMap("success", false));
     }
 
 
@@ -114,8 +96,95 @@ public class UserController {
 
         return "common/alertMsg";
     }
-    @GetMapping
-    public String logout() {
-        return "redirect:/user/login";
+
+    @GetMapping("/info/{user_id}")
+    public String updateUserInfo(@PathVariable String user_id, HttpSession session, Model model) throws AccessDeniedException {
+        userService.validateUserAccess(user_id, session);
+//        Stirng test = session.getAttribute(user_id);
+//        System.out.println();
+        User user = userService.findByUserId(user_id);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found for ID: " + user_id);
+        }
+        model.addAttribute("user", user);
+        model.addAttribute("userCategories", Arrays.toString(user.getInterestList()));
+        return "user/info";
+    }
+    @GetMapping("/update/info/{user_id}")
+    public String updateUserInfoForm(@PathVariable String user_id, Model model, HttpSession session) throws AccessDeniedException {
+        userService.validateUserAccess(user_id, session);
+        User user = userService.findByUserId(user_id);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found for ID: " + user_id);
+        }
+        System.out.println(Arrays.toString(user.getInterestList()));
+        System.out.println(user.getUserNickname());
+        model.addAttribute("user", user);
+        model.addAttribute("userCategories", Arrays.toString(user.getInterestList()));
+        return "user/updateInfo";
+    }
+    @PostMapping("/update/info")
+    @ResponseBody
+    public ResponseEntity<?> updateUserProc(
+            String user_id,
+            String user_nickname,
+            @RequestParam(value = "category", required = false) String[] category,
+            @RequestParam("file") MultipartFile file) throws IOException {
+
+        User user = userService.findByUserId(user_id);
+
+        if (user == null) {
+            return ResponseEntity.badRequest()
+                    .body(Collections.singletonMap("success", false));
+        }
+
+        if (user_nickname != null && !user_nickname.isEmpty()) {
+            user.setUserNickname(user_nickname); // 닉네임 변경
+        }
+
+        if (category != null && category.length >= 3 && category.length <= 5) {
+            user.setInterestList(category); // 관심사 업데이트
+        }
+
+        if (!file.isEmpty()) {
+            FileRequest fileRequest = new FileRequest(file);
+            String uuid = fileUploadService.uploadFile(fileRequest);
+            String userImgUri = "https://storage.cloud.google.com/gcs_img_tour_service/" + uuid;
+            user.setUserImgUri(userImgUri); // 프로필 사진 업데이트
+        }
+
+        userService.updateUser(user); // 변경된 데이터 저장
+        return ResponseEntity.ok(Collections.singletonMap("success", true));
+    }
+
+    @GetMapping("/update/password/{user_id}")
+    public String updatePasswordForm(@PathVariable String user_id, Model model,HttpSession session) throws AccessDeniedException {
+        userService.validateUserAccess(user_id, session);
+        User user = userService.findByUserId(user_id);
+        model.addAttribute("user", user);
+        return "user/updatePassword";
+    }
+
+    @PostMapping("/update/password")
+    @ResponseBody
+    public ResponseEntity<?> updatePasswordProc(
+            String user_id,
+            String pwd,
+            String pwd2) {
+
+
+        User user = userService.findByUserId(user_id);
+        if (user == null) {
+            return ResponseEntity.badRequest()
+                    .body(Collections.singletonMap("success", false));
+        }
+
+        if (pwd != null && pwd.equals(pwd2) && pwd.length() >= 4) {
+            String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
+            user.setUserPw(hashedPwd); // 비밀번호만 변경
+        }
+
+        userService.updateUser(user); // 변경된 데이터 저장
+        return ResponseEntity.ok(Collections.singletonMap("success", true));
     }
 }
