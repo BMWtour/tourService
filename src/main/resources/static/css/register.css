@@ -12,7 +12,7 @@ h2 {
 
 
 .container {
-  position: relative;
+  position: static;
   background-color: #fff;
   border-radius: 10px;
   width: 768px;
@@ -23,7 +23,7 @@ h2 {
 
 
 .form-container {
-  position: relative; /* form-container를 container 안에 배치 */
+  position: static; /* form-container를 container 안에 배치 */
   z-index: 1; /* z-index를 낮게 설정 */
   padding: 20px; /* 여백 추가 */
   box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 계산 */

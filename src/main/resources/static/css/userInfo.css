@@ -15,13 +15,13 @@ h2 {
     border-radius: 10px;
     width: 768px;
     height: auto; /* 콘텐츠에 맞게 높이 조정 */
-    position: relative; /* 내부 요소가 컨테이너 기준으로 배치되도록 설정 */
+    position: static; /* 내부 요소가 컨테이너 기준으로 배치되도록 설정 */
     overflow: visible; /* 콘텐츠가 잘리지 않도록 설정 */
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25), 0 10px 20px rgba(0, 0, 0, 0.22); /* 고정된 그림자 */
 }
 
 .form-container {
-    position: relative; /* form-container를 container 안에 배치 */
+    position: static; /* form-container를 container 안에 배치 */
     z-index: 1; /* z-index를 낮게 설정 */
     padding: 20px; /* 여백 추가 */
     box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 계산 */
