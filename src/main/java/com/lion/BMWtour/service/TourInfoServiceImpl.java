@@ -1,17 +1,13 @@
 package com.lion.BMWtour.service;
 
-import com.lion.BMWtour.dto.SearchAutocompleteResponse;
-import com.lion.BMWtour.dto.TourInfoDto;
-import com.lion.BMWtour.entity.Category;
-import com.lion.BMWtour.entity.TourInfo;
-import com.lion.BMWtour.entity.User;
-import com.lion.BMWtour.repository.CategoryRepository;
-import com.lion.BMWtour.repository.TourInfoRepository;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,14 +19,16 @@ import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import com.lion.BMWtour.dto.TourInfoDto;
+import com.lion.BMWtour.entity.Category;
+import com.lion.BMWtour.entity.TourInfo;
+import com.lion.BMWtour.entity.User;
+import com.lion.BMWtour.repository.CategoryRepository;
+import com.lion.BMWtour.repository.TourInfoRepository;
+
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -322,12 +320,12 @@ public class TourInfoServiceImpl implements TourInfoService {
     }
 
     @Override
-    public List<SearchAutocompleteResponse> getSearchAutocompleteList(String word) {
+    public List<String> getSearchAutocompleteList(String word) {
         StringQuery query = new StringQuery(String.format("""
             {
               "multi_match": {
                 "query": "%s",
-                "fields": ["title.ngram", "summary"],
+                "fields": ["title.ngram^2", "summary"], // title에 더 높은 가중치
                 "fuzziness": "AUTO"
               }
             }
@@ -335,21 +333,12 @@ public class TourInfoServiceImpl implements TourInfoService {
 
         NativeQuery nativeQuery = NativeQuery.builder()
             .withQuery(query)
-            .withSort(Sort.by(Sort.Direction.ASC, "title"))
             .withMaxResults(10)
             .build();
 
         SearchHits<TourInfo> searchHits = elasticsearchTemplate.search(nativeQuery, TourInfo.class);
         return searchHits.getSearchHits().stream()
-            .map(hit -> SearchAutocompleteResponse.builder()
-                .title(hit.getContent().getTitle())
-                .build())
+            .map(hit -> hit.getContent().getTitle())
             .toList();
     }
 }
-
-
-
-
-
-

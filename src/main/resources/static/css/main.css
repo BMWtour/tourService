@@ -75,10 +75,6 @@ body {
     border-radius: 50%;
 }
 
-p.tour-title {
-    height: 15px;
-}
-
 p.tour-address {
     font-size: small;
 }
