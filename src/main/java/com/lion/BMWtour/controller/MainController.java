@@ -30,7 +30,7 @@ public class MainController {
 
 		model.addAttribute("popularRegions", popularRegionsList);
 		model.addAttribute("popularByCategory", popularByCategoryList);
-		return "/main/main";
+		return "main/main";
 	}
 
 	@GetMapping("/tour/nearby")
