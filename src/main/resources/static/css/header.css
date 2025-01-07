@@ -12,23 +12,37 @@
        .navbar-logo img:hover {
            transform: scale(1.05); /* 이미지 확대 효과 */
        }
+
        .navbar-info {
-           display: flex;
-           flex-direction: row; /* 가로 정렬 */
-           align-items: center; /* 세로 중앙 정렬 */
-           justify-content: space-between;
-           gap: 300px; /* 아이템 간 간격 */
-           position: absolute;
-           left: 85vw;
-           top: 3.5vh;
-           width: auto; /* 너비를 내용에 맞게 조정 */
+            display: flex;
+            flex-direction: row; /* 가로 정렬 */
+            align-items: center; /* 세로 중앙 정렬 */
+            gap: 20px; /* 간격을 20px로 조정 */
+            position: absolute;
+            right: 20px;
+            top: 3.5vh;
+            width: auto; /* 너비는 내용에 맞게 자동 조정 */
+            white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+        }
+       .first-box {
+           margin-right: 20px;
        }
 
        .first-box, .secondBox {
            display: inline-block; /* 한 줄로 표시 */
+           padding: 5px;
+           position: relative;
+           top: -0.5vh;
+           border: 2px solid #d8d8d8;
+           border-radius: 0.3vw;
        }
-       .first-box {
-           margin-right: 30px;
+       .first-box a, .secondBox a {
+           overflow: hidden; /* 텍스트 넘칠 경우 숨김 */
+           text-overflow: ellipsis; /* 말줄임표(...) 표시 */
+           white-space: nowrap; /* 줄바꿈 방지 */
+           max-width: 150px; /* 최대 너비 설정 */
+           display: inline-block;
+           vertical-align: middle; /* 필요하면 이 옵션 추가 */
        }
 
         .search-container {
@@ -74,10 +88,3 @@ color: inherit;
 text-decoration: none;
 }
 
-        .secondBox {
-            padding: 3px;
-            position: relative;
-            top: -0.5vh;
-            border: 2px solid #d8d8d8;
-            border-radius: 0.3vw;
-        }
