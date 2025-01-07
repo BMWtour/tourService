@@ -22,11 +22,11 @@ h2 {
   text-align: center;
 }
 
-span {
+.center-container span {
   font-size: 12px;
 }
 
-a {
+.center-container a {
 
   font-size: 14px;
   text-decoration: none;
