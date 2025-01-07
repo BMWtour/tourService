@@ -29,13 +29,31 @@ let mapOptions = {
 };
 
 //-----------관광지 위치 맵(페이지 상단)-----------
-//관광지 위치 맵
-var tourMap = new naver.maps.Map('tourMap', mapOptions);
-//관광지 위치 마커
-var marker = new naver.maps.Marker({
-    position: new naver.maps.LatLng(tourAttrLatitude, tourAttrLongitude),
-    map     : tourMap,
-});
+// 관광지 위치 맵
+// var tourMap = new naver.maps.Map('tourMap', mapOptions);
+// 관광지 위치 마커
+// var marker = new naver.maps.Marker({
+//     position: new naver.maps.LatLng(tourAttrLatitude, tourAttrLongitude),
+//     map     : tourMap,
+// });
+
+//-----------관광지 위치 파노라마 테스트-----------
+    var pano = null;
+
+    naver.maps.onJSContentLoaded = function() {
+    // 기존 맵 객체 대신 파노라마 객체를 생성합니다.
+    pano = new naver.maps.Panorama("tourMap", {
+        position: new naver.maps.LatLng(tourAttrLatitude, tourAttrLongitude),
+        pov: {
+            pan: -135,
+            tilt: 29,
+            fov: 100
+        },
+        flightSpot: true, // 항공 아이콘 표시 여부, default: true
+    });
+};
+
+
 
 //--------길찾기 맵(페이지 하단)-----------
 //길찾기 맵
