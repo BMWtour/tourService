@@ -24,11 +24,13 @@
 - HTML
 - Javascript
 - CSS
+- Thymeleaf
 
 ### Back-End
 
 - Java
 - Spring Boot
+- Spring Data Elasticsearch
 - Elasticsearch
 - Google Cloud Platform
 - Docker
