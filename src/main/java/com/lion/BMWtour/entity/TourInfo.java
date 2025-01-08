@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Document(indexName = "tourinfos2")
+@Document(indexName = "tourinfos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
