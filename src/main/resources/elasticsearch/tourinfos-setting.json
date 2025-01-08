@@ -1,4 +1,5 @@
 {
+  "settings": {
     "number_of_shards": 3,
     "number_of_replicas": 1,
     "index.refresh_interval": "-1",
@@ -7,7 +8,7 @@
       "char_filter": {
         "custom_text_remover": {
           "type": "pattern_replace",
-          "pattern": "(\\n|<br>)",  
+          "pattern": "(\\n|<br>)",
           "replacement": ""
         }
       },
@@ -15,6 +16,15 @@
         "nori_tokenizer": {
           "type": "nori_tokenizer",
           "decompound_mode": "mixed"
+        },
+        "ngram_tokenizer": {
+          "type": "ngram",
+          "min_gram": 2,
+          "max_gram": 3,
+          "token_chars": [
+            "letter",
+            "digit"
+          ]
         }
       },
       "analyzer": {
@@ -23,10 +33,23 @@
           "tokenizer": "nori_tokenizer",
           "char_filter": [
             "html_strip",
-            "custom_text_remover"  
+            "custom_text_remover"
           ],
           "filter": [
-            "nori_part_of_speech"
+            "nori_part_of_speech",
+            "stop"
+          ]
+        },
+        "my_ngram_analyzer": {
+          "type": "custom",
+          "tokenizer": "ngram_tokenizer",
+          "char_filter": [
+            "html_strip",
+            "custom_text_remover"
+          ],
+          "filter": [
+            "nori_part_of_speech",
+            "stop"
           ]
         }
       },
@@ -34,9 +57,10 @@
         "custom_normalizer": {
           "type": "custom",
           "char_filter": [
-            "custom_text_remover"  
+            "custom_text_remover"
           ]
         }
       }
     }
   }
+}
