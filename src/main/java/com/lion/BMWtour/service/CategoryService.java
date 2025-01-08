@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class CategoryService {
@@ -27,5 +29,11 @@ public class CategoryService {
 
         // 데이터 저장
         categoryRepository.saveAll(categories);
+    }
+    public List<Category> getCategories() {
+
+        Iterable<Category> iterable = categoryRepository.findAll();
+        return StreamSupport.stream(iterable.spliterator(), false)
+                .collect(Collectors.toList());
     }
 }
