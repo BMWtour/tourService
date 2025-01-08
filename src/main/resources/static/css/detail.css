@@ -127,7 +127,7 @@ body {
     max-width: 250px;
     width: 100%; /* 카드 크기 */
     padding: 15px; /* 전체 패딩 추가 */
-    height: 25vh;
+    height: 30vh;
 }
 
 .suggestionItem:hover {
@@ -139,7 +139,7 @@ body {
     height: 17vh;
     border-radius: 5px 5px 0 0; /* 이미지 모서리 */
     object-fit: cover;
-    padding: 5px; /* 이미지 패딩 추가 */
+    padding: 15px; /* 이미지 패딩 추가 */
 }
 
 .suggestionItem .container {
