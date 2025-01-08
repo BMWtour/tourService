@@ -10,6 +10,7 @@
     <link th:href="@{/css/footer.css}" rel="stylesheet">
     <title>간단한 지도 표시하기</title>
     <script type="text/javascript" th:src="@{|https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${mapClientId}}"></script>
+    <script type="text/javascript" th:src="|@{|https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${mapClientId}}&submodules=panorama|"></script>
     <title>관광지 상세 정보</title>
     <style>
 
@@ -113,7 +114,7 @@
                     <!-- 키워드를 a 태그로 반복하여 표시 -->
                     <div class="keywords">
                 <span th:each="keyword : ${#strings.arraySplit(recommendation.keyword, ',')}">
-                    <a th:href="@{|/tour/list?p=1&c=${recommendation.category}&k=${keyword}&sf=category&sd=asc|}" th:text="'#' + ${keyword}"></a>
+                    <a th:href="@{|/tour/list?p=1&c=${recommendation.category}&k=${keyword.replaceAll(' ', '')}&sf=category&sd=asc|}" th:text="'#' + ${keyword}"></a>
                 </span>
                     </div>
                 </div>

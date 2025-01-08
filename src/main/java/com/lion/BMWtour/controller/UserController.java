@@ -85,14 +85,22 @@ public class UserController {
     public String loginSuccess(HttpSession session, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = authentication.getName();
-
         User user = userService.findByUserId(uid);
         session.setAttribute("sessUid", uid);
         session.setAttribute("sessUname", user.getUserNickname());
-        String msg = user.getUserNickname() + "님 환영합니다." ;
-        String url = "/tour/main";
-        model.addAttribute("msg",msg);
-        model.addAttribute("url", url);
+        if (user.getInterestList()== null) {
+            String msg = user.getUserNickname() + "님은 관심사를 선택하지 않은 회원입니다. 페이지로 이동합니다";
+            String url = "/user/update/info/" + uid;
+            model.addAttribute("msg", msg);
+            model.addAttribute("url", url);
+        }
+        else {
+
+            String msg = user.getUserNickname() + "님 환영합니다.";
+            String url = "/tour/main";
+            model.addAttribute("msg", msg);
+            model.addAttribute("url", url);
+        }
 
         return "common/alertMsg";
     }

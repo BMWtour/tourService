@@ -101,11 +101,6 @@ public class TourInfoController {
         if (recommendations.contains(tourInfo)) {
             recommendations.remove(tourInfo);
         }
-        //추천관광지들의 키워드 String[]으로 묶기
-//        recommendations.forEach(recommendation -> {
-//            String[] keywordsArray = recommendation.getKeywords().split(", ");
-//            recommendation.setKeywords(Arrays.asList(keywordsArray));
-//        });
 
         tourLogService.saveTourLog(tourInfo);
         model.addAttribute("tourInfo", tourInfo);

@@ -8,6 +8,9 @@
 
 <body>
 <div th:fragment="header">
+
+<script src="/js/autocomplete.js" defer></script>
+
 <nav class="header-navbar">
     <div class="navbar-logo">
         <a href="/tour/main"> <!-- 메인 페이지 경로 설정 -->
@@ -49,7 +52,8 @@
             <option value="쇼핑">쇼핑</option>
         </select>
 
-        <input type="text" th:name="keyword" th:id="keyword" placeholder="검색어를 입력하세요">
+        <input type="text" th:name="keyword" th:id="keyword" placeholder="검색어를 입력하세요" autocomplete="off">
+        <ul id="autocomplete-list"></ul>
         <button id="search-Button" type="submit" onclick="tourList();">검색</button>
     </div>
 
@@ -64,7 +68,7 @@
             </div>
             <div class="secondBox">
                 <a href="/user/logout">
-                    <span>로그아웃</span>
+                    로그아웃
                 </a>
             </div>
         </div>
@@ -78,7 +82,6 @@
                 <a href="/user/register">회원가입</a>
             </div>
         </div>
-    </div>
     </div>
 </nav>
 </div>
