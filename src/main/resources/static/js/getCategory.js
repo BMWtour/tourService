@@ -12,25 +12,30 @@ function initializeCategories(containerId, warningId, maxSelection, minSelection
         warning.textContent = isValid ? "" : `최대 ${maxSelection}개, 최소 ${minSelection}개만 선택할 수 있습니다.`;
         callback(isValid);
     };
-    fetch("/api/proxy/categories")
+    fetch("/api/getCategory")
         .then((response) => response.json())
-        .then((data) => {
-            const categories = data.hits.hits.map((hit) => hit._source);
+        .then((categories) => {
+            const container = document.getElementById('categories-container');
 
             categories.forEach((category) => {
-                const details = document.createElement("details");
-                const summary = document.createElement("summary");
-                summary.textContent = category.name;
-                details.appendChild(summary);
+                // <details> 생성
+                const details = document.createElement('details');
+                details.className = 'category-details';
 
+                // <summary> 생성
+                const summary = document.createElement('summary');
+                summary.textContent = category.name;
+                summary.className = 'category-summary';
+                details.appendChild(summary);
                 // 카테고리를 열어둘지 결정하는 플래그
                 let hasCheckedSubcategory = false;
 
                 category.subcategories.forEach((subcategory) => {
-                    const checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
-                    checkbox.name = "category";
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = 'category';
                     checkbox.value = subcategory;
+
 
                     const label = document.createElement("label");
                     label.textContent = subcategory;
