@@ -97,8 +97,10 @@ public class TourInfoServiceImpl implements TourInfoService {
 
                 // 매칭시킨 하위카테고리
                 userMatchingInterestList = categoryAnduserSubcategory.getOrDefault(category, null);
+                query =   userMatchingInterestList != null ?
+                          NativeQuery.builder().withQuery(UserMatchQuery(category, address, keyword, userMatchingInterestList)).withSort(sort).withTrackScores(true).withPageable(pageable).build()
+                        : NativeQuery.builder().withQuery(DefaultMatchQuery(category, address, keyword)).withSort(sort).withTrackScores(true).withPageable(pageable).build();
 
-                query = NativeQuery.builder().withQuery(UserMatchQuery(category, address, keyword, userMatchingInterestList)).withSort(sort).withTrackScores(true).withPageable(pageable).build();
             }
             else{
                 query = NativeQuery.builder().withQuery(UserMatchQuery(category, address, keyword, userInterestList)).withSort(sort).withTrackScores(true).withPageable(pageable).build();
