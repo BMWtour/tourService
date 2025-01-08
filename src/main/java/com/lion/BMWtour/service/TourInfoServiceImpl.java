@@ -100,7 +100,11 @@ public class TourInfoServiceImpl implements TourInfoService {
 
                 query = NativeQuery.builder().withQuery(UserMatchQuery(category, address, keyword, userMatchingInterestList)).withSort(sort).withTrackScores(true).withPageable(pageable).build();
             }
+            else{
+                query = NativeQuery.builder().withQuery(UserMatchQuery(category, address, keyword, userInterestList)).withSort(sort).withTrackScores(true).withPageable(pageable).build();
+            }
         }
+
         SearchHits<TourInfo> searchHits = elasticsearchTemplate.search(query, TourInfo.class);
         List<TourInfoDto> TourInfoDtoList = searchHits.getSearchHits().stream().map(hit -> new TourInfoDto(hit.getContent(), hit.getScore())).toList();
         long totalHits = searchHits.getTotalHits();
@@ -164,10 +168,10 @@ public class TourInfoServiceImpl implements TourInfoService {
     }
 
     // 로그인 O 사용자 검색 쿼리
-    private Query UserMatchQuery(String category, String address, String keyword, List<String> preferenceList) {
+    private Query UserMatchQuery(String cat, String add, String keyword, List<String> preferenceList) {
 
-        category = createMatchCondition("category", category, "keyword");
-        address = createMatchCondition("address", address, "text");
+        String category = createMatchCondition("category", cat, "keyword");
+        String address = createMatchCondition("address", add, "text");
         String titlekeyword = createMatchCondition("title", keyword, "text");
         String summarykeyword = createMatchCondition("summary", keyword, "text");
         // preferenceList에 대해서 조건을 누적
@@ -189,7 +193,6 @@ public class TourInfoServiceImpl implements TourInfoService {
                                 %s
                               ],
                               "should": [
-                                %s,
                                 %s
                               ] , "minimum_should_match": 1
                             }
@@ -200,7 +203,7 @@ public class TourInfoServiceImpl implements TourInfoService {
                                 "bool": {
                                   "should": [
                                     %s
-                                  ] 
+                                  ]
                                 }
                               },
                               "weight": 2.0
@@ -209,7 +212,7 @@ public class TourInfoServiceImpl implements TourInfoService {
                           "boost_mode": "multiply"
                         }
                       }
-                    """, category, address, titlekeyword, summarykeyword, preferenceConditions.toString().trim());
+                    """, category, address, preferenceConditions.toString().trim(), preferenceConditions.toString().trim());
         } else {
             queryString = String.format("""
                     {
