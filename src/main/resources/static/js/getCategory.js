@@ -12,7 +12,7 @@ function initializeCategories(containerId, warningId, maxSelection, minSelection
         warning.textContent = isValid ? "" : `최대 ${maxSelection}개, 최소 ${minSelection}개만 선택할 수 있습니다.`;
         callback(isValid);
     };
-    fetch("http://104.198.205.64:9200/categories/_search?pretty")
+    fetch("/api/proxy/categories")
         .then((response) => response.json())
         .then((data) => {
             const categories = data.hits.hits.map((hit) => hit._source);
