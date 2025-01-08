@@ -1,3 +1,19 @@
+//-----------html이 다 뜨고나서, 개요 줄바꿈 처리 부분-------------
+window.onload = function() {
+    // HTML에서 'summaryText' 클래스를 가진 요소를 찾음
+    let textElement = document.querySelector('.summaryText');
+
+    // 요소의 텍스트를 가져옴
+    let text = textElement.innerText;
+
+    // 텍스트를 '. ' 기준으로 나누고 '<br>' 태그로 합침
+    let formattedText = text.split('. ').join('.<br>');
+
+    // 변환된 텍스트를 HTML에 삽입
+    textElement.innerHTML = formattedText;
+};
+
+
 //내 위치 찾기 좌표 받는 변수
 let myLatitude = "";
 let myLongitude = "";
