@@ -9,117 +9,129 @@ a {
 
 /* 메인 컨테이너  */
 .main-container {
+    margin: 2vw;
     display: flex;
     flex-direction: row;
     gap: 1vw;
-    position: relative;
-    left: 3vw;
-    top: 5vh;
+
 }
 
 /* 지도 크기 설정 */
 #map {
     position: relative;
-    left: 5vw;
     width: 30vw;
     height: 80vh;
 }
-
 /* 검색 결과 및 정렬 상위 컨테이너 */
-.search-row-container {
-    position: relative;
-    width: 50vw;
-    display: flex;
-    gap: 2vh;
+.search-row-container{
+display: flex;
+flex-direction:column;
+gap: 2vw;
 }
 
-/* 정렬 컨테이너 */
-.sort-container {
+/* 검색 결과 및 정렬 컨테이너 */
+.researchoption-container {
+    width: 45vw;
     position: relative;
-    width: 25vw;
     left: 13vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #ffffff;
     border-radius: 8px;
-    padding: 10px 20px;
+    padding: 1vw;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.sort-options {
+.count-options,
+.sort-options,
+.optionsend-buttons {
     display: flex;
     align-items: center;
+    gap: 5px;
 }
+.totalCount-options label,
+.count-options label,
 .sort-options label {
     font-size: 14px;
-    margin-right: 10px;
     color: #333;
 }
+
+.count-options input[type="radio"] {
+    accent-color: #007BFF;
+}
+
 .sort-select {
     padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
-    color: #333;
     background-color: #fff;
     cursor: pointer;
     transition: border-color 0.3s ease;
 }
+
 .sort-select:focus {
     border-color: #007BFF;
 }
-.sort-buttons {
-    display: flex;
-    align-items: center;
-}
 
-.sort-button {
-    padding: 6px 12px;
-    margin-left: 10px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
+.reset-button,
+.adjust-button {
     color: #007BFF;
-    cursor: pointer;
-    transition: all 0.3s ease;
 }
 
-.sort-button:hover {
-    background-color: #007BFF;
-    color: white;
-}
-.sort-button:focus {
-    outline: none;
-}
-
-/* Reset button */
-.reset-button {
-    padding: 6px 12px;
-    margin-right: 10px;
+button {
+    padding: 8px 15px;
     font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 5px;
     background-color: #fff;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.reset-button:hover {
-    background-color: #007BFF;
-    color: white;
-}
-
-.reset-button:focus {
+button:focus {
     outline: none;
 }
+
+button:disabled {
+    background-color: #f0f0f0;
+    /* 비활성화된 버튼의 배경 색상 */
+    color: #ccc;
+    /* 비활성화된 버튼의 텍스트 색상 */
+}
+
+/* 비활성화된 버튼에는 hover 스타일이 적용되지 않도록 */
+button:disabled:hover {
+    background-color: #f0f0f0;
+    color: #ccc;
+}
+
+button:hover {
+    background-color: #007BFF;
+    color: #fff;
+}
+
+.button-active {
+    background-color: #007BFF;
+    color: #fff;
+}
+
+
+
+
+
+
+
+
 
 
 /* 스크롤 컨테이너 */
 .scroll-container {
-    width: 60vw;
-    height: 60vh;
+    position: relative;
+    left: 3vw;
+    width: 57vw;
+    height: 62vh;
     overflow-y: auto;
     background-color: #fff;
     border-radius: 8px;
@@ -127,13 +139,13 @@ a {
     box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
-    gap: 2vw;
-    padding: 2vw;
+    gap: 1vw;
+    padding: 0.7vw;
 }
 
 /* 스크롤바 디자인 */
 .scroll-container::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 .scroll-container::-webkit-scrollbar-thumb {
@@ -151,8 +163,8 @@ a {
     background-color: #f0f0f0;
     display: grid;
     grid-template-columns: 20% 40% 40%;
-    width: 25vw;
-    height: 12vh;
+    width: 27vw;
+    height: 10vh;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition-duration: 0.1s;
     transition-timing-function: linear;
@@ -194,20 +206,15 @@ a {
 .rightinfo,
 .leftinfo {
     overflow: hidden;
-    /* 넘치는 텍스트 숨기기 */
     text-overflow: ellipsis;
-    /* 넘칠 때 ... 표시 */
     white-space: nowrap;
-    /* 텍스트 줄바꿈 방지 */
-    width: 100%;
-    /* 텍스트가 넘칠 수 있도록 적절한 너비 설정 */
+    width: 80%;
 }
 
 .searchResultImg {
     width: 5vw;
     height: 8vh;
     border-radius: 1vw;
-    /* border-radious -> border-radius로 수정 */
 }
 
 
@@ -215,10 +222,8 @@ a {
 .pagination {
     width: 50vw;
     position: relative;
-    left: -3vw;
-    bottom: 3vh;
-
-
+    left: 3vw;
+    bottom: 5vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -271,7 +276,6 @@ a {
 }
 
 
-.image-link {}
 
 
 
