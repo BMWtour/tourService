@@ -106,7 +106,7 @@
             </div>
         </div>
         <div class="suggestion">
-            <p id="suggestionPlainText">이런 곳은 어떠세요?</p>
+            <p id="suggestionPlainText" class="tourInfoColumn">이런 곳은 어떠세요?</p>
             <div class="suggestionItems">
                 <div class="suggestionItem" th:each="recommendation : ${recommendations}">
                     <a th:href="@{/tour/detail/{tourId}(tourId=${recommendation.id})}" th:text="${recommendation.title}"></a>
