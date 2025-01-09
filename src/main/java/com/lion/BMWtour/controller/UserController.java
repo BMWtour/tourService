@@ -3,6 +3,7 @@ package com.lion.BMWtour.controller;
 //import lombok.RequiredArgsConstructor;
 
 
+import com.lion.BMWtour.dto.request.DeleteRequest;
 import com.lion.BMWtour.dto.request.FileRequest;
 import com.lion.BMWtour.dto.request.RegisterUserRequest;
 import com.lion.BMWtour.entity.User;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 
 @Controller
@@ -184,15 +186,34 @@ public class UserController {
         User user = userService.findByUserId(user_id);
         if (user == null) {
             return ResponseEntity.badRequest()
-                    .body(Collections.singletonMap("success", false));
+                    .body(Collections.singletonMap("fail", false));
         }
 
         if (pwd != null && pwd.equals(pwd2) && pwd.length() >= 4) {
             String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
             user.setUserPw(hashedPwd); // 비밀번호만 변경
         }
-
         userService.updateUser(user); // 변경된 데이터 저장
         return ResponseEntity.ok(Collections.singletonMap("success", true));
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteUserProc(@RequestBody DeleteRequest deleteRequest) {
+        // "탈퇴하겠습니다" 검증
+        if (!"탈퇴하겠습니다".equals(deleteRequest.getConfirmationText())) {
+            return ResponseEntity.badRequest().body(Map.of("error", "확인 문구가 올바르지 않습니다."));
+        }
+
+        // 탈퇴 처리 로직 (DB에서 사용자 삭제)
+        boolean isDeleted = userService.deleteUserById(deleteRequest.getUserId());
+        if (isDeleted) {
+            System.out.println("controller 탈퇴 성공");
+            return ResponseEntity.ok(Map.of("message", "회원 탈퇴가 완료되었습니다."));
+        } else {
+            // 탈퇴 실패 응답
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "회원 탈퇴에 실패했습니다."));
+        }
+    }
+
 }

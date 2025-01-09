@@ -26,4 +26,5 @@ public interface UserService {
 
     void updateUser(User user);
     void validateUserAccess(String userId, HttpSession session) throws AccessDeniedException;
+    boolean deleteUserById(String userId);
 }

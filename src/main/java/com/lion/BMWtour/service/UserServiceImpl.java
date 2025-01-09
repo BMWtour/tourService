@@ -8,9 +8,16 @@ import com.lion.BMWtour.entity.User;
 import com.lion.BMWtour.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.core.query.DeleteQuery;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.management.Query;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
@@ -21,6 +28,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final FileUploadService fileUploadService;
+    private final ElasticsearchTemplate elasticsearchTemplate;
+
 
     @Override
     public User findByUserId(String userId) {
@@ -137,6 +146,20 @@ public class UserServiceImpl implements UserService {
         String loggedInUserId = getLoggedInUserId(session);
         if (!loggedInUserId.equals(userIdFromRequest)) {
             throw new AccessDeniedException("접근 권한이 없습니다.");
+        }
+    }
+    @Override
+    public boolean deleteUserById(String userId) {
+        System.out.println(userId);
+        User user = findByUserId(userId);
+        try {
+            // user.getId()를 사용하여 UUID로 문서 삭제
+            String uuid = user.getId();
+            elasticsearchTemplate.delete(uuid, User.class);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
