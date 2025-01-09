@@ -1,29 +1,15 @@
 package com.lion.BMWtour.service;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.http.HttpHost;
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.springframework.core.io.Resource;
+import com.lion.BMWtour.dto.TourInfoDto;
+import com.lion.BMWtour.dto.main.NearbyLocationResponse;
+import com.lion.BMWtour.entity.Category;
+import com.lion.BMWtour.entity.TourInfo;
+import com.lion.BMWtour.entity.User;
+import com.lion.BMWtour.repository.CategoryRepository;
+import com.lion.BMWtour.repository.TourInfoRepository;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.*;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
@@ -35,16 +21,9 @@ import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 
-import com.lion.BMWtour.dto.TourInfoDto;
-import com.lion.BMWtour.entity.Category;
-import com.lion.BMWtour.entity.TourInfo;
-import com.lion.BMWtour.entity.User;
-import com.lion.BMWtour.repository.CategoryRepository;
-import com.lion.BMWtour.repository.TourInfoRepository;
-
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +34,8 @@ public class TourInfoServiceImpl implements TourInfoService {
     private final TourInfoRepository tourInfoRepository;
     private final UserService userService;
     private final CategoryRepository categoryRepository;
-    private final ResourceLoader resourceLoader;
+
+    // private final ResourceLoader resourceLoader;
 
     @Override
     public Map<Page<TourInfoDto>, Integer> getPagedTourInfos(HttpSession session, int page, int researchCount, String category, String address, String keyword, String sortField, String sortDirection) {
@@ -72,24 +52,21 @@ public class TourInfoServiceImpl implements TourInfoService {
         Sort sort = null;
 
 
-
-
-
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         if (sortField.isEmpty()) {
             sort = Sort.by(Sort.Order.desc("_score"));
-        }
-        else{
+        } else {
             switch (sortField) {
-                case "point" :
+                case "point":
                     GeoPoint geoPoint = getGeoPointFromSession(session); // 세션에서 좌표를 가져오는 방법
 
                     sort = Sort.by(Sort.Order.desc("_score")) // 기본 _score 정렬
-                            .and(Sort.by(new GeoDistanceOrder("point",geoPoint
-                                )).ascending());
+                            .and(Sort.by(new GeoDistanceOrder("point", geoPoint
+                            )).ascending());
                     break;
-                default:       sort= Sort.by(Sort.Order.desc("_score"))
-                                        .and(Sort.by(direction, sortField));
+                default:
+                    sort = Sort.by(Sort.Order.desc("_score"))
+                            .and(Sort.by(direction, sortField));
                     break;
             }
         }
@@ -99,11 +76,10 @@ public class TourInfoServiceImpl implements TourInfoService {
         // 로그인 하지 않은 경우
         if (user == null) {
             log.info("TourInfoServiceImpl - PageImpl: 로그인 하지 않은 사용자는 선호도가 없습니다.");
-            query = NativeQuery.builder().withQuery(DefaultMatchQuery(category, address, keyword)).withSort(sort).withTrackScores(true).withPageable( pageable).build();
+            query = NativeQuery.builder().withQuery(DefaultMatchQuery(category, address, keyword)).withSort(sort).withTrackScores(true).withPageable(pageable).build();
 
         } else { // 로그인을 한 경우
             // 사용자 하위카테고리
-
 
 
             List<String> userInterestList = List.of(user.getInterestList());
@@ -128,22 +104,28 @@ public class TourInfoServiceImpl implements TourInfoService {
 
                 // 매칭시킨 하위카테고리
                 userMatchingInterestList = categoryAnduserSubcategory.getOrDefault(category, null);
-                query =   userMatchingInterestList != null ?
-                          NativeQuery.builder().withQuery(UserMatchQuery(category, address, keyword, userMatchingInterestList)).withSort(sort).withTrackScores(true).withPageable(pageable).build()
+                query = userMatchingInterestList != null ?
+                        NativeQuery.builder().withQuery(UserMatchQuery(category, address, keyword, userMatchingInterestList)).withSort(sort).withTrackScores(true).withPageable(pageable).build()
                         : NativeQuery.builder().withQuery(DefaultMatchQuery(category, address, keyword)).withSort(sort).withTrackScores(true).withPageable(pageable).build();
 
-            }
-            else{
+            } else {
                 query = NativeQuery.builder().withQuery(UserMatchQuery(category, address, keyword, userInterestList)).withSort(sort).withTrackScores(true).withPageable(pageable).build();
             }
         }
 
         SearchHits<TourInfo> searchHits = elasticsearchTemplate.search(query, TourInfo.class);
-        List<TourInfoDto> TourInfoDtoList = searchHits.getSearchHits().stream().map(hit -> new TourInfoDto(hit.getContent(), hit.getScore())).toList();
+        List<TourInfoDto> tourInfoDtoList = searchHits.getSearchHits().stream()
+                .map(hit -> TourInfoDto.builder()
+                        .tourInfo(hit.getContent())
+                        .image("/img/default/category/" + hit.getContent().getCategory() + ".jpg")
+                        .matchScore(hit.getScore()) // matchScore에 매핑
+                        .build()
+                ).toList();
+
         long totalHits = searchHits.getTotalHits();
 
 
-        Page<TourInfoDto> pageResult = new PageImpl<>(TourInfoDtoList, pageable, totalHits);
+        Page<TourInfoDto> pageResult = new PageImpl<>(tourInfoDtoList, pageable, totalHits);
         return Map.of(pageResult, pageSize);
     }
 
@@ -184,32 +166,54 @@ public class TourInfoServiceImpl implements TourInfoService {
     }
 
     // 로그인 X 사용자 검색 쿼리
-    private Query DefaultMatchQuery(String category, String address, String keyword) {
+    private Query DefaultMatchQuery(String ca, String ad, String ke) {
 
-        category = createMatchCondition("category", category, "keyword");
-        address = createMatchCondition("address", address, "text");
-        String titlekeyword = createMatchCondition("title", keyword, "text");
-        String summarykeyword = createMatchCondition("summary", keyword, "text");
+        String category = createMatchCondition("category", ca, "keyword");
+        String address = createMatchCondition("address", ad, "text");
+        String titlekeyword = createMatchCondition("title", ke, "text");
+        String summarykeyword = createMatchCondition("summary", ke, "text");
+        String queryString;
 
-
-        String queryString = String.format("""
-                {
-                    "function_score": {
-                      "query": {
-                        "bool": {
-                          "filter": [
-                            %s,
-                            %s
-                          ],
-                          "should": [
-                            %s,
-                            %s
-                          ], "minimum_should_match": 1
-                        }
+        // 카테고리 + 키워드 없는 경우
+        if (ke.isEmpty() && ca.isEmpty() ) {
+            queryString = String.format("""
+                    {
+                      "function_score": {
+                        "query": {
+                          "bool": {
+                            "filter": [
+                                %s
+                            ]
+                          }
+                        },
+                        "random_score": {},  // 랜덤 정렬 추가
+                        "boost_mode": "replace" // 기존 스코어를 무시하고 랜덤 스코어 사용
                       }
-                  }
-                }
-                """, category, address, titlekeyword, summarykeyword);
+                    }
+                    """, address);
+        }
+        else {
+            queryString = String.format("""
+                    {
+                        "function_score": {
+                          "query": {
+                            "bool": {
+                              "filter": [
+                                %s,
+                                %s
+                              ],
+                              "should": [
+                                %s,
+                                %s
+                              ], "minimum_should_match": 1
+                            }
+                          }
+                      }
+                    }
+                    """, category, address, titlekeyword, summarykeyword);
+        }
+
+
         log.info("TourInfoServiceImpl - DefaultMatchQuery: queryString: " + queryString);
         return new StringQuery(queryString);
     }
@@ -359,12 +363,12 @@ public class TourInfoServiceImpl implements TourInfoService {
 //                """, field + ".keyword", value);
 
         return String.format("""
-               {
-                    "term": {
-                        "%s": "%s"
-                    }
-               }
-                """, field , value);
+                {
+                     "term": {
+                         "%s": "%s"
+                     }
+                }
+                """, field, value);
     }
 
 

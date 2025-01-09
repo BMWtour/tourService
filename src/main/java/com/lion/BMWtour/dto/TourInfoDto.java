@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TourInfoDto {
     private TourInfo tourInfo;
+    private String image;
     private float matchScore;
 }
