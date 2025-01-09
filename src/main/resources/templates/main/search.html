@@ -49,6 +49,7 @@
             <div class="sort-options">
                 <label for="sortBy">정렬:</label>
                 <select id="sortBy" class="sort-select">
+                    <option value=""  th:selected="${sortField == ''}">정렬</option>
                     <option value="point" th:selected="${sortField == 'point'}" >위치</option>
                     <option value="title.title_keyword" th:selected="${sortField == 'title.title_keyword'}">이름</option>
                 </select>

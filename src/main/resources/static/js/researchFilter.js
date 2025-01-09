@@ -56,7 +56,7 @@ document.getElementById('sortBy').addEventListener('change', () => {
     const sortDesc = document.getElementById('sortDesc');
 
     // "위치" 선택 시 내림차순, 오름차순 버튼 비활성화
-    if (sortBy === '위치') {
+    if (sortBy !== 'title.title_keyword' ) {
         sortAsc.classList.remove("button-active");
         sortDesc.classList.remove("button-active");
         // document.querySelectorAll('.sort-button').forEach(btn => btn.classList.remove("button-active"));
@@ -96,4 +96,10 @@ document.querySelectorAll('.sort-button').forEach(button => {
         button.classList.add("button-active");
     });
 });
+
+
+
+
+
+
 

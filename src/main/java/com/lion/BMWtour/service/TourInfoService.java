@@ -16,7 +16,7 @@ public interface TourInfoService {
 
     public static final int PAGE_SIZE = 10;
 
-    void tourInfoBulkInsert();
+    // void tourInfoBulkInsert();
 
     Map<Page<TourInfoDto>, Integer> getPagedTourInfos(HttpSession session, int page, int researchCount, String category, String address, String keyword, String sortField, String sortDirection);
     TourInfo getTourInfo(String tourId);

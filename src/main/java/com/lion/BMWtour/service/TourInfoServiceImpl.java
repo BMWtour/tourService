@@ -17,15 +17,20 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.*;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.geo.GeoPoint;
+import org.springframework.data.elasticsearch.core.query.GeoDistanceOrder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
@@ -64,17 +69,43 @@ public class TourInfoServiceImpl implements TourInfoService {
                 : pageSize;
 
         Pageable pageable = PageRequest.of(page - 1, TempPageSize);
+        Sort sort = null;
+
+
+
+
+
         Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Sort sort = sortField.isEmpty() ? Sort.by(Sort.Order.desc("_score")) : Sort.by(Sort.Order.desc("_score")).and(Sort.by(direction, sortField));
+        if (sortField.isEmpty()) {
+            sort = Sort.by(Sort.Order.desc("_score"));
+        }
+        else{
+            switch (sortField) {
+                case "point" :
+                    GeoPoint geoPoint = getGeoPointFromSession(session); // 세션에서 좌표를 가져오는 방법
+
+                    sort = Sort.by(Sort.Order.desc("_score")) // 기본 _score 정렬
+                            .and(Sort.by(new GeoDistanceOrder("point",geoPoint
+                                )).ascending());
+                    break;
+                default:       sort= Sort.by(Sort.Order.desc("_score"))
+                                        .and(Sort.by(direction, sortField));
+                    break;
+            }
+        }
+
         Query query = null;
 
         // 로그인 하지 않은 경우
         if (user == null) {
             log.info("TourInfoServiceImpl - PageImpl: 로그인 하지 않은 사용자는 선호도가 없습니다.");
-            query = NativeQuery.builder().withQuery(DefaultMatchQuery(category, address, keyword)).withSort(sort).withTrackScores(true).withPageable(pageable).build();
+            query = NativeQuery.builder().withQuery(DefaultMatchQuery(category, address, keyword)).withSort(sort).withTrackScores(true).withPageable( pageable).build();
 
         } else { // 로그인을 한 경우
             // 사용자 하위카테고리
+
+
+
             List<String> userInterestList = List.of(user.getInterestList());
             List<String> userMatchingInterestList = new ArrayList<>();
             if (!category.isEmpty()) {
@@ -111,6 +142,7 @@ public class TourInfoServiceImpl implements TourInfoService {
         List<TourInfoDto> TourInfoDtoList = searchHits.getSearchHits().stream().map(hit -> new TourInfoDto(hit.getContent(), hit.getScore())).toList();
         long totalHits = searchHits.getTotalHits();
 
+
         Page<TourInfoDto> pageResult = new PageImpl<>(TourInfoDtoList, pageable, totalHits);
         return Map.of(pageResult, pageSize);
     }
@@ -126,6 +158,19 @@ public class TourInfoServiceImpl implements TourInfoService {
             return TourInfoService.PAGE_SIZE; // 기본값
         }
     }
+
+    // 세션에서 좌표 값을 가져오는 메서드
+    private GeoPoint getGeoPointFromSession(HttpSession session) {
+        try {
+            double latitude = Double.parseDouble((String) session.getAttribute("latitude"));
+            double longitude = Double.parseDouble((String) session.getAttribute("longitude"));
+            return new GeoPoint(latitude, longitude);
+        } catch (NumberFormatException | NullPointerException e) {
+            // 예외 처리: 세션에서 잘못된 데이터가 있으면 기본 좌표로 처리
+            return new GeoPoint(37.566381, 126.977717);
+        }
+    }
+
 
     // 조건에 따라 match or match_all 반환
     private String createMatchCondition(String field, String value, String type) {
@@ -276,7 +321,7 @@ public class TourInfoServiceImpl implements TourInfoService {
             shouldQueries.setLength(shouldQueries.length() - 1);
         }
 
-        String mustNotQuery = createKeywordTermCondition("id", tourId);
+        String mustNotQuery = createKeywordTermCondition("_id", tourId);
 
         String queryString = String.format("""
                     {
@@ -290,7 +335,7 @@ public class TourInfoServiceImpl implements TourInfoService {
                         }
                     }
                 """, shouldQueries.toString(), mustNotQuery);
-
+        log.info("buildMatchQueryForKeywords - queryString:" + queryString);
         return new StringQuery(queryString);
     }
 
@@ -305,13 +350,21 @@ public class TourInfoServiceImpl implements TourInfoService {
     }
 
     private String createKeywordTermCondition(String field, String value) {
+//        return String.format("""
+//                {
+//                    "term": {
+//                        "%s": "%s"
+//                    }
+//                }
+//                """, field + ".keyword", value);
+
         return String.format("""
-                {
+               {
                     "term": {
                         "%s": "%s"
                     }
-                }
-                """, field + ".keyword", value);
+               }
+                """, field , value);
     }
 
 
@@ -337,7 +390,7 @@ public class TourInfoServiceImpl implements TourInfoService {
         Query query = NativeQuery.builder().withQuery(buildMatchQueryForKeywords(keywords, tourInfo.getId())).build();
 
         SearchHits<TourInfo> searchHits = elasticsearchTemplate.search(query, TourInfo.class);
-        return searchHits.getSearchHits().stream().limit(6).map(hit -> hit.getContent()).collect(Collectors.toList());
+        return searchHits.getSearchHits().stream().limit(5).map(hit -> hit.getContent()).collect(Collectors.toList());
     }
 
     @Override
@@ -359,66 +412,67 @@ public class TourInfoServiceImpl implements TourInfoService {
     }
 
 
-    public void tourInfoBulkInsert() {
-        try {
-            RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(new HttpHost("104.198.205.64", 9200, "http")));
-            BulkRequest bulkRequest = new BulkRequest();
-            Resource resource = resourceLoader.getResource("classpath:/static/data/문화관광데이터.csv");
-            try (Reader reader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8); CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
-                int count = 0;
-                for (CSVRecord record : csvParser.getRecords()) {
-                    // 데이터 추출
-                    String title = record.get("\uFEFF명칭");
-                    String address = record.get("주소");
-                    float latitude = Float.parseFloat(record.get("위도"));
-                    float longitude = Float.parseFloat(record.get("경도"));
-                    String summary = record.get("개요");
-                    String openTime = record.get("이용시간");
-                    String detailInfo = record.get("상세정보");
-                    String category = record.get("카테고리");
-                    String keyword = record.get("키워드");
-                    // GeoPoint를 사용하여 위도, 경도 데이터 추가
-                    Map<String, Object> jsonMap = new HashMap<>();
-                    jsonMap.put("title", title);
-                    jsonMap.put("address", address);
-                    //jsonMap.put("point", new GeoPoint(latitude, longitude));
-                    jsonMap.put("point", new double[]{longitude, latitude});
-                    // jsonMap.put("point", new double[]{latitude, longitude});  // GeoPoint 대신 배열로 저장
-                    jsonMap.put("summary", summary);
-                    jsonMap.put("openTime", openTime);
-                    jsonMap.put("detailInfo", detailInfo);
-                    jsonMap.put("category", category);
-                    jsonMap.put("keyword", keyword);
-                    System.out.println("count: " + ++count);
+//    public void tourInfoBulkInsert() {
+//        try {
+//            RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(new HttpHost("104.198.205.64", 9200, "http")));
+//            BulkRequest bulkRequest = new BulkRequest();
+//            Resource resource = resourceLoader.getResource("classpath:/static/data/문화관광데이터.csv");
+//            try (Reader reader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8); CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
+//                int count = 0;
+//                for (CSVRecord record : csvParser.getRecords()) {
+//                    // 데이터 추출
+//                    String title = record.get("\uFEFF명칭");
+//                    String address = record.get("주소");
+//                    float latitude = Float.parseFloat(record.get("위도"));
+//                    float longitude = Float.parseFloat(record.get("경도"));
+//                    String summary = record.get("개요");
+//                    String openTime = record.get("이용시간");
+//                    String detailInfo = record.get("상세정보");
+//                    String category = record.get("카테고리");
+//                    String keyword = record.get("키워드");
+//                    // GeoPoint를 사용하여 위도, 경도 데이터 추가
+//                    Map<String, Object> jsonMap = new HashMap<>();
+//                    jsonMap.put("title", title);
+//                    jsonMap.put("address", address);
+//                    //jsonMap.put("point", new GeoPoint(latitude, longitude));
+//                    jsonMap.put("point", new double[]{longitude, latitude});
+//                    // jsonMap.put("point", new double[]{latitude, longitude});  // GeoPoint 대신 배열로 저장
+//                    jsonMap.put("summary", summary);
+//                    jsonMap.put("openTime", openTime);
+//                    jsonMap.put("detailInfo", detailInfo);
+//                    jsonMap.put("category", category);
+//                    jsonMap.put("keyword", keyword);
+//                    System.out.println("count: " + ++count);
+//
+//
+//                    // Elasticsear  ch에 삽입할 IndexRequest 생성
+//                    IndexRequest indexRequest = new IndexRequest("tourinfos").id(null)  // 예시로 ID를 2로 설정 (실제 데이터에 맞게 변경)
+//                            .source(jsonMap);
+//
+//                    // BulkRequest에 추가 (이후 BulkRequest에 추가된 요청들을 한 번에 전송)
+//                    bulkRequest.add(indexRequest);
+//
+//
+//                    if (count % 5000 == 0 || count == 47042) {
+//                        // Bulk 요청 실행
+//                        BulkResponse bulkResponse = client.bulk(bulkRequest, RequestOptions.DEFAULT);
+//
+//                        if (bulkResponse.hasFailures()) {
+//                            bulkResponse.buildFailureMessage();
+//                            System.out.println("Bulk insert failed");
+//                        } else {
+//                            System.out.println("Bulk insert successful");
+//                        }
+//                        bulkRequest = new BulkRequest();
+//                    }
+//                }
+//                client.close();
+//                System.out.println("삽입 완료");
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-
-                    // Elasticsear  ch에 삽입할 IndexRequest 생성
-                    org.elasticsearch.action.index.IndexRequest indexRequest = new org.elasticsearch.action.index.IndexRequest("tourinfos2").id(null)  // 예시로 ID를 2로 설정 (실제 데이터에 맞게 변경)
-                            .source(jsonMap);
-
-                    // BulkRequest에 추가 (이후 BulkRequest에 추가된 요청들을 한 번에 전송)
-                    bulkRequest.add(indexRequest);
-
-
-                    if (count % 5000 == 0 || count == 47042) {
-                        // Bulk 요청 실행
-                        BulkResponse bulkResponse = client.bulk(bulkRequest, RequestOptions.DEFAULT);
-
-                        if (bulkResponse.hasFailures()) {
-                            bulkResponse.buildFailureMessage();
-                            System.out.println("Bulk insert failed");
-                        } else {
-                            System.out.println("Bulk insert successful");
-                        }
-                        bulkRequest = new BulkRequest();
-                    }
-                }
-                client.close();
-                System.out.println("삽입 완료");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
