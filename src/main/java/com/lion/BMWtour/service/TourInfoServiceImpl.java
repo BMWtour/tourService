@@ -162,8 +162,8 @@ public class TourInfoServiceImpl implements TourInfoService {
     // 세션에서 좌표 값을 가져오는 메서드
     private GeoPoint getGeoPointFromSession(HttpSession session) {
         try {
-            double latitude = Double.parseDouble((String) session.getAttribute("latitude"));
-            double longitude = Double.parseDouble((String) session.getAttribute("longitude"));
+            double latitude = (double) session.getAttribute("latitude");
+            double longitude = (double) session.getAttribute("longitude");
             return new GeoPoint(latitude, longitude);
         } catch (NumberFormatException | NullPointerException e) {
             // 예외 처리: 세션에서 잘못된 데이터가 있으면 기본 좌표로 처리
