@@ -123,6 +123,7 @@ function initMap() {
         // 마커 클릭 시 이벤트 처리
         naver.maps.Event.addListener(marker, 'click', () => {
             const spanTextList = document.querySelectorAll(".Text");
+            const scrollContainer = document.querySelector('.scroll-container');
             const matchingSpanText = Array.from(spanTextList).find(Text => {
                 return Text.textContent.trim() === point.title;
             });
@@ -132,8 +133,23 @@ function initMap() {
                 if (activeRow) activeRow.classList.remove('clicked');
 
                 const matchingRow = matchingSpanText.closest('.search-item');
-                if (activeRow !== matchingRow && matchingRow) matchingRow.classList.add("clicked");
-            } else {
+                if (scrollContainer && scrollContainer.scrollHeight > scrollContainer.clientHeight) {
+                    if (activeRow !== matchingRow && matchingRow) {
+                        // matchingRow의 위치를 계산하여 scroll-container 안에서만 스크롤
+                        const rowPosition = matchingRow.offsetTop; // matchingRow의 offsetTop 위치
+                        const containerHeight = scrollContainer.clientHeight; // scroll-container의 높이
+                        const containerScrollTop = scrollContainer.scrollTop; // scroll-container의 현재 스크롤 위치
+
+                        // 스크롤을 matchingRow가 중앙에 오도록 설정
+                        scrollContainer.scrollTop = rowPosition - containerHeight / 2 + matchingRow.offsetHeight / 2;
+                        // 스크롤을 scroll-container 안에서만 이동하도록 처리
+                        // matchingRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        matchingRow.classList.add("clicked");
+                    }
+                } else { matchingRow.classList.add("clicked"); }
+
+            }
+            else {
                 console.log("No matching row found.");
             }
         });
@@ -169,3 +185,28 @@ function initMap() {
 
     // 지도 로드 후 initMap 함수 실행
     window.onload = initMap;
+
+
+
+
+
+
+
+
+    // 지도 마커 클릭 시 해당 항목 강조
+    function onMarkerClick(markerId) {
+        // 모든 항목에서 'highlighted' 클래스 제거
+        const allItems = document.querySelectorAll('.search-item');
+        allItems.forEach(item => item.classList.remove('highlighted'));
+
+        // 해당 항목에 'highlighted' 클래스 추가
+        const itemToHighlight = document.querySelector(`.search-item[="${markerId}"]`);
+        if (itemToHighlight) {
+            itemToHighlight.classList.add('highlighted');
+            // 스크롤 위치 조정 (해당 항목이 보이도록)
+            itemToHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    // 예시: 마커 클릭 시 호출
+    onMarkerClick(1);  // '1'은 마커 ID로, 해당하는 div에 'highlighted' 클래스가 추가됨
