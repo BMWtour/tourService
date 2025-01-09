@@ -188,6 +188,12 @@ button:hover {
     align-content: center;
     justify-items: center;
 }
+.img-container img{
+    width: 5vw;
+    height:8vh;
+    border-radius: 1vw;
+
+}
 
 /* 스크롤 컨테이너 내 아이템 내 왼쪽 & 오른쪽 컨테이너 */
 .rightinfo-container,
