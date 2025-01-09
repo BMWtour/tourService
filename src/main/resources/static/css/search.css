@@ -32,8 +32,8 @@ gap: 2vw;
 /* 검색 결과 및 정렬 컨테이너 */
 .researchoption-container {
     width: 45vw;
-    position: relative;
-    left: 13vw;
+    position: static;
+    margin-left: 12vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -128,8 +128,8 @@ button:hover {
 
 /* 스크롤 컨테이너 */
 .scroll-container {
-    position: relative;
-    left: 3vw;
+    position: static;
+    margin-left: 2vw;
     width: 57vw;
     height: 62vh;
     overflow-y: auto;
