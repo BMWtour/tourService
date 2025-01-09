@@ -238,15 +238,20 @@ async function findRoute() {
 
 //지도에 가이드 좌표들 마커로 띄우기
 function initGuideMarkers(pointDtoList, guideDtoList) {
-    guideMarkers = pointDtoList;
+    //이미 다른 가이드 마커가 띄워져있다면 지워주기
+    if (guideMarkers.length !== 0){
+        clearMarkers(guideMarkers);
+    }
+    let markerPontList = pointDtoList;
+    guideMarkers = [];
     guideInfo = guideDtoList;
 
     //가이드정보 클릭시 정보를 띄우는 자그마한 창 배열
     const infoWindows = [];
-    for (let i = 0; i < guideMarkers.length; i++) {
+    for (let i = 0; i < markerPontList.length; i++) {
         //가이드마커
         let guideMarker = new naver.maps.Marker({
-            position: new naver.maps.LatLng(guideMarkers[i].lat, guideMarkers[i].lng),
+            position: new naver.maps.LatLng(markerPontList[i].lat, markerPontList[i].lng),
             map     : naviMap
         });
         // 클릭했을 때 정보 띄우기
@@ -268,6 +273,14 @@ function initGuideMarkers(pointDtoList, guideDtoList) {
                 guideMarkerClickInfo.open(naviMap, guideMarker);
             }
         });
+        guideMarkers.push(guideMarker);
+    }
+}
+
+// 모든 마커를 삭제하는 함수
+function clearMarkers(guideMarkers) {
+    for (var i = 0; i < guideMarkers.length; i++) {
+        guideMarkers[i].setMap(null);
     }
 }
 

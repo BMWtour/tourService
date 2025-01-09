@@ -109,9 +109,9 @@ public class TourInfoController {
         //추천 관광지 추가
         List<TourInfo> recommendations = tourInfoService.getRecommendations(tourId); // 추천 관광지 추가
         //추천 관광지에서 현재 관광지 정보가 존재한다면 remove
-        if (recommendations.contains(tourInfo)) {
-            recommendations.remove(tourInfo);
-        }
+//        if (recommendations.contains(tourInfo)) {
+//            recommendations.remove(tourInfo);
+//        }
 
         tourLogService.saveTourLog(tourInfo);
         model.addAttribute("tourInfo", tourInfo);
@@ -121,11 +121,11 @@ public class TourInfoController {
     }
 
 
-    @GetMapping("/TourInfoInsert")
-    public String CulturalPlaceInsert() {
-        tourInfoService.tourInfoBulkInsert();
-        return "fragments/test";
-    }
+//    @GetMapping("/TourInfoInsert")
+//    public String CulturalPlaceInsert() {
+//        tourInfoService.tourInfoBulkInsert();
+//        return "fragments/test";
+//    }
 
 //    /**상세페이지 테스트를 위한 컨트롤러*/
 //    @GetMapping("/tour/detail/{tourId}")

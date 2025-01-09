@@ -60,6 +60,18 @@
         <a th:href="'/user/update/info/' + ${user.userId}">
           <button id="update-info-button" class="action-button">정보 수정</button>
         </a>
+        <button id="deleteAccountBtn"  th:attr="data-user-id=${user.userId}" >회원 탈퇴</button>
+      </div>
+    </div>
+
+    <!-- 모달 -->
+    <div id="deleteModal" style="display: none;">
+      <div>
+        <h3>회원 탈퇴</h3>
+        <p>탈퇴하려면 "탈퇴하겠습니다"를 입력하세요.</p>
+        <input type="text" id="confirmationInput" placeholder="탈퇴하겠습니다">
+        <button id="confirmDeleteBtn" disabled>확인</button>
+        <button id="cancelBtn">취소</button>
       </div>
     </div>
     <script th:inline="javascript">
@@ -88,4 +100,57 @@
   </div>
 <div th:insert="~{fragments/footer :: footer}"></div>
 </body>
+<script>
+  // 모달 열기
+  document.getElementById("deleteAccountBtn").addEventListener("click", function () {
+    document.getElementById("deleteModal").style.display = "block";
+  });
+
+  // 모달 닫기
+  document.getElementById("cancelBtn").addEventListener("click", function () {
+    document.getElementById("deleteModal").style.display = "none";
+  });
+
+  // 입력 검증 및 확인 버튼 활성화
+  document.getElementById("confirmationInput").addEventListener("input", function () {
+    const input = this.value;
+    const confirmButton = document.getElementById("confirmDeleteBtn");
+    confirmButton.disabled = input !== "탈퇴하겠습니다"; // 조건에 따라 버튼 활성화/비활성화
+  });
+
+  // 회원 탈퇴 요청
+  document.getElementById("confirmDeleteBtn").addEventListener("click", function () {
+    const userId = document.getElementById("deleteAccountBtn").getAttribute("data-user-id");
+    const confirmationText = document.getElementById("confirmationInput").value;
+
+    // 서버로 회원 탈퇴 요청
+    fetch('/user/delete', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: userId,
+        confirmationText: confirmationText,
+      }),
+    })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error("탈퇴 실패: " + response.statusText);
+              }
+              return response.json();
+            })
+            .then(data => {
+              alert(data.message || "회원 탈퇴가 완료되었습니다.");
+              window.location.href = "/user/logout"; // 메인 페이지로 리다이렉트
+            })
+            .catch(error => {
+              alert(error.message);
+            });
+
+    // 모달 닫기
+    document.getElementById("deleteModal").style.display = "none";
+  });
+
+</script>
 </html>
