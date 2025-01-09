@@ -20,7 +20,7 @@ function initializeSearch() {
             sd: ""
         };
 
-        const baseUrl = "http://localhost:8090/tour/list";
+        const baseUrl = "/tour/list";
         const queryString = new URLSearchParams(params).toString();
         const fullUrl = `${baseUrl}?${queryString}`;
 

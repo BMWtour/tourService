@@ -92,7 +92,8 @@
         <div class="scroll-container">
                 <div class="search-item" th:each="TourInfoDto: ${TourInfoDtoList}">
                     <div class="img-container">
-                        <img class="searchResultImg" src="/img/test.jpg">
+<!--                        <img class="searchResultImg" src="/img/test.jpg">-->
+                        <img th:src="${TourInfoDto.image}" alt="${TourInfoDto.image}">
                     </div>
 
                 <div class="rightinfo-container">
