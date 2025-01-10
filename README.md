@@ -16,6 +16,9 @@
 - Naver Maps Open API를 활용한 지도 기능 활용
 - word2Vec 데이터 모델을 활용한 추천 기능 제작
 
+## 프로젝트 URL
+https://trip2us.duckdns.org/tour/main
+
 
 ## 기술 스택
 
